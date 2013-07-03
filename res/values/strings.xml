@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Pocket Widget</string>
     <string name="widget_description">Unofficial Pocket Widget</string>
+    <string name="login">Login</string>
 </resources>

@@ -12,7 +12,7 @@ public class RetrieveUnreadPocketItemsAsyncTask extends AsyncTask<Void, Void, In
     private final AppWidgetManager appWidgetManager;
     private final RemoteViews remoteViews;
     private final int widgetId;
-
+    
     public RetrieveUnreadPocketItemsAsyncTask(RemoteViews remoteViews, int widgetId, AppWidgetManager appWidgetManager) {
 	this.remoteViews = remoteViews;
 	this.widgetId = widgetId;
