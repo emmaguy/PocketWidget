@@ -23,6 +23,7 @@ public class PocketWidgetProvider extends AppWidgetProvider {
 	    appWidgetManager.updateAppWidget(appWidgetId, views);
 	    this.onReceive(context, clickIntent);
 	}
+	super.onUpdate(context, appWidgetManager, appWidgetIds);
     }
 
     @Override
@@ -34,7 +35,7 @@ public class PocketWidgetProvider extends AppWidgetProvider {
 			.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
 		RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
 
-		new RetrieveUnreadPocketItemsAsyncTask(remoteViews, widgetId, AppWidgetManager.getInstance(context))
+		new RetrieveUnreadPocketItemsAsyncTask(remoteViews, widgetId, AppWidgetManager.getInstance(context), context.getSharedPreferences(PocketWidgetConfigure.SHARED_PREFERENCES, 0), context.getResources().getString(R.string.pocket_consumer_key_mobile))
 			.execute();
 	    }
 	}

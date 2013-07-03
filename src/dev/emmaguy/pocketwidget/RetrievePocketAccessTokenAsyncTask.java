@@ -24,14 +24,12 @@ public class RetrievePocketAccessTokenAsyncTask extends AsyncTask<Void, Void, Vo
     private final String consumerKey;
     private final SharedPreferences sharedPreferences;
     private final OnAccessTokenRetrievedListener accessTokenRetrievedListener;
-    private final int appWidgetId;
 
     public RetrievePocketAccessTokenAsyncTask(String consumerKey, OnAccessTokenRetrievedListener listener,
-	    SharedPreferences sharedPreferences, int appWidgetId) {
+	    SharedPreferences sharedPreferences) {
 	this.consumerKey = consumerKey;
 	this.sharedPreferences = sharedPreferences;
 	this.accessTokenRetrievedListener = listener;
-	this.appWidgetId = appWidgetId;
     }
 
     @Override
@@ -40,7 +38,7 @@ public class RetrievePocketAccessTokenAsyncTask extends AsyncTask<Void, Void, Vo
 	try {
 
 	    String token = getAccessToken();
-	    sharedPreferences.edit().putString("access_token" + appWidgetId, token).commit();
+	    sharedPreferences.edit().putString("access_token", token).commit();
 
 	} catch (Exception e) {
 	    Log.e("RetrieveRequestToken", "Failed to retrieve request token" + e.getMessage());

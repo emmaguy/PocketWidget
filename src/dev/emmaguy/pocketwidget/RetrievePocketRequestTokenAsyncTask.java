@@ -30,13 +30,11 @@ public class RetrievePocketRequestTokenAsyncTask extends AsyncTask<Void, Void, S
     private final String consumerKey;
     private final SharedPreferences sharedPreferences;
     private final OnUrlRetrievedListener retreivedUrlListener;
-    private final int appWidgetId;
 
-    public RetrievePocketRequestTokenAsyncTask(String consumerKey, OnUrlRetrievedListener onUrlRetrievedListener, SharedPreferences sharedPreferences, int appWidgetId) {
+    public RetrievePocketRequestTokenAsyncTask(String consumerKey, OnUrlRetrievedListener onUrlRetrievedListener, SharedPreferences sharedPreferences) {
 	this.consumerKey = consumerKey;
 	this.retreivedUrlListener = onUrlRetrievedListener;
 	this.sharedPreferences = sharedPreferences;
-	this.appWidgetId = appWidgetId;
     }
 
     @Override
@@ -45,7 +43,7 @@ public class RetrievePocketRequestTokenAsyncTask extends AsyncTask<Void, Void, S
 	try {
 	    
 	    String token = getRequestToken();
-	    sharedPreferences.edit().putString("code" + appWidgetId, token).commit();
+	    sharedPreferences.edit().putString("code", token).commit();
 	    return String.format("https://getpocket.com/auth/authorize?request_token=%s&redirect_uri=%s", token, CALLBACK_URL);
 	    
 	} catch (Exception e) {
