@@ -7,6 +7,8 @@ import android.widget.Toast;
 
 public class PocketWidgetConfigure extends Activity implements View.OnClickListener{
 
+    private static final String SHARED_PREFERENCES = "pocketWidget";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
@@ -22,7 +24,7 @@ public class PocketWidgetConfigure extends Activity implements View.OnClickListe
 
 	    Toast.makeText(getApplicationContext(), "login! ", Toast.LENGTH_SHORT).show();
 	    
-	    new RetrievePocketApiRequestTokenAsyncTask(getResources().getString(R.string.pocket_consumer_key_mobile)).execute();
+	    new RetrievePocketApiRequestTokenAsyncTask(getResources().getString(R.string.pocket_consumer_key_mobile), getSharedPreferences(SHARED_PREFERENCES, 0)).execute();
 	}
     }
 }
