@@ -28,6 +28,12 @@
         <activity android:name="dev.emmaguy.pocketwidget.PocketWidgetConfigure" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+				<category android:name="android.intent.category.BROWSABLE"/>
+                <data
+                    android:host="callback"
+                    android:scheme="pocketwidget" />
             </intent-filter>
         </activity>
     </application>
