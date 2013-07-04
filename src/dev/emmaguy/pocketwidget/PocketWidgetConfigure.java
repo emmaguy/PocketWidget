@@ -35,9 +35,6 @@ public class PocketWidgetConfigure extends Activity implements View.OnClickListe
 	    if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
 		sharedPreferences.edit().putInt("appWidgetId", appWidgetId).commit();
 		
-		// this is the first time onCreate has been called - allow user to see and click 'login'
-		// later we'll be recreated after authenticating with the browser, so don't show again
-		findViewById(R.id.login_button).setVisibility(View.VISIBLE);
 		findViewById(R.id.login_button).setOnClickListener(this);
 	    } else {
 		appWidgetId = sharedPreferences.getInt("appWidgetId", AppWidgetManager.INVALID_APPWIDGET_ID);
