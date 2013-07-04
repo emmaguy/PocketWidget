@@ -68,8 +68,11 @@ public class RetrieveUnreadPocketItemsAsyncTask extends AsyncTask<Void, Void, In
 	    final JsonObject asJsonObject = parse.getAsJsonObject();
 	    final JsonElement jsonElement = asJsonObject.get("list");
 	    final JsonObject listItems = jsonElement.getAsJsonObject();
+	    final int size = listItems.entrySet().size();
 	    
-	    return listItems.entrySet().size();
+	    Log.i("RetrieveUnreadItems", "Items retrieved: " + size);
+	    
+	    return size;
 	} catch (Exception e) {
 	    Log.e("RetrieveUnreadItems", "Failed to retrieve request token" + e.getMessage());
 

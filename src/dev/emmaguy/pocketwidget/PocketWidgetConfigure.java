@@ -8,17 +8,16 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.RemoteViews;
 import android.widget.Toast;
 
 public class PocketWidgetConfigure extends Activity implements View.OnClickListener, OnUrlRetrievedListener,
 	OnAccessTokenRetrievedListener {
 
     public static final String SHARED_PREFERENCES = "pocketWidget";
-    
+
     private SharedPreferences sharedPreferences;
     private int appWidgetId;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
@@ -26,33 +25,36 @@ public class PocketWidgetConfigure extends Activity implements View.OnClickListe
 	setContentView(R.layout.activity_configure);
 
 	sharedPreferences = getSharedPreferences(SHARED_PREFERENCES, 0);
-	
+
 	Intent intent = getIntent();
 	Bundle extras = intent.getExtras();
 
 	if (extras != null) {
 	    appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
-	    
-	    if(appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID){
+
+	    if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
 		sharedPreferences.edit().putInt("appWidgetId", appWidgetId).commit();
+		
+		// this is the first time onCreate has been called - allow user to see and click 'login'
+		// later we'll be recreated after authenticating with the browser, so don't show again
+		findViewById(R.id.login_button).setVisibility(View.VISIBLE);
+		findViewById(R.id.login_button).setOnClickListener(this);
 	    } else {
 		appWidgetId = sharedPreferences.getInt("appWidgetId", AppWidgetManager.INVALID_APPWIDGET_ID);
 	    }
 	}
-	
+
 	if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
 	    Log.i("PocketWidgetConfigure", "Invalid appWidgetId found");
-            finish();
-        }
-	
+	    finish();
+	}
+
 	String accessToken = sharedPreferences.getString("access_token", null);
-	if(accessToken != null && accessToken.length() > 0) {
+	if (accessToken != null && accessToken.length() > 0) {
 	    Log.i("PocketWidgetConfigure", "Token found in shared prefs");
 	    refreshAndFinishActivity();
 	    return;
 	}
-
-	findViewById(R.id.login_button).setOnClickListener(this);
     }
 
     @Override
@@ -87,20 +89,30 @@ public class PocketWidgetConfigure extends Activity implements View.OnClickListe
 
     @Override
     public void onRetrievedAccessToken() {
-	Toast.makeText(getApplicationContext(), "token " + sharedPreferences.getString("access_token", null), Toast.LENGTH_SHORT).show();
-
 	refreshAndFinishActivity();
     }
 
     private void refreshAndFinishActivity() {
-	RemoteViews views = new RemoteViews(getApplicationContext().getPackageName(), R.layout.widget_layout);
-	AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getApplicationContext());
-	appWidgetManager.updateAppWidget(appWidgetId, views);
+	Log.i("PocketWidgetConfigure", "Refresh and finish: " + appWidgetId);
+	refreshWidget();
 
-	Intent resultValue = new Intent();
-	resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-	setResult(RESULT_OK, resultValue);
-	
+	showHomeScreenAndFinish();
+    }
+
+    private void refreshWidget() {
+	new PocketWidgetProvider()
+	  .onUpdate(this,
+	            AppWidgetManager.getInstance(this),
+	            new int[] { appWidgetId }
+	   );
+    }
+
+    private void showHomeScreenAndFinish() {
+	Intent showHome = new Intent(Intent.ACTION_MAIN);
+	showHome.addCategory(Intent.CATEGORY_HOME);
+	showHome.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+	setResult(RESULT_OK, showHome);
 	finish();
+	startActivity(showHome);
     }
 }
