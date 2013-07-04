@@ -84,7 +84,6 @@ public class RetrieveUnreadPocketItemsAsyncTask extends AsyncTask<Void, Void, In
     @Override
     protected void onPostExecute(Integer unreadCount) {
 	if (unreadCount > 0) {
-	    Log.e("s", "count: " + unreadCount);
 	    this.remoteViews.setViewVisibility(R.id.unread_count_textview, View.VISIBLE);
 	    this.remoteViews.setTextViewText(R.id.unread_count_textview, unreadCount.toString());
 	    this.appWidgetManager.updateAppWidget(widgetId, remoteViews);
