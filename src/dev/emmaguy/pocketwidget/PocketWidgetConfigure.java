@@ -60,7 +60,8 @@ public class PocketWidgetConfigure extends Activity implements View.OnClickListe
     @Override
     public void onClick(View view) {
 	if (view.getId() == R.id.login_button) {
-	    Toast.makeText(getApplicationContext(), "Redirecting to browser", Toast.LENGTH_SHORT).show();
+	    findViewById(R.id.login_button).setVisibility(View.GONE);
+	    Toast.makeText(getApplicationContext(), "Requesting token from Pocket", Toast.LENGTH_SHORT).show();
 	    new RetrievePocketRequestTokenAsyncTask(getResources().getString(R.string.pocket_consumer_key_mobile),
 		    (OnUrlRetrievedListener) this, sharedPreferences).execute();
 	}
@@ -68,6 +69,7 @@ public class PocketWidgetConfigure extends Activity implements View.OnClickListe
 
     @Override
     public void onRetrievedUrl(String url) {
+	Toast.makeText(getApplicationContext(), "Redirecting to browser for authentication", Toast.LENGTH_SHORT).show();
 	Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
 	intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 	intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
@@ -82,6 +84,7 @@ public class PocketWidgetConfigure extends Activity implements View.OnClickListe
 
 	Uri uri = this.getIntent().getData();
 	if (uri != null && uri.toString().startsWith("pocketwidget")) {
+	    Toast.makeText(getApplicationContext(), "Verifying access to Pocket", Toast.LENGTH_SHORT).show();
 	    new RetrievePocketAccessTokenAsyncTask(getResources().getString(R.string.pocket_consumer_key_mobile),
 		    (OnAccessTokenRetrievedListener) this, sharedPreferences).execute();
 	}
