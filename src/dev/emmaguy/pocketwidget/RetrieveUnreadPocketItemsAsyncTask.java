@@ -2,7 +2,6 @@ package dev.emmaguy.pocketwidget;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Random;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -11,13 +10,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import android.appwidget.AppWidgetManager;
 import android.content.SharedPreferences;
@@ -25,6 +18,10 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 public class RetrieveUnreadPocketItemsAsyncTask extends AsyncTask<Void, Void, Integer> {
 
@@ -47,11 +44,10 @@ public class RetrieveUnreadPocketItemsAsyncTask extends AsyncTask<Void, Void, In
     protected Integer doInBackground(Void... arg0) {
 	
 	final String accessToken = sharedPreferences.getString("access_token", null);
-	Log.e("token", accessToken);
 	if(accessToken == null || accessToken.length() <= 0){
 	    return -1;
 	}
-	
+
 	HttpClient client = new DefaultHttpClient();
 	HttpPost post = new HttpPost("https://getpocket.com/v3/get");
 	post.setHeader(HTTP.CONTENT_TYPE, "application/json");
@@ -71,7 +67,8 @@ public class RetrieveUnreadPocketItemsAsyncTask extends AsyncTask<Void, Void, In
 	    final JsonElement parse = new JsonParser().parse(responseBody);
 	    final JsonObject asJsonObject = parse.getAsJsonObject();
 	    final JsonElement jsonElement = asJsonObject.get("list");
-	    JsonObject listItems = jsonElement.getAsJsonObject();
+	    final JsonObject listItems = jsonElement.getAsJsonObject();
+	    
 	    return listItems.entrySet().size();
 	} catch (Exception e) {
 	    Log.e("RetrieveUnreadItems", "Failed to retrieve request token" + e.getMessage());

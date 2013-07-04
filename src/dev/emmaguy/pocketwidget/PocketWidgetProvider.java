@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 public class PocketWidgetProvider extends AppWidgetProvider {
@@ -20,6 +21,8 @@ public class PocketWidgetProvider extends AppWidgetProvider {
 	    PendingIntent pendingIntent = PendingIntent.getBroadcast(context, appWidgetId, clickIntent, 0);
 	    views.setOnClickPendingIntent(R.id.widget_imageview, pendingIntent);
 
+	    Log.i("PocketWidgetConfigure", "OnUpdate: " +  appWidgetId);
+	    
 	    appWidgetManager.updateAppWidget(appWidgetId, views);
 	    this.onReceive(context, clickIntent);
 	}
@@ -34,7 +37,7 @@ public class PocketWidgetProvider extends AppWidgetProvider {
 		int widgetId = extras
 			.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
 		RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
-
+		Log.i("PocketWidgetConfigure", "OnReceive: " + widgetId);
 		new RetrieveUnreadPocketItemsAsyncTask(remoteViews, widgetId, AppWidgetManager.getInstance(context), context.getSharedPreferences(PocketWidgetConfigure.SHARED_PREFERENCES, 0), context.getResources().getString(R.string.pocket_consumer_key_mobile))
 			.execute();
 	    }

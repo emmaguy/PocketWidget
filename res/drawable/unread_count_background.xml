@@ -1,15 +1,80 @@
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <gradient
-        android:angle="90"
-        android:endColor="#EE4055"
-        android:startColor="#D83A4D" />
-    
-    <corners android:radius="4dp" />
-    
-    <stroke
-        android:width="2dip"
-        android:color="#ffffff" />
+     <item>
+        <shape>
+            <padding
+                android:bottom="1dp"
+                android:left="1dp"
+                android:right="1dp"
+                android:top="1dp" />
 
-</shape>
+            <corners android:radius="8dp" />
+
+            <solid android:color="#00ADADAD" />
+        </shape>
+    </item>
+    <item>
+        <shape>
+            <padding
+                android:bottom="1dp"
+                android:left="1dp"
+                android:right="1dp"
+                android:top="1dp" />
+
+            <corners android:radius="8dp" />
+
+            <solid android:color="#10ADADAD" />
+        </shape>
+    </item>
+    <item>
+        <shape>
+            <padding
+                android:bottom="1dp"
+                android:left="1dp"
+                android:right="1dp"
+                android:top="1dp" />
+
+            <corners android:radius="8dp" />
+
+            <solid android:color="#20ADADAD" />
+        </shape>
+    </item>
+    <item>
+        <shape>
+            <padding
+                android:bottom="1dp"
+                android:left="1dp"
+                android:right="1dp"
+                android:top="1dp" />
+
+            <corners android:radius="8dp" />
+
+            <solid android:color="#30ADADAD" />
+        </shape>
+    </item> 
+    <item>
+        <shape>
+            <padding
+                android:bottom="1dp"
+                android:left="1dp"
+                android:right="1dp"
+                android:top="1dp" />
+
+            <corners android:radius="8dp" />
+
+            <solid android:color="#50ADADAD" />
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#8b6df7"/>
+
+            <corners android:radius="8dp" />
+
+            <stroke
+                android:width="1dip"
+                android:color="#ffffff" />
+        </shape>
+    </item>
+
+</layer-list>

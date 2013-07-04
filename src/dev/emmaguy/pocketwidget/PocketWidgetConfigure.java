@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.Toast;
@@ -40,12 +41,13 @@ public class PocketWidgetConfigure extends Activity implements View.OnClickListe
 	}
 	
 	if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
+	    Log.i("PocketWidgetConfigure", "Invalid appWidgetId found");
             finish();
         }
 	
 	String accessToken = sharedPreferences.getString("access_token", null);
 	if(accessToken != null && accessToken.length() > 0) {
-	    Toast.makeText(getApplicationContext(), accessToken, Toast.LENGTH_SHORT).show();
+	    Log.i("PocketWidgetConfigure", "Token found in shared prefs");
 	    refreshAndFinishActivity();
 	    return;
 	}
