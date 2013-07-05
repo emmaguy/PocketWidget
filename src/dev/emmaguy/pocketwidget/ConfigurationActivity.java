@@ -1,5 +1,7 @@
 package dev.emmaguy.pocketwidget;
 
+import dev.emmaguy.pocketwidget.RetrieveAccessTokenAsyncTask.OnAccessTokenRetrievedListener;
+import dev.emmaguy.pocketwidget.RetrieveRequestTokenAsyncTask.OnUrlRetrievedListener;
 import android.app.Activity;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
@@ -10,7 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-public class PocketWidgetConfigure extends Activity implements View.OnClickListener, OnUrlRetrievedListener,
+public class ConfigurationActivity extends Activity implements View.OnClickListener, OnUrlRetrievedListener,
 	OnAccessTokenRetrievedListener {
 
     public static final String SHARED_PREFERENCES = "pocketWidget";
@@ -59,7 +61,7 @@ public class PocketWidgetConfigure extends Activity implements View.OnClickListe
 	if (view.getId() == R.id.login_button) {
 	    findViewById(R.id.login_button).setVisibility(View.GONE);
 	    Toast.makeText(getApplicationContext(), "Requesting token from Pocket", Toast.LENGTH_SHORT).show();
-	    new RetrievePocketRequestTokenAsyncTask(getResources().getString(R.string.pocket_consumer_key_mobile),
+	    new RetrieveRequestTokenAsyncTask(getResources().getString(R.string.pocket_consumer_key_mobile),
 		    (OnUrlRetrievedListener) this, sharedPreferences).execute();
 	}
     }
@@ -82,7 +84,7 @@ public class PocketWidgetConfigure extends Activity implements View.OnClickListe
 	Uri uri = this.getIntent().getData();
 	if (uri != null && uri.toString().startsWith("pocketwidget")) {
 	    Toast.makeText(getApplicationContext(), "Verifying access to Pocket", Toast.LENGTH_SHORT).show();
-	    new RetrievePocketAccessTokenAsyncTask(getResources().getString(R.string.pocket_consumer_key_mobile),
+	    new RetrieveAccessTokenAsyncTask(getResources().getString(R.string.pocket_consumer_key_mobile),
 		    (OnAccessTokenRetrievedListener) this, sharedPreferences).execute();
 	}
     }
@@ -100,7 +102,7 @@ public class PocketWidgetConfigure extends Activity implements View.OnClickListe
     }
 
     private void refreshWidget() {
-	new PocketWidgetProvider()
+	new WidgetProvider()
 	  .onUpdate(this,
 	            AppWidgetManager.getInstance(this),
 	            new int[] { appWidgetId }

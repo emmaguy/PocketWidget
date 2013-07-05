@@ -1,5 +1,6 @@
 package dev.emmaguy.pocketwidget;
 
+import dev.emmaguy.pocketwidget.ConfigurationActivity;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -10,13 +11,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.RemoteViews;
 
-public class PocketWidgetProvider extends AppWidgetProvider {
+public class WidgetProvider extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {	
 	for (int appWidgetId : appWidgetIds) {
 	    RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
 
-	    Intent clickIntent = new Intent(context, PocketWidgetProvider.class);
+	    Intent clickIntent = new Intent(context, WidgetProvider.class);
 	    clickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
 
 	    PendingIntent pendingIntent = PendingIntent.getBroadcast(context, appWidgetId, clickIntent, 0);
@@ -24,7 +25,7 @@ public class PocketWidgetProvider extends AppWidgetProvider {
 
 	    Log.i("PocketWidgetConfigure", "OnUpdate: " + appWidgetId);
 	    new RetrieveUnreadPocketItemsAsyncTask(views, appWidgetId, AppWidgetManager.getInstance(context),
-		    context.getSharedPreferences(PocketWidgetConfigure.SHARED_PREFERENCES, 0), context.getResources()
+		    context.getSharedPreferences(ConfigurationActivity.SHARED_PREFERENCES, 0), context.getResources()
 			    .getString(R.string.pocket_consumer_key_mobile)).execute();
 	}
 	super.onUpdate(context, appWidgetManager, appWidgetIds);

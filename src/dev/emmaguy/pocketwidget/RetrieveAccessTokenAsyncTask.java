@@ -19,18 +19,22 @@ import android.util.Log;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-public class RetrievePocketAccessTokenAsyncTask extends AsyncTask<Void, Void, Void> {
+public class RetrieveAccessTokenAsyncTask extends AsyncTask<Void, Void, Void> {
 
     private final String consumerKey;
     private final SharedPreferences sharedPreferences;
     private final OnAccessTokenRetrievedListener accessTokenRetrievedListener;
 
-    public RetrievePocketAccessTokenAsyncTask(String consumerKey, OnAccessTokenRetrievedListener listener,
+    public RetrieveAccessTokenAsyncTask(String consumerKey, OnAccessTokenRetrievedListener listener,
 	    SharedPreferences sharedPreferences) {
 	this.consumerKey = consumerKey;
 	this.sharedPreferences = sharedPreferences;
 	this.accessTokenRetrievedListener = listener;
     }
+    
+    public interface OnAccessTokenRetrievedListener {
+	    void onRetrievedAccessToken();
+	}
 
     @Override
     protected Void doInBackground(Void... params) {

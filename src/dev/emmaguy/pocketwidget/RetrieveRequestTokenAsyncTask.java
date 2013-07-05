@@ -23,7 +23,7 @@ import android.util.Log;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-public class RetrievePocketRequestTokenAsyncTask extends AsyncTask<Void, Void, String> {
+public class RetrieveRequestTokenAsyncTask extends AsyncTask<Void, Void, String> {
 
     private static final String CALLBACK_URL = "pocketwidget://callback";
     
@@ -31,12 +31,16 @@ public class RetrievePocketRequestTokenAsyncTask extends AsyncTask<Void, Void, S
     private final SharedPreferences sharedPreferences;
     private final OnUrlRetrievedListener retreivedUrlListener;
 
-    public RetrievePocketRequestTokenAsyncTask(String consumerKey, OnUrlRetrievedListener onUrlRetrievedListener, SharedPreferences sharedPreferences) {
+    public RetrieveRequestTokenAsyncTask(String consumerKey, OnUrlRetrievedListener onUrlRetrievedListener, SharedPreferences sharedPreferences) {
 	this.consumerKey = consumerKey;
 	this.retreivedUrlListener = onUrlRetrievedListener;
 	this.sharedPreferences = sharedPreferences;
     }
 
+    public interface OnUrlRetrievedListener {
+	    void onRetrievedUrl(String str);
+    }
+    
     @Override
     protected String doInBackground(Void... params) {
 
