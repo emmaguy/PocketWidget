@@ -36,6 +36,10 @@ public class RetrieveRequestTokenAsyncTask extends AsyncTask<Void, Void, String>
 	this.retreivedUrlListener = onUrlRetrievedListener;
 	this.sharedPreferences = sharedPreferences;
     }
+    
+    public interface OnUrlRetrievedListener{
+	void onRetrievedUrl(String str);	
+    }
 
     public interface OnUrlRetrievedListener {
 	    void onRetrievedUrl(String str);
