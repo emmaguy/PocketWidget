@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Unread Items Widget</string>
-    <string name="widget_description">Unofficial Pocket Widget</string>
+    <string name="app_name">Unread Articles Counter</string>
+    <string name="widget_description">Displays the count of your unread articles in Pocket</string>
     <string name="login">Login with Pocket</string>
 </resources>

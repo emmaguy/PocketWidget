@@ -8,4 +8,5 @@
     android:initialKeyguardLayout="@layout/widget_layout" 
     android:resizeMode="none"
     android:widgetCategory="home_screen|keyguard"
-    android:configure="dev.emmaguy.pocketwidget.ConfigurationActivity" />
+    android:configure="dev.emmaguy.pocketwidget.UnreadArticlesConfigurationActivity" />
+

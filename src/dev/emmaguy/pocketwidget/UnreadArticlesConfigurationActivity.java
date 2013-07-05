@@ -12,7 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-public class ConfigurationActivity extends Activity implements View.OnClickListener, OnUrlRetrievedListener,
+public class UnreadArticlesConfigurationActivity extends Activity implements View.OnClickListener, OnUrlRetrievedListener,
 	OnAccessTokenRetrievedListener {
 
     public static final String SHARED_PREFERENCES = "pocketWidget";
@@ -27,7 +27,7 @@ public class ConfigurationActivity extends Activity implements View.OnClickListe
 	setContentView(R.layout.activity_configure);
 
 	sharedPreferences = getSharedPreferences(SHARED_PREFERENCES, 0);
-
+	
 	Intent intent = getIntent();
 	Bundle extras = intent.getExtras();
 

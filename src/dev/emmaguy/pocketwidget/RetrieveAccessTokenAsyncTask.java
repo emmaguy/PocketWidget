@@ -35,7 +35,7 @@ public class RetrieveAccessTokenAsyncTask extends AsyncTask<Void, Void, Void> {
     public interface OnAccessTokenRetrievedListener {
 	    void onRetrievedAccessToken();
 	}
-
+    
     @Override
     protected Void doInBackground(Void... params) {
 

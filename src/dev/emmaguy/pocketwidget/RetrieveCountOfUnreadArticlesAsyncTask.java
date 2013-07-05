@@ -12,42 +12,29 @@ import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
-import android.appwidget.AppWidgetManager;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.view.View;
-import android.widget.RemoteViews;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-public class RetrieveUnreadPocketItemsAsyncTask extends AsyncTask<Void, Void, Integer> {
+public class RetrieveCountOfUnreadArticlesAsyncTask extends AsyncTask<Void, Void, Integer>{
 
-    private final AppWidgetManager appWidgetManager;
-    private final RemoteViews remoteViews;
-    private final SharedPreferences sharedPreferences;
     private final String consumerKey;
-    private final int widgetId;
+    private final String accessToken;
+    private final UnreadCountRetrievedListener listener;
 
-    public RetrieveUnreadPocketItemsAsyncTask(RemoteViews remoteViews, int widgetId, AppWidgetManager appWidgetManager,
-	    SharedPreferences sharedPreferences, String consumerKey) {
-	this.remoteViews = remoteViews;
-	this.widgetId = widgetId;
-	this.appWidgetManager = appWidgetManager;
-	this.sharedPreferences = sharedPreferences;
+    public RetrieveCountOfUnreadArticlesAsyncTask(String consumerKey, String accessToken, UnreadCountRetrievedListener listener) {
 	this.consumerKey = consumerKey;
+	this.accessToken = accessToken;
+	this.listener = listener;	
     }
 
     @Override
-    protected Integer doInBackground(Void... arg0) {
+    protected Integer doInBackground(Void... params) {
+	Log.i("RetrieveUnreadArticles", "Retrieving...");
 	
-	final String accessToken = sharedPreferences.getString("access_token", null);
-	if(accessToken == null || accessToken.length() <= 0){
-	    return -1;
-	}
-
 	HttpClient client = new DefaultHttpClient();
 	HttpPost post = new HttpPost("https://getpocket.com/v3/get");
 	post.setHeader(HTTP.CONTENT_TYPE, "application/json");
@@ -63,33 +50,32 @@ public class RetrieveUnreadPocketItemsAsyncTask extends AsyncTask<Void, Void, In
 
 	    HttpResponse response = client.execute(post);
 	    String responseBody = EntityUtils.toString(response.getEntity());
-	    
+
 	    final JsonElement parse = new JsonParser().parse(responseBody);
 	    final JsonObject asJsonObject = parse.getAsJsonObject();
 	    final JsonElement jsonElement = asJsonObject.get("list");
 	    final JsonObject listItems = jsonElement.getAsJsonObject();
-	    final int size = listItems.entrySet().size();
+	    int unreadCount = listItems.entrySet().size();
+	    Log.i("RetrieveUnreadArticles", "Returning: " + unreadCount);
 	    
-	    Log.i("RetrieveUnreadItems", "Items retrieved: " + size);
-	    
-	    return size;
+	    return unreadCount;
 	} catch (Exception e) {
-	    Log.e("RetrieveUnreadItems", "Failed to retrieve request token" + e.getMessage());
+	    Log.e("RetrieveUnreadItems", "Failed to get unread items" + e.getMessage());
 
 	    StringWriter sw = new StringWriter();
 	    e.printStackTrace(new PrintWriter(sw));
 	    Log.e("RetrieveUnreadItems", sw.toString());
 	}
-
+	
 	return -1;
     }
-
+    
+    public interface UnreadCountRetrievedListener {
+	void onUnreadCountRetrieved(Integer unreadCount);
+    }
+    
     @Override
     protected void onPostExecute(Integer unreadCount) {
-	if (unreadCount > 0) {
-	    this.remoteViews.setViewVisibility(R.id.unread_count_textview, View.VISIBLE);
-	    this.remoteViews.setTextViewText(R.id.unread_count_textview, unreadCount.toString());
-	    this.appWidgetManager.updateAppWidget(widgetId, remoteViews);
-	}
+	listener.onUnreadCountRetrieved(unreadCount);
     }
 }
