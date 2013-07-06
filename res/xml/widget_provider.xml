@@ -9,4 +9,3 @@
     android:resizeMode="none"
     android:widgetCategory="home_screen|keyguard"
     android:configure="dev.emmaguy.pocketwidget.UnreadArticlesConfigurationActivity" />
-

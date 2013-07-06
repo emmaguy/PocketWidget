@@ -58,7 +58,9 @@ public class UnreadArticlesConfigurationActivity extends Activity implements Vie
 
     @Override
     public void onClick(View view) {
+	Log.i("d", "clicked");
 	if (view.getId() == R.id.login_button) {
+	    Log.i("d", "clicked2");
 	    findViewById(R.id.login_button).setVisibility(View.GONE);
 	    Toast.makeText(getApplicationContext(), "Requesting token from Pocket", Toast.LENGTH_SHORT).show();
 	    new RetrieveRequestTokenAsyncTask(getResources().getString(R.string.pocket_consumer_key_mobile),
