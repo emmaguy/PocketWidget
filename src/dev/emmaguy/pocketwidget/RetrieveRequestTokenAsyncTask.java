@@ -16,40 +16,44 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-public class RetrieveRequestTokenAsyncTask extends AsyncTask<Void, Void, String> {
+public class RetrieveRequestTokenAsyncTask extends ProgressAsyncTask<Void, Void, String> {
 
     private static final String CALLBACK_URL = "pocketwidget://callback";
-    
+
     private final String consumerKey;
     private final SharedPreferences sharedPreferences;
     private final OnUrlRetrievedListener retreivedUrlListener;
 
-    public RetrieveRequestTokenAsyncTask(String consumerKey, OnUrlRetrievedListener onUrlRetrievedListener, SharedPreferences sharedPreferences) {
+    public RetrieveRequestTokenAsyncTask(String consumerKey, OnUrlRetrievedListener onUrlRetrievedListener,
+	    SharedPreferences sharedPreferences, Context c, String dialogMessage) {
+	super(c, dialogMessage);
+
 	this.consumerKey = consumerKey;
 	this.retreivedUrlListener = onUrlRetrievedListener;
 	this.sharedPreferences = sharedPreferences;
     }
-    
-    public interface OnUrlRetrievedListener{
-	void onRetrievedUrl(String str);	
+
+    public interface OnUrlRetrievedListener {
+	void onRetrievedUrl(String str);
     }
-    
+
     @Override
     protected String doInBackground(Void... params) {
 
 	try {
-	    
+
 	    String token = getRequestToken();
 	    sharedPreferences.edit().putString("code", token).commit();
-	    return String.format("https://getpocket.com/auth/authorize?request_token=%s&redirect_uri=%s", token, CALLBACK_URL);
-	    
+	    return String.format("https://getpocket.com/auth/authorize?request_token=%s&redirect_uri=%s", token,
+		    CALLBACK_URL);
+
 	} catch (Exception e) {
 	    Log.e("RetrieveRequestToken", "Failed to retrieve request token" + e.getMessage());
 
@@ -61,12 +65,13 @@ public class RetrieveRequestTokenAsyncTask extends AsyncTask<Void, Void, String>
 	return null;
     }
 
-    private String getRequestToken() throws UnsupportedEncodingException, IOException, ClientProtocolException, JSONException {
+    private String getRequestToken() throws UnsupportedEncodingException, IOException, ClientProtocolException,
+	    JSONException {
 	HttpClient client = new DefaultHttpClient();
 	HttpPost post = new HttpPost("https://getpocket.com/v3/oauth/request");
 	post.setHeader(HTTP.CONTENT_TYPE, "application/json");
 	post.setHeader("X-Accept", "application/json");
-	
+
 	JSONObject holder = new JSONObject();
 	holder.put("consumer_key", consumerKey);
 	holder.put("redirect_uri", CALLBACK_URL);
@@ -81,7 +86,8 @@ public class RetrieveRequestTokenAsyncTask extends AsyncTask<Void, Void, String>
 
     @Override
     protected void onPostExecute(String str) {
-	if(str != null && str.length() > 0 ) {
+	super.onPostExecute(str);
+	if (str != null && str.length() > 0) {
 	    retreivedUrlListener.onRetrievedUrl(str);
 	}
     }

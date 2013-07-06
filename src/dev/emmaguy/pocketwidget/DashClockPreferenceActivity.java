@@ -6,13 +6,10 @@ import java.util.List;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.IntentFilter.AuthorityEntry;
 import android.content.res.Resources;
-import android.media.MediaPlayer.OnBufferingUpdateListener;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,7 +17,6 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.util.Log;
 import android.widget.Toast;
@@ -176,9 +172,8 @@ public class DashClockPreferenceActivity extends PreferenceActivity implements O
     private static void retrieveAccessToken(Activity activity) {
 	Uri uri = activity.getIntent().getData();
 	if (uri != null && uri.toString().startsWith("pocketwidget") && !isSignedIn()) {
-	    Toast.makeText(activity, "Verifying access to Pocket", Toast.LENGTH_LONG).show();
 	    new RetrieveAccessTokenAsyncTask(activity.getResources().getString(R.string.pocket_consumer_key_mobile),
-		    (OnAccessTokenRetrievedListener) activity, prefs).execute();
+		    (OnAccessTokenRetrievedListener) activity, prefs, activity, "Retrieving access token from Pocket").execute();
 	}
     }
 
@@ -200,9 +195,8 @@ public class DashClockPreferenceActivity extends PreferenceActivity implements O
 	    activity.finish();
 	    activity.startActivity(activity.getIntent());
 	} else {
-	    Toast.makeText(activity, "Retrieving request token from Pocket", Toast.LENGTH_LONG).show();
 	    new RetrieveRequestTokenAsyncTask(activity.getResources().getString(R.string.pocket_consumer_key_mobile),
-			(OnUrlRetrievedListener) activity, prefs).execute();
+			(OnUrlRetrievedListener) activity, prefs, activity, "Retrieving request token from Pocket").execute();
 	}
     }
 

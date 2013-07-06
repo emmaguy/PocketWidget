@@ -58,14 +58,14 @@ public class UnreadArticlesConfigurationActivity extends Activity implements Vie
 
     @Override
     public void onClick(View view) {
-	Log.i("d", "clicked");
-	if (view.getId() == R.id.login_button) {
-	    Log.i("d", "clicked2");
-	    findViewById(R.id.login_button).setVisibility(View.GONE);
-	    Toast.makeText(getApplicationContext(), "Requesting token from Pocket", Toast.LENGTH_SHORT).show();
-	    new RetrieveRequestTokenAsyncTask(getResources().getString(R.string.pocket_consumer_key_mobile),
-		    (OnUrlRetrievedListener) this, sharedPreferences).execute();
-	}
+//	Log.i("d", "clicked");
+//	if (view.getId() == R.id.login_button) {
+//	    Log.i("d", "clicked2");
+//	    findViewById(R.id.login_button).setVisibility(View.GONE);
+//	    Toast.makeText(getApplicationContext(), "Requesting token from Pocket", Toast.LENGTH_SHORT).show();
+//	    new RetrieveRequestTokenAsyncTask(getResources().getString(R.string.pocket_consumer_key_mobile),
+//		    (OnUrlRetrievedListener) this, sharedPreferences).execute();
+//	}
     }
 
     @Override
@@ -83,12 +83,12 @@ public class UnreadArticlesConfigurationActivity extends Activity implements Vie
     public void onResume() {
 	super.onResume();
 
-	Uri uri = this.getIntent().getData();
-	if (uri != null && uri.toString().startsWith("pocketwidget")) {
-	    Toast.makeText(getApplicationContext(), "Verifying access to Pocket", Toast.LENGTH_SHORT).show();
-	    new RetrieveAccessTokenAsyncTask(getResources().getString(R.string.pocket_consumer_key_mobile),
-		    (OnAccessTokenRetrievedListener) this, sharedPreferences).execute();
-	}
+//	Uri uri = this.getIntent().getData();
+//	if (uri != null && uri.toString().startsWith("pocketwidget")) {
+//	    Toast.makeText(getApplicationContext(), "Verifying access to Pocket", Toast.LENGTH_SHORT).show();
+//	    new RetrieveAccessTokenAsyncTask(getResources().getString(R.string.pocket_consumer_key_mobile),
+//		    (OnAccessTokenRetrievedListener) this, sharedPreferences).execute();
+//	}
     }
 
     @Override

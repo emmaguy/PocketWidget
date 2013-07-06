@@ -12,22 +12,23 @@ import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
+import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-public class RetrieveAccessTokenAsyncTask extends AsyncTask<Void, Void, Void> {
+public class RetrieveAccessTokenAsyncTask extends ProgressAsyncTask<Void, Void, Void> {
 
     private final String consumerKey;
     private final SharedPreferences sharedPreferences;
     private final OnAccessTokenRetrievedListener accessTokenRetrievedListener;
 
     public RetrieveAccessTokenAsyncTask(String consumerKey, OnAccessTokenRetrievedListener listener,
-	    SharedPreferences sharedPreferences) {
+	    SharedPreferences sharedPreferences, Context c, String dialogMessage) {
+	super(c, dialogMessage);
+	
 	this.consumerKey = consumerKey;
 	this.sharedPreferences = sharedPreferences;
 	this.accessTokenRetrievedListener = listener;
@@ -82,6 +83,7 @@ public class RetrieveAccessTokenAsyncTask extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected void onPostExecute(Void x) {
+	super.onPostExecute(x);
 	accessTokenRetrievedListener.onRetrievedAccessToken();
     }
 }
