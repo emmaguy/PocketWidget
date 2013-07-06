@@ -3,7 +3,6 @@ package dev.emmaguy.pocketwidget;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.util.Log;
 
 import com.google.android.apps.dashclock.api.DashClockExtension;
 import com.google.android.apps.dashclock.api.ExtensionData;
@@ -14,14 +13,13 @@ public class UnreadArticlesDashClockExtension extends DashClockExtension impleme
 
     protected void onUpdateData(int reason) {
 	final SharedPreferences sharedPreferences = getSharedPreferences(
-		UnreadArticlesConfigurationActivity.SHARED_PREFERENCES, 0);
+		UnreadArticlesPreferenceActivity.SHARED_PREFERENCES, 0);
 	final String accessToken = sharedPreferences.getString("access_token", null);
 
 	if (accessToken == null || accessToken.length() <= 0) {
 	    return;
 	}
 
-	Log.i("UnreadArticlesDashClockExtension", "onUpdateData");
 	new RetrieveCountOfUnreadArticlesAsyncTask(getResources().getString(R.string.pocket_consumer_key_mobile),
 		accessToken, this).execute();
 

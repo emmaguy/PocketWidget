@@ -16,9 +16,9 @@ public class RetrieveUnreadArticlesCountService extends Service implements Unrea
 
     @Override
     public void onStart(Intent intent, int startId) {
-	Log.i("RetrieveUnreadItems", "onStart");
+	
 	final SharedPreferences sharedPreferences = getSharedPreferences(
-		UnreadArticlesConfigurationActivity.SHARED_PREFERENCES, 0);
+		UnreadArticlesPreferenceActivity.SHARED_PREFERENCES, 0);
 	final String accessToken = sharedPreferences.getString("access_token", null);
 
 	if (accessToken == null || accessToken.length() <= 0) {
@@ -31,9 +31,9 @@ public class RetrieveUnreadArticlesCountService extends Service implements Unrea
 
     @Override
     public void onUnreadCountRetrieved(Integer unreadCount) {
-	Log.i("RetrieveUnreadItems", "Items retrieved: " + unreadCount);
+	
 	final SharedPreferences sharedPreferences = getSharedPreferences(
-		UnreadArticlesConfigurationActivity.SHARED_PREFERENCES, 0);
+		UnreadArticlesPreferenceActivity.SHARED_PREFERENCES, 0);
 
 	if (unreadCount >= 0) {
 	    sharedPreferences.edit().putInt("unread_count", unreadCount).commit();

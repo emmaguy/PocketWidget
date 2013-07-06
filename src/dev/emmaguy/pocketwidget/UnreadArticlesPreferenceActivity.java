@@ -6,6 +6,7 @@ import java.util.List;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -23,13 +24,17 @@ import android.widget.Toast;
 import dev.emmaguy.pocketwidget.RetrieveAccessTokenAsyncTask.OnAccessTokenRetrievedListener;
 import dev.emmaguy.pocketwidget.RetrieveRequestTokenAsyncTask.OnUrlRetrievedListener;
 
-public class DashClockPreferenceActivity extends PreferenceActivity implements OnUrlRetrievedListener,
+public class UnreadArticlesPreferenceActivity extends PreferenceActivity implements OnUrlRetrievedListener,
 	OnPreferenceClickListener, OnAccessTokenRetrievedListener {
+
+    public static final String SHARED_PREFERENCES = "pocketwidget";
+    
     protected Method loadHeaders = null;
     protected Method hasHeaders = null;
-    
+
     private static List<Header> headers;
     private static SharedPreferences prefs;
+    private int appWidgetId;
 
     /**
      * Checks to see if using new v11+ way of handling PrefsFragments.
@@ -54,7 +59,7 @@ public class DashClockPreferenceActivity extends PreferenceActivity implements O
 	try {
 	    loadHeaders = getClass().getMethod("loadHeadersFromResource", int.class, List.class);
 	    hasHeaders = getClass().getMethod("hasHeaders");
-	    prefs = getSharedPreferences(UnreadArticlesConfigurationActivity.SHARED_PREFERENCES, 0);
+	    prefs = getSharedPreferences(SHARED_PREFERENCES, 0);
 	} catch (NoSuchMethodException e) {
 	}
 
@@ -66,10 +71,35 @@ public class DashClockPreferenceActivity extends PreferenceActivity implements O
 	    PreferenceScreen screen = (PreferenceScreen) findPreference("authentication_preferencescreen");
 	    screen.setTitle(getLoginPreferenceScreenTitle());
 	    screen.setSummary(getLoginPreferenceScreenSummary());
-	    screen.setOnPreferenceClickListener(this); 
+	    screen.setOnPreferenceClickListener(this);
 	}
-	
+
 	updateAccountHeader();
+
+	Intent intent = getIntent();
+	Bundle extras = intent.getExtras();
+
+	if (extras != null) {
+	    appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+
+	    if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
+		prefs.edit().putInt("appWidgetId", appWidgetId).commit();
+	    } else {
+		appWidgetId = prefs.getInt("appWidgetId", AppWidgetManager.INVALID_APPWIDGET_ID);
+	    }
+	}
+
+	if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
+	    Log.i("PocketWidgetConfigure", "Invalid appWidgetId found");
+	    finish();
+	}
+
+	String accessToken = prefs.getString("access_token", null);
+	if (accessToken != null && accessToken.length() > 0) {
+	    Log.i("PocketWidgetConfigure", "Token found in shared prefs");
+	    refreshWidgetAndShowHomeScreen(this, appWidgetId);
+	    return;
+	}
     }
 
     @Override
@@ -82,10 +112,10 @@ public class DashClockPreferenceActivity extends PreferenceActivity implements O
 	} catch (InvocationTargetException e) {
 	}
     }
-    
+
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     static public class PrefsFragment extends PreferenceFragment implements OnUrlRetrievedListener,
-	    OnPreferenceClickListener, OnAccessTokenRetrievedListener{
+	    OnPreferenceClickListener, OnAccessTokenRetrievedListener {
 	@Override
 	public void onCreate(Bundle aSavedState) {
 	    super.onCreate(aSavedState);
@@ -100,7 +130,7 @@ public class DashClockPreferenceActivity extends PreferenceActivity implements O
 	    authPreferencesScreen.setTitle(getLoginPreferenceScreenTitle());
 	    authPreferencesScreen.setSummary(getLoginPreferenceScreenSummary());
 	    authPreferencesScreen.setOnPreferenceClickListener(this);
-	    
+
 	    updateAccountHeader();
 	}
 
@@ -124,7 +154,7 @@ public class DashClockPreferenceActivity extends PreferenceActivity implements O
 
 	@Override
 	public void onRetrievedAccessToken() {
-	    showHomeScreenAndFinish(getActivity());   
+	    showHomeScreenAndFinish(getActivity());
 	}
     }
 
@@ -134,7 +164,7 @@ public class DashClockPreferenceActivity extends PreferenceActivity implements O
 	updateAccountHeader();
 	return true;
     }
-    
+
     @Override
     public void onRetrievedUrl(String url) {
 	redirectToBrowser(url, this);
@@ -146,11 +176,9 @@ public class DashClockPreferenceActivity extends PreferenceActivity implements O
 
 	retrieveAccessToken(this);
     }
-    
+
     @Override
     public void onRetrievedAccessToken() {
-	//refreshWidget();
-	
 	updateAccountHeader();
 
 	showHomeScreenAndFinish(this);
@@ -158,10 +186,10 @@ public class DashClockPreferenceActivity extends PreferenceActivity implements O
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private static void updateAccountHeader() {
-	if(headers != null && headers.size() > 0){
+	if (headers != null && headers.size() > 0) {
 	    Header account = headers.get(0);
 	    final String username = prefs.getString("username", "");
-	    if(username != null && username.length() > 0){
+	    if (username != null && username.length() > 0) {
 		account.title = "Pocket Account (" + username + ")";
 	    } else {
 		account.title = "Pocket Account";
@@ -173,69 +201,97 @@ public class DashClockPreferenceActivity extends PreferenceActivity implements O
 	Uri uri = activity.getIntent().getData();
 	if (uri != null && uri.toString().startsWith("pocketwidget") && !isSignedIn()) {
 	    new RetrieveAccessTokenAsyncTask(activity.getResources().getString(R.string.pocket_consumer_key_mobile),
-		    (OnAccessTokenRetrievedListener) activity, prefs, activity, "Retrieving access token from Pocket").execute();
+		    (OnAccessTokenRetrievedListener) activity, prefs, activity, "Retrieving access token from Pocket")
+		    .execute();
 	}
     }
 
     private static void redirectToBrowser(String url, final Activity activity) {
-	Toast.makeText(activity, "Redirecting to browser for authentication", Toast.LENGTH_LONG).show();
-	Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-	intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-	activity.setResult(RESULT_OK, intent);
-	activity.finish();
-	activity.startActivity(intent);
+	Toast.makeText(activity, "Redirecting to browser to authenticate with Pocket", Toast.LENGTH_LONG).show();
+//	Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+//	intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//	
+	final int widgetId = prefs.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+//	if (widgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
+//	    
+//	    Log.i("x", "putting extra: " + widgetId);
+//	    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
+//	    activity.setResult(RESULT_OK, intent);
+//	}
+//	
+//	activity.finish();
+//	activity.startActivity(intent);
+	
+	Intent resultValue = new Intent();
+        resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
+        activity.setResult(RESULT_OK, resultValue);
+        
+        activity.startActivity(resultValue);
+        activity.finish();
     }
 
     private static void beginSignInProcessOrSignOut(Preference preference, final Activity activity) {
-	if(isSignedIn()){
+	if (isSignedIn()) {
 	    prefs.edit().clear().commit();
 	    Toast.makeText(activity, "Account cleared", Toast.LENGTH_LONG).show();
-	    
+
 	    // refresh this activity
 	    activity.finish();
 	    activity.startActivity(activity.getIntent());
 	} else {
 	    new RetrieveRequestTokenAsyncTask(activity.getResources().getString(R.string.pocket_consumer_key_mobile),
-			(OnUrlRetrievedListener) activity, prefs, activity, "Retrieving request token from Pocket").execute();
+		    (OnUrlRetrievedListener) activity, prefs, activity, "Retrieving request token from Pocket")
+		    .execute();
 	}
     }
 
     private static String getLoginPreferenceScreenTitle() {
-	if(isSignedIn()){
+	if (isSignedIn()) {
 	    final String username = prefs.getString("username", "");
 	    return "Sign out " + username;
 	}
-	
+
 	return "Sign in with Pocket";
     }
-    
+
     private static String getLoginPreferenceScreenSummary() {
-	if(isSignedIn()){
+	if (isSignedIn()) {
 	    return "Tap to sign out of your Pocket account";
 	}
-	
+
 	return "Tap to sign in to your Pocket account";
     }
-    
+
     private static boolean isSignedIn() {
 	String accessToken = prefs.getString("access_token", null);
-	Log.i("token", "otken: " +accessToken);
 	return accessToken != null && accessToken.length() > 0;
     }
-    
+
     private static void showHomeScreenAndFinish(final Activity activity) {
-	Toast.makeText(activity, "Successfully logged in as: " + prefs.getString("username", ""), Toast.LENGTH_LONG).show();
-	
+	Toast.makeText(activity, "Successfully logged in as: " + prefs.getString("username", ""), Toast.LENGTH_LONG)
+		.show();
+
+	int appWidgetId = prefs.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+	if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
+	    Log.i("appwidget", "id: " + appWidgetId);
+	    refreshWidgetAndShowHomeScreen(activity, appWidgetId);
+	} else {
+	    Log.i("appwidget", "finish");
+	    activity.finish();
+	    activity.startActivity(activity.getIntent());
+	}
+    }
+
+    private static void refreshWidgetAndShowHomeScreen(final Activity activity, int appWidgetId) {
+	new UnreadArticlesWidgetProvider().onUpdate(activity, AppWidgetManager.getInstance(activity),
+		new int[] { appWidgetId });
+
+	Intent showHome = new Intent(Intent.ACTION_MAIN);
+	showHome.addCategory(Intent.CATEGORY_HOME);
+	showHome.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+
+	activity.setResult(RESULT_OK, showHome);
 	activity.finish();
-	activity.startActivity(activity.getIntent());
-	    
-//	Log.i("PocketWidgetConfigure", "Refresh and finish: ");
-//	
-//	Intent showHome = new Intent(Intent.ACTION_MAIN);
-//	showHome.addCategory(Intent.CATEGORY_HOME);
-	//showHome.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-//	activity.setResult(RESULT_OK, showHome);
-//	activity.finish();
-//	activity.startActivity(showHome);
+	activity.startActivity(showHome);
     }
 }

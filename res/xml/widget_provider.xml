@@ -8,4 +8,4 @@
     android:initialKeyguardLayout="@layout/widget_layout" 
     android:resizeMode="none"
     android:widgetCategory="home_screen|keyguard"
-    android:configure="dev.emmaguy.pocketwidget.DashClockPreferenceActivity" />
+    android:configure="dev.emmaguy.pocketwidget.UnreadArticlesPreferenceActivity" />
