@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Unread Articles Counter</string>
+    <string name="app_name">Unread Articles Count</string>
     <string name="widget_description">Displays the count of your unread articles in Pocket</string>
-    <string name="login">Login with Pocket</string>
+    <string name="settings_label">Unread Articles Settings</string>
 </resources>

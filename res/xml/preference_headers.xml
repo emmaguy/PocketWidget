@@ -1,0 +1,13 @@
+<preference-headers xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <header
+        android:fragment="dev.emmaguy.pocketwidget.DashClockPreferenceActivity$PrefsFragment"
+        android:icon="@android:drawable/ic_menu_agenda"
+        android:title="Pocket Account"
+        android:key="pocket_settings_header">
+        <extra
+            android:name="pref-resource"
+            android:value="preference_login" />
+    </header>
+    
+</preference-headers>
