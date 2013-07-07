@@ -2,7 +2,7 @@
 
     <header
         android:fragment="dev.emmaguy.pocketwidget.UnreadArticlesPreferenceActivity$PrefsFragment"
-        android:icon="@android:drawable/ic_menu_agenda"
+        android:icon="@android:drawable/ic_menu_edit"
         android:title="Pocket Account"
         android:key="pocket_settings_header">
         <extra

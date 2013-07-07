@@ -14,6 +14,7 @@ import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
@@ -27,8 +28,8 @@ import dev.emmaguy.pocketwidget.RetrieveRequestTokenAsyncTask.OnUrlRetrievedList
 public class UnreadArticlesPreferenceActivity extends PreferenceActivity implements OnUrlRetrievedListener,
 	OnPreferenceClickListener, OnAccessTokenRetrievedListener {
 
-    public static final String SHARED_PREFERENCES = "pocketwidget";
-    
+    public static final String SHARED_PREFERENCES = "pocketWidget12";
+
     protected Method loadHeaders = null;
     protected Method hasHeaders = null;
 
@@ -93,7 +94,7 @@ public class UnreadArticlesPreferenceActivity extends PreferenceActivity impleme
 	    Log.i("PocketWidgetConfigure", "Invalid appWidgetId found");
 	    finish();
 	}
-
+	
 	String accessToken = prefs.getString("access_token", null);
 	if (accessToken != null && accessToken.length() > 0) {
 	    Log.i("PocketWidgetConfigure", "Token found in shared prefs");
@@ -114,8 +115,7 @@ public class UnreadArticlesPreferenceActivity extends PreferenceActivity impleme
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    static public class PrefsFragment extends PreferenceFragment implements OnUrlRetrievedListener,
-	    OnPreferenceClickListener, OnAccessTokenRetrievedListener {
+    static public class PrefsFragment extends PreferenceFragment implements OnPreferenceClickListener {
 	@Override
 	public void onCreate(Bundle aSavedState) {
 	    super.onCreate(aSavedState);
@@ -144,17 +144,8 @@ public class UnreadArticlesPreferenceActivity extends PreferenceActivity impleme
 	@Override
 	public boolean onPreferenceClick(Preference preference) {
 	    beginSignInProcessOrSignOut(preference, getActivity());
+	    updateAccountHeader();
 	    return true;
-	}
-
-	@Override
-	public void onRetrievedUrl(String url) {
-	    redirectToBrowser(url, getActivity());
-	}
-
-	@Override
-	public void onRetrievedAccessToken() {
-	    showHomeScreenAndFinish(getActivity());
 	}
     }
 
@@ -167,7 +158,7 @@ public class UnreadArticlesPreferenceActivity extends PreferenceActivity impleme
 
     @Override
     public void onRetrievedUrl(String url) {
-	redirectToBrowser(url, this);
+	 redirectToBrowser(url, this);
     }
 
     @Override
@@ -180,7 +171,6 @@ public class UnreadArticlesPreferenceActivity extends PreferenceActivity impleme
     @Override
     public void onRetrievedAccessToken() {
 	updateAccountHeader();
-
 	showHomeScreenAndFinish(this);
     }
 
@@ -208,26 +198,10 @@ public class UnreadArticlesPreferenceActivity extends PreferenceActivity impleme
 
     private static void redirectToBrowser(String url, final Activity activity) {
 	Toast.makeText(activity, "Redirecting to browser to authenticate with Pocket", Toast.LENGTH_LONG).show();
-//	Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-//	intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//	
-	final int widgetId = prefs.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
-//	if (widgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
-//	    
-//	    Log.i("x", "putting extra: " + widgetId);
-//	    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
-//	    activity.setResult(RESULT_OK, intent);
-//	}
-//	
-//	activity.finish();
-//	activity.startActivity(intent);
-	
-	Intent resultValue = new Intent();
-        resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
-        activity.setResult(RESULT_OK, resultValue);
-        
-        activity.startActivity(resultValue);
-        activity.finish();
+	Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+	intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+	activity.finish();
+	activity.startActivity(intent);
     }
 
     private static void beginSignInProcessOrSignOut(Preference preference, final Activity activity) {
@@ -283,8 +257,9 @@ public class UnreadArticlesPreferenceActivity extends PreferenceActivity impleme
     }
 
     private static void refreshWidgetAndShowHomeScreen(final Activity activity, int appWidgetId) {
-	new UnreadArticlesWidgetProvider().onUpdate(activity, AppWidgetManager.getInstance(activity),
-		new int[] { appWidgetId });
+	// new UnreadArticlesWidgetProvider().onUpdate(activity,
+	// AppWidgetManager.getInstance(activity),
+	// new int[] { appWidgetId });
 
 	Intent showHome = new Intent(Intent.ACTION_MAIN);
 	showHome.addCategory(Intent.CATEGORY_HOME);
