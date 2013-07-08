@@ -31,7 +31,6 @@ public class UnreadArticlesPreferenceActivity extends PreferenceActivity impleme
     protected Method loadHeaders = null;
     protected Method hasHeaders = null;
 
-    private static boolean isInitialised = false;
     private static List<Header> headers;
     private static SharedPreferences prefs;
     private int appWidgetId;
@@ -77,7 +76,7 @@ public class UnreadArticlesPreferenceActivity extends PreferenceActivity impleme
 	updateAccountHeader();
 
 	Bundle extras = getIntent().getExtras();
-	
+
 	if (extras != null) {
 	    appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
 
@@ -86,15 +85,16 @@ public class UnreadArticlesPreferenceActivity extends PreferenceActivity impleme
 	    } else {
 		appWidgetId = prefs.getInt("appWidgetId", AppWidgetManager.INVALID_APPWIDGET_ID);
 	    }
-	}
 
-	if (!isInitialised) {
-	    isInitialised = true;
-	    final Intent intent2 = getIntent();
-	    intent2.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-	    setResult(RESULT_OK, intent2);
-	    finish();
-	    startActivity(intent2);
+	    if (!prefs.getBoolean("isInitialised" + appWidgetId, false)) {
+		prefs.edit().putBoolean("isInitialised" + appWidgetId, true).commit();
+
+		final Intent intent2 = getIntent();
+		intent2.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+		setResult(RESULT_OK, intent2);
+		finish();
+		startActivity(intent2);
+	    }
 	}
 
 	String accessToken = prefs.getString("access_token", null);
