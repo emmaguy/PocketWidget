@@ -19,7 +19,6 @@ import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
-import android.util.Log;
 import android.widget.Toast;
 import dev.emmaguy.pocketwidget.RetrieveAccessTokenAsyncTask.OnAccessTokenRetrievedListener;
 import dev.emmaguy.pocketwidget.RetrieveRequestTokenAsyncTask.OnUrlRetrievedListener;
@@ -62,7 +61,7 @@ public class UnreadArticlesPreferenceActivity extends PreferenceActivity impleme
 	    hasHeaders = getClass().getMethod("hasHeaders");
 	} catch (NoSuchMethodException e) {
 	}
-	
+
 	super.onCreate(aSavedState);
 	prefs = getSharedPreferences(SHARED_PREFERENCES, 0);
 
@@ -78,7 +77,7 @@ public class UnreadArticlesPreferenceActivity extends PreferenceActivity impleme
 	updateAccountHeader();
 
 	Bundle extras = getIntent().getExtras();
-
+	
 	if (extras != null) {
 	    appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
 
@@ -89,25 +88,19 @@ public class UnreadArticlesPreferenceActivity extends PreferenceActivity impleme
 	    }
 	}
 
-	if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
-	    Log.e("UnreadArticlesWidget", "Invalid appWidgetId found");
+	if (!isInitialised) {
+	    isInitialised = true;
+	    final Intent intent2 = getIntent();
+	    intent2.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+	    setResult(RESULT_OK, intent2);
 	    finish();
+	    startActivity(intent2);
 	}
 
 	String accessToken = prefs.getString("access_token", null);
 	if (accessToken != null && accessToken.length() > 0) {
 	    refreshWidget(this, appWidgetId);
 	    return;
-	} else {
-	    if (!isInitialised) {
-		isInitialised = true;
-
-		final Intent intent2 = getIntent();
-		intent2.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-		setResult(RESULT_OK, intent2);
-		finish();
-		startActivity(intent2);
-	    }
 	}
     }
 
@@ -182,9 +175,8 @@ public class UnreadArticlesPreferenceActivity extends PreferenceActivity impleme
 	showHomeScreenAndFinish(this);
     }
 
-    
     private static void updateAccountHeader() {
-	if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB){
+	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 	    buildHeader();
 	}
     }
@@ -270,6 +262,7 @@ public class UnreadArticlesPreferenceActivity extends PreferenceActivity impleme
     }
 
     private static void refreshWidget(final Activity activity, int appWidgetId) {
-	new UnreadArticlesWidgetProvider().onUpdate(activity, AppWidgetManager.getInstance(activity), new int[] { appWidgetId });
+	new UnreadArticlesWidgetProvider().onUpdate(activity, AppWidgetManager.getInstance(activity),
+		new int[] { appWidgetId });
     }
 }
