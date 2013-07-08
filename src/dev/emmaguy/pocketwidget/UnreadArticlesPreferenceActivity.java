@@ -14,7 +14,6 @@ import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Looper;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
@@ -28,11 +27,12 @@ import dev.emmaguy.pocketwidget.RetrieveRequestTokenAsyncTask.OnUrlRetrievedList
 public class UnreadArticlesPreferenceActivity extends PreferenceActivity implements OnUrlRetrievedListener,
 	OnPreferenceClickListener, OnAccessTokenRetrievedListener {
 
-    public static final String SHARED_PREFERENCES = "pocketWidget12";
+    public static final String SHARED_PREFERENCES = "pocketWidget";
 
     protected Method loadHeaders = null;
     protected Method hasHeaders = null;
 
+    private static boolean isInitialised = false;
     private static List<Header> headers;
     private static SharedPreferences prefs;
     private int appWidgetId;
@@ -60,11 +60,11 @@ public class UnreadArticlesPreferenceActivity extends PreferenceActivity impleme
 	try {
 	    loadHeaders = getClass().getMethod("loadHeadersFromResource", int.class, List.class);
 	    hasHeaders = getClass().getMethod("hasHeaders");
-	    prefs = getSharedPreferences(SHARED_PREFERENCES, 0);
 	} catch (NoSuchMethodException e) {
 	}
-
+	
 	super.onCreate(aSavedState);
+	prefs = getSharedPreferences(SHARED_PREFERENCES, 0);
 
 	if (!isNewV11Prefs()) {
 	    addPreferencesFromResource(R.xml.preference_login);
@@ -77,8 +77,7 @@ public class UnreadArticlesPreferenceActivity extends PreferenceActivity impleme
 
 	updateAccountHeader();
 
-	Intent intent = getIntent();
-	Bundle extras = intent.getExtras();
+	Bundle extras = getIntent().getExtras();
 
 	if (extras != null) {
 	    appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
@@ -91,15 +90,24 @@ public class UnreadArticlesPreferenceActivity extends PreferenceActivity impleme
 	}
 
 	if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
-	    Log.i("PocketWidgetConfigure", "Invalid appWidgetId found");
+	    Log.e("UnreadArticlesWidget", "Invalid appWidgetId found");
 	    finish();
 	}
-	
+
 	String accessToken = prefs.getString("access_token", null);
 	if (accessToken != null && accessToken.length() > 0) {
-	    Log.i("PocketWidgetConfigure", "Token found in shared prefs");
-	    refreshWidgetAndShowHomeScreen(this, appWidgetId);
+	    refreshWidget(this, appWidgetId);
 	    return;
+	} else {
+	    if (!isInitialised) {
+		isInitialised = true;
+
+		final Intent intent2 = getIntent();
+		intent2.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+		setResult(RESULT_OK, intent2);
+		finish();
+		startActivity(intent2);
+	    }
 	}
     }
 
@@ -158,7 +166,7 @@ public class UnreadArticlesPreferenceActivity extends PreferenceActivity impleme
 
     @Override
     public void onRetrievedUrl(String url) {
-	 redirectToBrowser(url, this);
+	redirectToBrowser(url, this);
     }
 
     @Override
@@ -174,8 +182,15 @@ public class UnreadArticlesPreferenceActivity extends PreferenceActivity impleme
 	showHomeScreenAndFinish(this);
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    
     private static void updateAccountHeader() {
+	if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB){
+	    buildHeader();
+	}
+    }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    private static void buildHeader() {
 	if (headers != null && headers.size() > 0) {
 	    Header account = headers.get(0);
 	    final String username = prefs.getString("username", "");
@@ -247,26 +262,14 @@ public class UnreadArticlesPreferenceActivity extends PreferenceActivity impleme
 
 	int appWidgetId = prefs.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
 	if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
-	    Log.i("appwidget", "id: " + appWidgetId);
-	    refreshWidgetAndShowHomeScreen(activity, appWidgetId);
+	    refreshWidget(activity, appWidgetId);
 	} else {
-	    Log.i("appwidget", "finish");
 	    activity.finish();
 	    activity.startActivity(activity.getIntent());
 	}
     }
 
-    private static void refreshWidgetAndShowHomeScreen(final Activity activity, int appWidgetId) {
-	// new UnreadArticlesWidgetProvider().onUpdate(activity,
-	// AppWidgetManager.getInstance(activity),
-	// new int[] { appWidgetId });
-
-	Intent showHome = new Intent(Intent.ACTION_MAIN);
-	showHome.addCategory(Intent.CATEGORY_HOME);
-	showHome.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-
-	activity.setResult(RESULT_OK, showHome);
-	activity.finish();
-	activity.startActivity(showHome);
+    private static void refreshWidget(final Activity activity, int appWidgetId) {
+	new UnreadArticlesWidgetProvider().onUpdate(activity, AppWidgetManager.getInstance(activity), new int[] { appWidgetId });
     }
 }

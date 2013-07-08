@@ -33,8 +33,6 @@ public class RetrieveCountOfUnreadArticlesAsyncTask extends AsyncTask<Void, Void
 
     @Override
     protected Integer doInBackground(Void... params) {
-	Log.i("RetrieveUnreadArticles", "Retrieving...");
-	
 	HttpClient client = new DefaultHttpClient();
 	HttpPost post = new HttpPost("https://getpocket.com/v3/get");
 	post.setHeader(HTTP.CONTENT_TYPE, "application/json");
@@ -56,15 +54,13 @@ public class RetrieveCountOfUnreadArticlesAsyncTask extends AsyncTask<Void, Void
 	    final JsonElement jsonElement = asJsonObject.get("list");
 	    final JsonObject listItems = jsonElement.getAsJsonObject();
 	    int unreadCount = listItems.entrySet().size();
-	    Log.i("RetrieveUnreadArticles", "Returning: " + unreadCount);
-	    
 	    return unreadCount;
 	} catch (Exception e) {
-	    Log.e("RetrieveUnreadItems", "Failed to get unread items" + e.getMessage());
+	    Log.e("UnreadArticlesWidget", "Failed to get unread items" + e.getMessage());
 
 	    StringWriter sw = new StringWriter();
 	    e.printStackTrace(new PrintWriter(sw));
-	    Log.e("RetrieveUnreadItems", sw.toString());
+	    Log.e("UnreadArticlesWidget", sw.toString());
 	}
 	
 	return -1;

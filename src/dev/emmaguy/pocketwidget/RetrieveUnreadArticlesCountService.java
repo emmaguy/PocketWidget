@@ -1,6 +1,5 @@
 package dev.emmaguy.pocketwidget;
 
-import dev.emmaguy.pocketwidget.RetrieveCountOfUnreadArticlesAsyncTask.UnreadCountRetrievedListener;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.appwidget.AppWidgetManager;
@@ -8,9 +7,9 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
-import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
+import dev.emmaguy.pocketwidget.RetrieveCountOfUnreadArticlesAsyncTask.UnreadCountRetrievedListener;
 
 public class RetrieveUnreadArticlesCountService extends Service implements UnreadCountRetrievedListener {
 
@@ -50,8 +49,6 @@ public class RetrieveUnreadArticlesCountService extends Service implements Unrea
 	int[] allWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
 
 	for (int appWidgetId : allWidgetIds) {
-	    Log.i("UnreadArticlesWidgetProvider", "Updating widget id: " + appWidgetId);
-
 	    Intent clickIntent = new Intent(this, UnreadArticlesWidgetProvider.class);
 	    clickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
 

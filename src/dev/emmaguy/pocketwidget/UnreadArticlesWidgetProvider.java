@@ -12,10 +12,7 @@ public class UnreadArticlesWidgetProvider extends AppWidgetProvider {
     
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-	Log.i("UnreadArticlesWidgetProvider", "OnUpdate");
-
 	Intent intent = new Intent(context.getApplicationContext(), RetrieveUnreadArticlesCountService.class);
-	intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
 	context.startService(intent);
     }
 
@@ -24,8 +21,6 @@ public class UnreadArticlesWidgetProvider extends AppWidgetProvider {
 	if (intent.getAction() == null) {
 	    Bundle extras = intent.getExtras();
 	    if (extras != null) {
-		Log.i("PocketWidgetConfigure", "Opening the Pocket app");
-
 		PackageManager pm = context.getPackageManager();
 		try {
 		    String packageName = "com.ideashower.readitlater.pro";
