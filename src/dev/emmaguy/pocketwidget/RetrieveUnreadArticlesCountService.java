@@ -15,19 +15,19 @@ import android.widget.RemoteViews;
 import dev.emmaguy.pocketwidget.RetrieveCountOfUnreadArticlesAsyncTask.UnreadCountRetrievedListener;
 
 public class RetrieveUnreadArticlesCountService extends Service implements UnreadCountRetrievedListener {
-
+    
     @Override
     public void onStart(Intent intent, int startId) {
-
+	
 	final SharedPreferences sharedPreferences = getSharedPreferences(
 		UnreadArticlesPreferenceActivity.SHARED_PREFERENCES, 0);
-	final String accessToken = sharedPreferences.getString("access_token", null);
+	final String accessToken = sharedPreferences.getString(UnreadArticlesPreferenceActivity.ACCESS_TOKEN, null);
 
 	if (accessToken == null || accessToken.length() <= 0) {
 	    return;
 	}
 
-	boolean syncOnWifiOnly = sharedPreferences.getBoolean("wifi_only", false);
+	boolean syncOnWifiOnly = sharedPreferences.getBoolean(UnreadArticlesPreferenceActivity.WIFI_ONLY, false);
 	ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 	NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
@@ -44,7 +44,7 @@ public class RetrieveUnreadArticlesCountService extends Service implements Unrea
 		UnreadArticlesPreferenceActivity.SHARED_PREFERENCES, 0);
 
 	if (unreadCount >= 0) {
-	    sharedPreferences.edit().putInt("unread_count", unreadCount).commit();
+	    sharedPreferences.edit().putInt(UnreadArticlesPreferenceActivity.UNREAD_COUNT, unreadCount).commit();
 
 	    updateWidget(unreadCount);
 	}

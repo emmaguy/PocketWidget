@@ -43,7 +43,7 @@ public class RetrieveAccessTokenAsyncTask extends ProgressAsyncTask<Void, Void, 
 
 	try {
 
-	    String code = sharedPreferences.getString("code", null);
+	    String code = sharedPreferences.getString(UnreadArticlesPreferenceActivity.CODE, null);
 
 	    if (code == null || code.length() <= 0) {
 		throw new Exception("Code (request token) is empty - reauthorisation is required.");
