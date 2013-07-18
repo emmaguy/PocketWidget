@@ -66,11 +66,14 @@ public class UnreadArticlesPreferenceActivity extends PreferenceActivity impleme
 
 	if (!isNewV11Prefs()) {
 	    addPreferencesFromResource(R.xml.preference_login);
+	    getPreferenceManager().setSharedPreferencesName(SHARED_PREFERENCES);
 
 	    PreferenceScreen screen = (PreferenceScreen) findPreference("authentication_preferencescreen");
-	    screen.setTitle(getLoginPreferenceScreenTitle());
-	    screen.setSummary(getLoginPreferenceScreenSummary());
-	    screen.setOnPreferenceClickListener(this);
+	    if (screen != null) {
+		screen.setTitle(getLoginPreferenceScreenTitle());
+		screen.setSummary(getLoginPreferenceScreenSummary());
+		screen.setOnPreferenceClickListener(this);
+	    }
 	}
 
 	updateAccountHeader();
@@ -120,7 +123,8 @@ public class UnreadArticlesPreferenceActivity extends PreferenceActivity impleme
 	@Override
 	public void onCreate(Bundle aSavedState) {
 	    super.onCreate(aSavedState);
-
+	    getPreferenceManager().setSharedPreferencesName(SHARED_PREFERENCES);
+	    
 	    Context context = getActivity().getApplicationContext();
 	    Resources resources = context.getResources();
 	    String resourcesValue = getArguments().getString("pref-resource");
@@ -128,9 +132,11 @@ public class UnreadArticlesPreferenceActivity extends PreferenceActivity impleme
 	    addPreferencesFromResource(thePrefRes);
 
 	    PreferenceScreen authPreferencesScreen = (PreferenceScreen) findPreference("authentication_preferencescreen");
-	    authPreferencesScreen.setTitle(getLoginPreferenceScreenTitle());
-	    authPreferencesScreen.setSummary(getLoginPreferenceScreenSummary());
-	    authPreferencesScreen.setOnPreferenceClickListener(this);
+	    if (authPreferencesScreen != null) {
+		authPreferencesScreen.setTitle(getLoginPreferenceScreenTitle());
+		authPreferencesScreen.setSummary(getLoginPreferenceScreenSummary());
+		authPreferencesScreen.setOnPreferenceClickListener(this);
+	    }
 
 	    updateAccountHeader();
 	}

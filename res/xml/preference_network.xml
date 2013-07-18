@@ -1,0 +1,9 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:key="preference_network_options" >
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="wifi_only"
+        android:title="Sync on WiFi Only" />
+
+</PreferenceScreen>

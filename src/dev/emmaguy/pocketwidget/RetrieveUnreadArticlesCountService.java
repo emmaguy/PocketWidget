@@ -4,8 +4,11 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.IBinder;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -15,7 +18,7 @@ public class RetrieveUnreadArticlesCountService extends Service implements Unrea
 
     @Override
     public void onStart(Intent intent, int startId) {
-	
+
 	final SharedPreferences sharedPreferences = getSharedPreferences(
 		UnreadArticlesPreferenceActivity.SHARED_PREFERENCES, 0);
 	final String accessToken = sharedPreferences.getString("access_token", null);
@@ -23,14 +26,20 @@ public class RetrieveUnreadArticlesCountService extends Service implements Unrea
 	if (accessToken == null || accessToken.length() <= 0) {
 	    return;
 	}
-	
-	new RetrieveCountOfUnreadArticlesAsyncTask(getResources().getString(R.string.pocket_consumer_key_mobile),
-		accessToken, this).execute();
+
+	boolean syncOnWifiOnly = sharedPreferences.getBoolean("wifi_only", false);
+	ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+	NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+
+	if (mWifi.isConnected() || !syncOnWifiOnly) {
+	    new RetrieveCountOfUnreadArticlesAsyncTask(getResources().getString(R.string.pocket_consumer_key_mobile),
+		    accessToken, this).execute();
+	}
     }
 
     @Override
     public void onUnreadCountRetrieved(Integer unreadCount) {
-	
+
 	final SharedPreferences sharedPreferences = getSharedPreferences(
 		UnreadArticlesPreferenceActivity.SHARED_PREFERENCES, 0);
 

@@ -1,8 +1,11 @@
 package dev.emmaguy.pocketwidget;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 import com.google.android.apps.dashclock.api.DashClockExtension;
 import com.google.android.apps.dashclock.api.ExtensionData;
@@ -20,9 +23,14 @@ public class UnreadArticlesDashClockExtension extends DashClockExtension impleme
 	    return;
 	}
 
-	new RetrieveCountOfUnreadArticlesAsyncTask(getResources().getString(R.string.pocket_consumer_key_mobile),
-		accessToken, this).execute();
+	boolean syncOnWifiOnly = sharedPreferences.getBoolean("wifi_only", false);
+	ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+	NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
+	if (mWifi.isConnected() || !syncOnWifiOnly) {
+	    new RetrieveCountOfUnreadArticlesAsyncTask(getResources().getString(R.string.pocket_consumer_key_mobile),
+		    accessToken, this).execute();
+	}
     }
 
     @Override

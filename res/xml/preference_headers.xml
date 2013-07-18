@@ -9,5 +9,14 @@
             android:name="pref-resource"
             android:value="preference_login" />
     </header>
+     <header
+        android:fragment="dev.emmaguy.pocketwidget.UnreadArticlesPreferenceActivity$PrefsFragment"
+        android:icon="@android:drawable/ic_menu_preferences"
+        android:title="Network"
+        android:key="network_header">
+        <extra
+            android:name="pref-resource"
+            android:value="preference_network" />
+    </header>
     
 </preference-headers>

@@ -24,7 +24,7 @@ public class RetrieveCountOfUnreadArticlesAsyncTask extends AsyncTask<Void, Void
     private final String consumerKey;
     private final String accessToken;
     private final UnreadCountRetrievedListener listener;
-
+    
     public RetrieveCountOfUnreadArticlesAsyncTask(String consumerKey, String accessToken, UnreadCountRetrievedListener listener) {
 	this.consumerKey = consumerKey;
 	this.accessToken = accessToken;
@@ -32,7 +32,7 @@ public class RetrieveCountOfUnreadArticlesAsyncTask extends AsyncTask<Void, Void
     }
 
     @Override
-    protected Integer doInBackground(Void... params) {
+    protected Integer doInBackground(Void... params) {	
 	HttpClient client = new DefaultHttpClient();
 	HttpPost post = new HttpPost("https://getpocket.com/v3/get");
 	post.setHeader(HTTP.CONTENT_TYPE, "application/json");
