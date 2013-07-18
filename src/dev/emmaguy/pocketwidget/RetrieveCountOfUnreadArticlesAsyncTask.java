@@ -1,8 +1,5 @@
 package dev.emmaguy.pocketwidget;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -33,6 +30,7 @@ public class RetrieveCountOfUnreadArticlesAsyncTask extends AsyncTask<Void, Void
 
     @Override
     protected Integer doInBackground(Void... params) {	
+	Log.i("xx", "refreshing");
 	HttpClient client = new DefaultHttpClient();
 	HttpPost post = new HttpPost("https://getpocket.com/v3/get");
 	post.setHeader(HTTP.CONTENT_TYPE, "application/json");
@@ -56,11 +54,7 @@ public class RetrieveCountOfUnreadArticlesAsyncTask extends AsyncTask<Void, Void
 	    int unreadCount = listItems.entrySet().size();
 	    return unreadCount;
 	} catch (Exception e) {
-	    Log.e("UnreadArticlesWidget", "Failed to get unread items" + e.getMessage());
-
-	    StringWriter sw = new StringWriter();
-	    e.printStackTrace(new PrintWriter(sw));
-	    Log.e("UnreadArticlesWidget", sw.toString());
+	    Log.e("UnreadArticlesWidget", "Failed to get unread items", e);
 	}
 	
 	return -1;

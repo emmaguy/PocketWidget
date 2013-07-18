@@ -27,6 +27,12 @@ public class UnreadArticlesPreferenceActivity extends PreferenceActivity impleme
 	OnPreferenceClickListener, OnAccessTokenRetrievedListener {
 
     public static final String SHARED_PREFERENCES = "pocketWidget";
+    public static final String TIME_LAST_REQUESTED_UNREAD_COUNT = "timelastrequnread";
+    public static final String ACCESS_TOKEN = "accesstoken";
+    public static final String USERNAME = "username";
+    public static final String WIFI_ONLY = "wifionly";
+    public static final String CODE = "code";
+    public static final String UNREAD_COUNT = "unread_count";
 
     protected Method loadHeaders = null;
     protected Method hasHeaders = null;
@@ -100,7 +106,7 @@ public class UnreadArticlesPreferenceActivity extends PreferenceActivity impleme
 	    }
 	}
 
-	String accessToken = prefs.getString("access_token", null);
+	String accessToken = prefs.getString(UnreadArticlesPreferenceActivity.ACCESS_TOKEN, null);
 	if (accessToken != null && accessToken.length() > 0) {
 	    refreshWidget(this, appWidgetId);
 	    return;
@@ -124,18 +130,18 @@ public class UnreadArticlesPreferenceActivity extends PreferenceActivity impleme
 	public void onCreate(Bundle aSavedState) {
 	    super.onCreate(aSavedState);
 	    getPreferenceManager().setSharedPreferencesName(SHARED_PREFERENCES);
-	    
+
 	    Context context = getActivity().getApplicationContext();
 	    Resources resources = context.getResources();
 	    String resourcesValue = getArguments().getString("pref-resource");
 	    int thePrefRes = resources.getIdentifier(resourcesValue, "xml", context.getPackageName());
 	    addPreferencesFromResource(thePrefRes);
 
-	    PreferenceScreen authPreferencesScreen = (PreferenceScreen) findPreference("authentication_preferencescreen");
-	    if (authPreferencesScreen != null) {
-		authPreferencesScreen.setTitle(getLoginPreferenceScreenTitle());
-		authPreferencesScreen.setSummary(getLoginPreferenceScreenSummary());
-		authPreferencesScreen.setOnPreferenceClickListener(this);
+	    PreferenceScreen screen = (PreferenceScreen) findPreference("authentication_preferencescreen");
+	    if (screen != null) {
+		screen.setTitle(getLoginPreferenceScreenTitle());
+		screen.setSummary(getLoginPreferenceScreenSummary());
+		screen.setOnPreferenceClickListener(this);
 	    }
 
 	    updateAccountHeader();
@@ -150,15 +156,19 @@ public class UnreadArticlesPreferenceActivity extends PreferenceActivity impleme
 
 	@Override
 	public boolean onPreferenceClick(Preference preference) {
-	    beginSignInProcessOrSignOut(preference, getActivity());
-	    updateAccountHeader();
-	    return true;
+	    return onPrefsClick(preference, getActivity());
 	}
     }
 
     @Override
     public boolean onPreferenceClick(Preference preference) {
-	beginSignInProcessOrSignOut(preference, this);
+	return onPrefsClick(preference, this);
+    }
+
+    private static boolean onPrefsClick(Preference preference, Activity a) {
+	if (preference.getKey().equals("authentication_preferencescreen")) {
+	    beginSignInProcessOrSignOut(a);
+	}
 	updateAccountHeader();
 	return true;
     }
@@ -191,7 +201,7 @@ public class UnreadArticlesPreferenceActivity extends PreferenceActivity impleme
     private static void buildHeader() {
 	if (headers != null && headers.size() > 0) {
 	    Header account = headers.get(0);
-	    final String username = prefs.getString("username", "");
+	    final String username = prefs.getString(UnreadArticlesPreferenceActivity.USERNAME, "");
 	    if (username != null && username.length() > 0) {
 		account.title = "Pocket Account (" + username + ")";
 	    } else {
@@ -217,9 +227,9 @@ public class UnreadArticlesPreferenceActivity extends PreferenceActivity impleme
 	activity.startActivity(intent);
     }
 
-    private static void beginSignInProcessOrSignOut(Preference preference, final Activity activity) {
+    private static void beginSignInProcessOrSignOut(final Activity activity) {
 	if (isSignedIn()) {
-	    prefs.edit().clear().commit();
+	    prefs.edit().remove(CODE).remove(ACCESS_TOKEN).remove(USERNAME).remove(UNREAD_COUNT).commit();
 	    Toast.makeText(activity, "Account cleared", Toast.LENGTH_LONG).show();
 
 	    // refresh this activity
@@ -234,7 +244,7 @@ public class UnreadArticlesPreferenceActivity extends PreferenceActivity impleme
 
     private static String getLoginPreferenceScreenTitle() {
 	if (isSignedIn()) {
-	    final String username = prefs.getString("username", "");
+	    final String username = prefs.getString(UnreadArticlesPreferenceActivity.USERNAME, "");
 	    return "Sign out " + username;
 	}
 
@@ -250,12 +260,12 @@ public class UnreadArticlesPreferenceActivity extends PreferenceActivity impleme
     }
 
     private static boolean isSignedIn() {
-	String accessToken = prefs.getString("access_token", null);
+	String accessToken = prefs.getString(UnreadArticlesPreferenceActivity.ACCESS_TOKEN, null);
 	return accessToken != null && accessToken.length() > 0;
     }
 
     private static void showHomeScreenAndFinish(final Activity activity) {
-	Toast.makeText(activity, "Successfully logged in as: " + prefs.getString("username", ""), Toast.LENGTH_LONG)
+	Toast.makeText(activity, "Successfully logged in as: " + prefs.getString(UnreadArticlesPreferenceActivity.USERNAME, ""), Toast.LENGTH_LONG)
 		.show();
 
 	int appWidgetId = prefs.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
