@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
 import dev.emmaguy.pocketwidget.RetrieveCountOfUnreadArticlesAsyncTask.UnreadCountRetrievedListener;
@@ -18,7 +19,7 @@ public class RetrieveUnreadArticlesCountService extends Service implements Unrea
     
     @Override
     public void onStart(Intent intent, int startId) {
-	
+	Log.i("xx", "starting service");
 	final SharedPreferences sharedPreferences = getSharedPreferences(
 		UnreadArticlesPreferenceActivity.SHARED_PREFERENCES, 0);
 	final String accessToken = sharedPreferences.getString(UnreadArticlesPreferenceActivity.ACCESS_TOKEN, null);
@@ -26,7 +27,7 @@ public class RetrieveUnreadArticlesCountService extends Service implements Unrea
 	if (accessToken == null || accessToken.length() <= 0) {
 	    return;
 	}
-
+	
 	boolean syncOnWifiOnly = sharedPreferences.getBoolean(UnreadArticlesPreferenceActivity.WIFI_ONLY, false);
 	ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 	NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);

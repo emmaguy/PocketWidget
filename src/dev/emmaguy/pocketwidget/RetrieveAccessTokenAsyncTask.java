@@ -1,8 +1,5 @@
 package dev.emmaguy.pocketwidget;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -67,15 +64,11 @@ public class RetrieveAccessTokenAsyncTask extends ProgressAsyncTask<Void, Void, 
 	    String username = jsonObj.get("username").getAsString();
 	    sharedPreferences
         		.edit()
-        		.putString("access_token", accessToken)
-        		.putString("username", username)
+        		.putString(UnreadArticlesPreferenceActivity.ACCESS_TOKEN, accessToken)
+        		.putString(UnreadArticlesPreferenceActivity.USERNAME, username)
         		.commit();
 	} catch (Exception e) {
-	    Log.e("RetrieveRequestToken", "Failed to retrieve request token" + e.getMessage());
-
-	    StringWriter sw = new StringWriter();
-	    e.printStackTrace(new PrintWriter(sw));
-	    Log.e("RetrieveRequestToken", sw.toString());
+	    Log.e("RetrieveRequestToken", "Failed to retrieve request token", e);
 	}
 
 	return null;

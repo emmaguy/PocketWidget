@@ -1,7 +1,5 @@
 package dev.emmaguy.pocketwidget;
 
-import java.util.Calendar;
-
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -14,32 +12,34 @@ import android.util.Log;
 
 public class UnreadArticlesWidgetProvider extends AppWidgetProvider {
 
-    private PendingIntent service = null;
+    private static PendingIntent service = null;
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-	final AlarmManager m = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+	createOrUpdateService(
+		context,
+		context.getSharedPreferences(UnreadArticlesPreferenceActivity.SHARED_PREFERENCES, 0).getString(
+			"refresh_interval", "1"));
+    }
 
-	final Calendar time = Calendar.getInstance();
-	time.set(Calendar.MINUTE, 0);
-	time.set(Calendar.SECOND, 0);
-	time.set(Calendar.MILLISECOND, 0);
+    public static void createOrUpdateService(Context context, String refreshInterval) {
+	final AlarmManager m = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
 	final Intent serviceIntent = new Intent(context, RetrieveUnreadArticlesCountService.class);
 	if (service == null) {
 	    service = PendingIntent.getService(context, 0, serviceIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 	}
 
-	final String refreshIntervalStr = context.getSharedPreferences(
-		UnreadArticlesPreferenceActivity.SHARED_PREFERENCES, 0).getString("refresh_interval", "1");
-	final int intervalInHours = Integer.valueOf(refreshIntervalStr);
-	Log.i("xx", "refresh in " + intervalInHours + " hrs");
-	m.setRepeating(AlarmManager.RTC, time.getTime().getTime(), AlarmManager.INTERVAL_HOUR * intervalInHours,
-		service);
+	final int intervalInHours = Integer.valueOf(refreshInterval);
+	m.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), AlarmManager.INTERVAL_HOUR * intervalInHours, service);
     }
 
     @Override
     public void onDisabled(Context context) {
+	killService(context);
+    }
+
+    public static void killService(Context context) {
 	final AlarmManager m = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 	m.cancel(service);
     }
