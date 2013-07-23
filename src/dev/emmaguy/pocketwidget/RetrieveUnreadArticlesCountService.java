@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.IBinder;
+import android.view.View;
 import android.widget.RemoteViews;
 import dev.emmaguy.pocketwidget.RetrieveCountOfUnreadArticlesAsyncTask.UnreadCountRetrievedListener;
 
@@ -64,6 +65,7 @@ public class RetrieveUnreadArticlesCountService extends Service implements Unrea
 
 	    PendingIntent pendingIntent = PendingIntent.getBroadcast(this, appWidgetId, clickIntent, 0);
 	    views.setOnClickPendingIntent(R.id.widget_imageview, pendingIntent);
+	    views.setViewVisibility(R.id.unread_count_textview, View.VISIBLE);
 	    views.setTextViewText(R.id.unread_count_textview, Integer.valueOf(unreadCount).toString());
 
 	    appWidgetManager.updateAppWidget(appWidgetId, views);

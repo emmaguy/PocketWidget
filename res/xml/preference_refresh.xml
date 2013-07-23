@@ -11,5 +11,7 @@
         android:key="refresh_interval"
         android:title="Refresh Interval (Widget only)"
         android:defaultValue="3" />
+    
+    <PreferenceScreen android:key="force_refresh" android:title="Force Refresh (Widget only)" />
 
 </PreferenceScreen>

@@ -22,7 +22,6 @@ import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
-import android.util.Log;
 import android.widget.Toast;
 import dev.emmaguy.pocketwidget.RetrieveAccessTokenAsyncTask.OnAccessTokenRetrievedListener;
 import dev.emmaguy.pocketwidget.RetrieveRequestTokenAsyncTask.OnUrlRetrievedListener;
@@ -84,6 +83,11 @@ public class UnreadArticlesPreferenceActivity extends PreferenceActivity impleme
 		screen.setOnPreferenceClickListener(this);
 	    }
 
+	    PreferenceScreen forceRefresh = (PreferenceScreen) findPreference("force_refresh");
+	    if (forceRefresh != null) {
+		forceRefresh.setOnPreferenceClickListener(this);
+	    }
+
 	    ListPreference refresh = (ListPreference) findPreference("refresh_interval");
 	    if (refresh != null) {
 		refresh.setOnPreferenceClickListener(this);
@@ -91,7 +95,7 @@ public class UnreadArticlesPreferenceActivity extends PreferenceActivity impleme
 	}
 
 	Bundle extras = getIntent().getExtras();
-	
+
 	if (extras != null) {
 	    appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
 
@@ -154,6 +158,11 @@ public class UnreadArticlesPreferenceActivity extends PreferenceActivity impleme
 		screen.setOnPreferenceClickListener(this);
 	    }
 
+	    PreferenceScreen forceRefresh = (PreferenceScreen) findPreference("force_refresh");
+	    if (forceRefresh != null) {
+		forceRefresh.setOnPreferenceClickListener(this);
+	    }
+
 	    ListPreference refresh = (ListPreference) findPreference("refresh_interval");
 	    if (refresh != null) {
 		refresh.setOnPreferenceChangeListener(this);
@@ -196,8 +205,6 @@ public class UnreadArticlesPreferenceActivity extends PreferenceActivity impleme
 
 	    if (allWidgetIds != null && allWidgetIds.length > 0) {
 		UnreadArticlesWidgetProvider.createOrUpdateService(a, newValue);
-	    } else {
-		Log.i("xx", "found no widgets");
 	    }
 	    return true;
 	}
@@ -206,9 +213,17 @@ public class UnreadArticlesPreferenceActivity extends PreferenceActivity impleme
     }
 
     private static boolean onPrefsClick(Preference preference, Activity a) {
+	final SharedPreferences sharedPreferences = a.getSharedPreferences(SHARED_PREFERENCES, 0);
+
 	if (preference.getKey().equals("authentication_preferencescreen")) {
 	    beginSignInProcessOrSignOut(a);
-	    updateAccountHeader(a.getSharedPreferences(SHARED_PREFERENCES, 0));
+	    updateAccountHeader(sharedPreferences);
+	    return true;
+	} else if (preference.getKey().equals("force_refresh")) {
+	    int appWidgetId = sharedPreferences.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID,
+		    AppWidgetManager.INVALID_APPWIDGET_ID);
+	    refreshWidget(a, appWidgetId);
+	    Toast.makeText(a, "Refreshing...", Toast.LENGTH_LONG).show();
 	    return true;
 	}
 
@@ -277,7 +292,7 @@ public class UnreadArticlesPreferenceActivity extends PreferenceActivity impleme
 	    Toast.makeText(activity, "Account cleared", Toast.LENGTH_LONG).show();
 
 	    UnreadArticlesWidgetProvider.killService(activity);
-	    
+
 	    // refresh this activity
 	    activity.finish();
 	    activity.startActivity(activity.getIntent());
