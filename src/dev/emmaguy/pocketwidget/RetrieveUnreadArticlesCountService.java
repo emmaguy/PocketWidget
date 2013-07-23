@@ -10,8 +10,6 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.IBinder;
-import android.util.Log;
-import android.view.View;
 import android.widget.RemoteViews;
 import dev.emmaguy.pocketwidget.RetrieveCountOfUnreadArticlesAsyncTask.UnreadCountRetrievedListener;
 
@@ -19,7 +17,6 @@ public class RetrieveUnreadArticlesCountService extends Service implements Unrea
     
     @Override
     public void onStart(Intent intent, int startId) {
-	Log.i("xx", "starting service");
 	final SharedPreferences sharedPreferences = getSharedPreferences(
 		UnreadArticlesPreferenceActivity.SHARED_PREFERENCES, 0);
 	final String accessToken = sharedPreferences.getString(UnreadArticlesPreferenceActivity.ACCESS_TOKEN, null);
@@ -28,6 +25,9 @@ public class RetrieveUnreadArticlesCountService extends Service implements Unrea
 	    return;
 	}
 	
+	// update the ui with what's stored in sharedprefs until the refresh value is available
+	updateWidget(sharedPreferences.getInt(UnreadArticlesPreferenceActivity.UNREAD_COUNT, 0));
+
 	boolean syncOnWifiOnly = sharedPreferences.getBoolean(UnreadArticlesPreferenceActivity.WIFI_ONLY, false);
 	ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 	NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
@@ -55,7 +55,7 @@ public class RetrieveUnreadArticlesCountService extends Service implements Unrea
 	final RemoteViews views = new RemoteViews(getPackageName(), R.layout.widget_layout);
 	final AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
 
-	ComponentName thisWidget = new ComponentName(getApplicationContext(), UnreadArticlesWidgetProvider.class);
+	ComponentName thisWidget = new ComponentName(this, UnreadArticlesWidgetProvider.class);
 	int[] allWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
 
 	for (int appWidgetId : allWidgetIds) {
@@ -64,7 +64,6 @@ public class RetrieveUnreadArticlesCountService extends Service implements Unrea
 
 	    PendingIntent pendingIntent = PendingIntent.getBroadcast(this, appWidgetId, clickIntent, 0);
 	    views.setOnClickPendingIntent(R.id.widget_imageview, pendingIntent);
-	    views.setViewVisibility(R.id.unread_count_textview, View.VISIBLE);
 	    views.setTextViewText(R.id.unread_count_textview, Integer.valueOf(unreadCount).toString());
 
 	    appWidgetManager.updateAppWidget(appWidgetId, views);

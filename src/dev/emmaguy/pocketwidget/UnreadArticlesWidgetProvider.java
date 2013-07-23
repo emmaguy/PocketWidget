@@ -31,7 +31,8 @@ public class UnreadArticlesWidgetProvider extends AppWidgetProvider {
 	}
 
 	final int intervalInHours = Integer.valueOf(refreshInterval);
-	m.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), AlarmManager.INTERVAL_HOUR * intervalInHours, service);
+	m.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), AlarmManager.INTERVAL_HOUR * intervalInHours,
+		service);
     }
 
     @Override
@@ -47,6 +48,7 @@ public class UnreadArticlesWidgetProvider extends AppWidgetProvider {
     @Override
     public void onReceive(Context context, Intent intent) {
 	if (intent.getAction() == null) {
+	    // user has pressed on the widget
 	    Bundle extras = intent.getExtras();
 	    if (extras != null) {
 		PackageManager pm = context.getPackageManager();
@@ -58,6 +60,11 @@ public class UnreadArticlesWidgetProvider extends AppWidgetProvider {
 		    Log.e("OnReceive", "Failed to open Pocket app: " + e.getMessage());
 		}
 	    }
+	} else if (intent.getAction().equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE)) {
+	    createOrUpdateService(
+		    context,
+		    context.getSharedPreferences(UnreadArticlesPreferenceActivity.SHARED_PREFERENCES, 0).getString(
+			    "refresh_interval", "1"));
 	}
     }
 }

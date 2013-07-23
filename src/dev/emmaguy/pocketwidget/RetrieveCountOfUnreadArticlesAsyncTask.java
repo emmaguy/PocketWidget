@@ -30,7 +30,6 @@ public class RetrieveCountOfUnreadArticlesAsyncTask extends AsyncTask<Void, Void
 
     @Override
     protected Integer doInBackground(Void... params) {	
-	Log.i("xx", "refreshing");
 	HttpClient client = new DefaultHttpClient();
 	HttpPost post = new HttpPost("https://getpocket.com/v3/get");
 	post.setHeader(HTTP.CONTENT_TYPE, "application/json");
