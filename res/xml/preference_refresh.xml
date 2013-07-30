@@ -14,6 +14,6 @@
 
     <PreferenceScreen
         android:key="force_refresh"
-        android:title="Force Refresh (Widget only)" />
+        android:title="Refresh now! (Widget only)" />
 
 </PreferenceScreen>

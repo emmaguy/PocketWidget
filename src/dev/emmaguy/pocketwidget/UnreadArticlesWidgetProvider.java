@@ -19,7 +19,7 @@ public class UnreadArticlesWidgetProvider extends AppWidgetProvider {
 	createOrUpdateService(
 		context,
 		context.getSharedPreferences(UnreadArticlesPreferenceActivity.SHARED_PREFERENCES, 0).getString(
-			"refresh_interval", "1"));
+			"refresh_interval", "3"));
     }
 
     public static void createOrUpdateService(Context context, String refreshInterval) {
@@ -64,7 +64,7 @@ public class UnreadArticlesWidgetProvider extends AppWidgetProvider {
 	    createOrUpdateService(
 		    context,
 		    context.getSharedPreferences(UnreadArticlesPreferenceActivity.SHARED_PREFERENCES, 0).getString(
-			    "refresh_interval", "1"));
+			    "refresh_interval", "3"));
 	}
     }
 }
