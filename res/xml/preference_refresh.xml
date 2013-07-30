@@ -6,12 +6,15 @@
         android:title="Sync on WiFi Only" />
 
     <ListPreference
+        android:defaultValue="3"
         android:entries="@array/interval_options_names"
         android:entryValues="@array/interval_options"
         android:key="refresh_interval"
-        android:title="Refresh Interval (Widget only)"
-        android:defaultValue="3" />
-    
-    <PreferenceScreen android:key="force_refresh" android:title="Force Refresh (Widget only)" />
+        android:title="Refresh Interval (Widget only)" />
+
+    <PreferenceScreen
+        android:icon="@drawable/refresh"
+        android:key="force_refresh"
+        android:title="Force Refresh (Widget only)" />
 
 </PreferenceScreen>

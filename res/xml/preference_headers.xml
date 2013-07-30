@@ -2,7 +2,7 @@
 
     <header
         android:fragment="dev.emmaguy.pocketwidget.UnreadArticlesPreferenceActivity$PrefsFragment"
-        android:icon="@android:drawable/ic_menu_edit"
+        android:icon="@drawable/edit"
         android:title="Pocket Account"
         android:key="pocket_settings_header">
         <extra
@@ -11,12 +11,21 @@
     </header>
      <header
         android:fragment="dev.emmaguy.pocketwidget.UnreadArticlesPreferenceActivity$PrefsFragment"
-        android:icon="@android:drawable/ic_menu_preferences"
+        android:icon="@drawable/refresh"
         android:title="Refresh Options"
         android:key="network_header">
         <extra
             android:name="pref-resource"
             android:value="preference_refresh" />
+    </header>
+    <header
+        android:fragment="dev.emmaguy.pocketwidget.UnreadArticlesPreferenceActivity$PrefsFragment"
+        android:icon="@drawable/favourite"
+        android:title="Like this?"
+        android:key="like_this">
+        <extra
+            android:name="pref-resource"
+            android:value="rate_on_play_store" />
     </header>
     
 </preference-headers>

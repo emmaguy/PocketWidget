@@ -22,6 +22,7 @@ import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
+import android.util.Log;
 import android.widget.Toast;
 import dev.emmaguy.pocketwidget.RetrieveAccessTokenAsyncTask.OnAccessTokenRetrievedListener;
 import dev.emmaguy.pocketwidget.RetrieveRequestTokenAsyncTask.OnUrlRetrievedListener;
@@ -75,6 +76,8 @@ public class UnreadArticlesPreferenceActivity extends PreferenceActivity impleme
 	    getPreferenceManager().setSharedPreferencesName(SHARED_PREFERENCES);
 
 	    addPreferencesFromResource(R.xml.preference_login);
+	    addPreferencesFromResource(R.xml.preference_refresh);
+	    addPreferencesFromResource(R.xml.rate_on_play_store);
 
 	    PreferenceScreen screen = (PreferenceScreen) findPreference("authentication_preferencescreen");
 	    if (screen != null) {
@@ -86,6 +89,11 @@ public class UnreadArticlesPreferenceActivity extends PreferenceActivity impleme
 	    PreferenceScreen forceRefresh = (PreferenceScreen) findPreference("force_refresh");
 	    if (forceRefresh != null) {
 		forceRefresh.setOnPreferenceClickListener(this);
+	    }
+
+	    PreferenceScreen rateThis = (PreferenceScreen) findPreference("rate_this");
+	    if (rateThis != null) {
+		rateThis.setOnPreferenceClickListener(this);
 	    }
 
 	    ListPreference refresh = (ListPreference) findPreference("refresh_interval");
@@ -163,6 +171,11 @@ public class UnreadArticlesPreferenceActivity extends PreferenceActivity impleme
 		forceRefresh.setOnPreferenceClickListener(this);
 	    }
 
+	    PreferenceScreen rateThis = (PreferenceScreen) findPreference("rate_this");
+	    if (rateThis != null) {
+		rateThis.setOnPreferenceClickListener(this);
+	    }
+
 	    ListPreference refresh = (ListPreference) findPreference("refresh_interval");
 	    if (refresh != null) {
 		refresh.setOnPreferenceChangeListener(this);
@@ -225,6 +238,14 @@ public class UnreadArticlesPreferenceActivity extends PreferenceActivity impleme
 	    refreshWidget(a, appWidgetId);
 	    Toast.makeText(a, "Refreshing...", Toast.LENGTH_LONG).show();
 	    return true;
+	} else if (preference.getKey().equals("rate_this")) {
+	    try {
+		Uri uri = Uri.parse("market://details?id=dev.emmaguy.pocketwidget");
+		a.startActivity(new Intent(Intent.ACTION_VIEW, uri));
+	    } catch (Exception e) {
+		Log.e("PocketCountWidget", "Failed to launch market");
+		Toast.makeText(a, "Failed to launch market", Toast.LENGTH_SHORT).show();
+	    }
 	}
 
 	return false;
