@@ -13,7 +13,6 @@
         android:title="Refresh Interval (Widget only)" />
 
     <PreferenceScreen
-        android:icon="@drawable/refresh"
         android:key="force_refresh"
         android:title="Force Refresh (Widget only)" />
 
