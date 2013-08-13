@@ -4,8 +4,8 @@
 
     <ImageView
         android:id="@+id/widget_imageview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/widget_size"
+        android:layout_height="@dimen/widget_size"
         android:contentDescription="@string/widget_description"
         android:scaleType="fitXY"
         android:src="@drawable/ic_launcher" 
@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
         android:background="@drawable/unread_count_background"
-        android:textSize="12sp"
+        android:textSize="@dimen/text_size"
         android:gravity="center"
         android:textColor="#ffffff"
         android:minWidth="25dp"
