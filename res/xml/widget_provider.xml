@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:minWidth="@dimen/widget_size"
-    android:minHeight="@dimen/widget_size"
-    android:previewImage="@drawable/ic_launcher"
+    android:minWidth="@dimen/widget_width"
+    android:minHeight="@dimen/widget_height"
+    android:previewImage="@drawable/logo"
     android:initialLayout="@layout/widget_layout"
     android:initialKeyguardLayout="@layout/widget_layout" 
     android:resizeMode="none"

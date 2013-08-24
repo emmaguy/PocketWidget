@@ -1,78 +1,14 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
 
-     <item>
-        <shape>
-            <padding
-                android:bottom="1dp"
-                android:left="1dp"
-                android:right="1dp"
-                android:top="1dp" />
 
-            <corners android:radius="8dp" />
-
-            <solid android:color="#00ADADAD" />
-        </shape>
-    </item>
-    <item>
-        <shape>
-            <padding
-                android:bottom="1dp"
-                android:left="1dp"
-                android:right="1dp"
-                android:top="1dp" />
-
-            <corners android:radius="8dp" />
-
-            <solid android:color="#10ADADAD" />
-        </shape>
-    </item>
-    <item>
-        <shape>
-            <padding
-                android:bottom="1dp"
-                android:left="1dp"
-                android:right="1dp"
-                android:top="1dp" />
-
-            <corners android:radius="8dp" />
-
-            <solid android:color="#20ADADAD" />
-        </shape>
-    </item>
-    <item>
-        <shape>
-            <padding
-                android:bottom="1dp"
-                android:left="1dp"
-                android:right="1dp"
-                android:top="1dp" />
-
-            <corners android:radius="8dp" />
-
-            <solid android:color="#30ADADAD" />
-        </shape>
-    </item> 
-    <item>
-        <shape>
-            <padding
-                android:bottom="1dp"
-                android:left="1dp"
-                android:right="1dp"
-                android:top="1dp" />
-
-            <corners android:radius="8dp" />
-
-            <solid android:color="#50ADADAD" />
-        </shape>
-    </item>
     <item>
         <shape android:shape="rectangle">
             <solid android:color="#ee4056"/>
 
-            <corners android:radius="8dp" />
+            <corners android:radius="12dp" />
 
             <stroke
-                android:width="1dip"
+                android:width="2dp"
                 android:color="#ffffff" />
         </shape>
     </item>

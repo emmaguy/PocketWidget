@@ -4,13 +4,13 @@
 
     <ImageView
         android:id="@+id/widget_imageview"
-        android:layout_width="@dimen/widget_size"
-        android:layout_height="@dimen/widget_size"
+        android:layout_width="@dimen/logo_width"
+        android:layout_height="@dimen/logo_height"
         android:contentDescription="@string/widget_description"
         android:scaleType="fitXY"
-        android:src="@drawable/ic_launcher" 
-        android:layout_marginBottom="10dp"
-        android:layout_marginRight="5dp"/>
+        android:src="@drawable/logo"
+        android:layout_marginBottom="@dimen/margin_bottom"
+        android:layout_marginRight="@dimen/margin_right"/>
 
     <TextView
         android:id="@+id/unread_count_textview"
@@ -22,10 +22,10 @@
         android:gravity="center"
         android:textColor="#ffffff"
         android:minWidth="25dp"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
+        android:paddingTop="1dp"
+        android:paddingBottom="1dp"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
         android:visibility="gone"/>
 
 </FrameLayout>

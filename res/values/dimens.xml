@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="widget_width">48dp</dimen>
+    <dimen name="widget_height">48dp</dimen>
+
+    <dimen name="logo_width">42dp</dimen>
+    <dimen name="logo_height">44dp</dimen>
+
+    <dimen name="text_size">12sp</dimen>
+
+    <dimen name="margin_bottom">10dp</dimen>
+    <dimen name="margin_right">5dp</dimen>
+</resources>
