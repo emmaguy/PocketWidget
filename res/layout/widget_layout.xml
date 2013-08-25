@@ -1,31 +1,31 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content" >
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/widget_imageview"
-        android:layout_width="@dimen/logo_width"
-        android:layout_height="@dimen/logo_height"
-        android:contentDescription="@string/widget_description"
-        android:scaleType="fitXY"
-        android:src="@drawable/logo"
-        android:layout_marginBottom="@dimen/margin_bottom"
-        android:layout_marginRight="@dimen/margin_right"/>
+            android:id="@+id/widget_imageview"
+            android:layout_width="@dimen/logo_width"
+            android:layout_height="@dimen/logo_height"
+            android:contentDescription="@string/widget_description"
+            android:scaleType="fitXY"
+            android:src="@drawable/logo"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"/>
 
     <TextView
-        android:id="@+id/unread_count_textview"
-		android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
-        android:background="@drawable/unread_count_background"
-        android:textSize="@dimen/text_size"
-        android:gravity="center"
-        android:textColor="#ffffff"
-        android:minWidth="25dp"
-        android:paddingTop="1dp"
-        android:paddingBottom="1dp"
-        android:paddingLeft="4dp"
-        android:paddingRight="4dp"
-        android:visibility="gone"/>
+            android:id="@+id/unread_count_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/unread_count_background"
+            android:textSize="@dimen/text_size"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:textColor="#ffffff"
+            android:minWidth="25dp"
+            android:paddingTop="1dp"
+            android:paddingBottom="1dp"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            android:visibility="gone"/>
 
-</FrameLayout>
+</RelativeLayout>
