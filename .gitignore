@@ -24,3 +24,7 @@ local.properties
 # Android studio
 .idea/*
 *.iml
+InfectionPolicyProject/.idea/
+**/*.iml
+
+**/build/

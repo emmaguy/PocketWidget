@@ -2,7 +2,9 @@
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
     android:previewImage="@drawable/logo"
     android:initialLayout="@layout/widget_layout"
-    android:initialKeyguardLayout="@layout/widget_layout" 
+    android:initialKeyguardLayout="@layout/widget_layout"
+    android:minWidth="40dp"
+    android:minHeight="40dp"
     android:resizeMode="none"
     android:widgetCategory="home_screen|keyguard"
     android:configure="dev.emmaguy.pocketwidget.UnreadArticlesPreferenceActivity" />

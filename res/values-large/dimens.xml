@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="logo_width">65dp</dimen>
-    <dimen name="logo_height">108dp</dimen>
+    <dimen name="logo_width">64dp</dimen>
+    <dimen name="logo_height">70dp</dimen>
 
-    <dimen name="text_size">19sp</dimen>
+    <dimen name="count_margin_top">50dp</dimen>
+    <dimen name="count_margin_right">5dp</dimen>
+
+    <dimen name="text_size">16sp</dimen>
 </resources>
