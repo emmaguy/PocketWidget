@@ -3,7 +3,7 @@
     <header
         android:fragment="dev.emmaguy.pocketwidget.UnreadArticlesPreferenceActivity$PrefsFragment"
         android:icon="@drawable/edit"
-        android:title="Pocket Account"
+        android:title="@string/pocket_account"
         android:key="pocket_settings_header">
         <extra
             android:name="pref-resource"
@@ -12,7 +12,7 @@
      <header
         android:fragment="dev.emmaguy.pocketwidget.UnreadArticlesPreferenceActivity$PrefsFragment"
         android:icon="@drawable/refresh"
-        android:title="Refresh Options"
+        android:title="@string/refresh_options"
         android:key="network_header">
         <extra
             android:name="pref-resource"
@@ -21,7 +21,7 @@
     <header
         android:fragment="dev.emmaguy.pocketwidget.UnreadArticlesPreferenceActivity$PrefsFragment"
         android:icon="@drawable/favourite"
-        android:title="Like this?"
+        android:title="@string/like_this"
         android:key="like_this">
         <extra
             android:name="pref-resource"
