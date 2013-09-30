@@ -16,15 +16,16 @@ android {
     compileSdkVersion 18
     buildToolsVersion "18.0.1"
 
+    defaultConfig {
+        minSdkVersion 7
+        targetSdkVersion 18
+    }
+
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
             java.srcDirs = ['src']
-            resources.srcDirs = ['src']
-            aidl.srcDirs = ['src']
-            renderscript.srcDirs = ['src']
             res.srcDirs = ['res']
-            assets.srcDirs = ['assets']
         }
     }
 }
