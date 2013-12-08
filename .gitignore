@@ -9,6 +9,7 @@
 *.class
 
 *hidden_strings.xml
+keystore
 
 # generated files
 bin/
@@ -28,3 +29,6 @@ InfectionPolicyProject/.idea/
 **/*.iml
 .gradle/
 **/build/
+
+# OSX
+**/.DS_Store
