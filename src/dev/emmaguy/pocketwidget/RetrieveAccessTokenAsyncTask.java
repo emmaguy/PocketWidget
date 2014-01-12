@@ -1,5 +1,12 @@
 package dev.emmaguy.pocketwidget;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.util.Log;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -9,13 +16,6 @@ import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.util.Log;
-
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
 public class RetrieveAccessTokenAsyncTask extends ProgressAsyncTask<Void, Void, Void> {
 
     private final String consumerKey;
@@ -23,60 +23,60 @@ public class RetrieveAccessTokenAsyncTask extends ProgressAsyncTask<Void, Void, 
     private final OnAccessTokenRetrievedListener accessTokenRetrievedListener;
 
     public RetrieveAccessTokenAsyncTask(String consumerKey, OnAccessTokenRetrievedListener listener,
-	    SharedPreferences sharedPreferences, Context c, String dialogMessage) {
-	super(c, dialogMessage);
-	
-	this.consumerKey = consumerKey;
-	this.sharedPreferences = sharedPreferences;
-	this.accessTokenRetrievedListener = listener;
+                                        SharedPreferences sharedPreferences, Context c, String dialogMessage) {
+        super(c, dialogMessage);
+
+        this.consumerKey = consumerKey;
+        this.sharedPreferences = sharedPreferences;
+        this.accessTokenRetrievedListener = listener;
     }
-    
+
     public interface OnAccessTokenRetrievedListener {
-	    void onRetrievedAccessToken();
+        void onRetrievedAccessToken();
     }
-    
+
     @Override
     protected Void doInBackground(Void... params) {
 
-	try {
+        try {
 
-	    String code = sharedPreferences.getString(UnreadArticlesPreferenceActivity.CODE, null);
+            String code = sharedPreferences.getString(UnreadArticlesPreferenceActivity.CODE, null);
 
-	    if (code == null || code.length() <= 0) {
-		throw new Exception("Code (request token) is empty - reauthorisation is required.");
-	    }
+            if (code == null || code.length() <= 0) {
+                throw new Exception("Code (request token) is empty - reauthorisation is required.");
+            }
 
-	    HttpClient client = new DefaultHttpClient();
-	    HttpPost post = new HttpPost("https://getpocket.com/v3/oauth/authorize");
-	    post.setHeader(HTTP.CONTENT_TYPE, "application/json");
-	    post.setHeader("X-Accept", "application/json");
+            HttpClient client = new DefaultHttpClient();
+            HttpPost post = new HttpPost("https://getpocket.com/v3/oauth/authorize");
+            post.setHeader(HTTP.CONTENT_TYPE, "application/json");
+            post.setHeader("X-Accept", "application/json");
 
-	    JSONObject holder = new JSONObject();
-	    holder.put("consumer_key", consumerKey);
-	    holder.put("code", code);
-	    post.setEntity(new StringEntity(holder.toString()));
+            JSONObject holder = new JSONObject();
+            holder.put("consumer_key", consumerKey);
+            holder.put("code", code);
+            post.setEntity(new StringEntity(holder.toString()));
 
-	    HttpResponse response = client.execute(post);
-	    String responseBody = EntityUtils.toString(response.getEntity());
+            HttpResponse response = client.execute(post);
+            String responseBody = EntityUtils.toString(response.getEntity());
 
-	    JsonObject jsonObj = new JsonParser().parse(responseBody).getAsJsonObject();
-	    String accessToken = jsonObj.get("access_token").getAsString();
-	    String username = jsonObj.get("username").getAsString();
-	    sharedPreferences
-        		.edit()
-        		.putString(UnreadArticlesPreferenceActivity.ACCESS_TOKEN, accessToken)
-        		.putString(UnreadArticlesPreferenceActivity.USERNAME, username)
-        		.commit();
-	} catch (Exception e) {
-	    Log.e("RetrieveRequestToken", "Failed to retrieve request token", e);
-	}
+            JsonObject jsonObj = new JsonParser().parse(responseBody).getAsJsonObject();
+            String accessToken = jsonObj.get("access_token").getAsString();
+            String username = jsonObj.get("username").getAsString();
+            sharedPreferences
+                    .edit()
+                    .putString(UnreadArticlesPreferenceActivity.ACCESS_TOKEN, accessToken)
+                    .putString(UnreadArticlesPreferenceActivity.USERNAME, username)
+                    .commit();
+        } catch (Exception e) {
+            Log.e("RetrieveRequestToken", "Failed to retrieve request token", e);
+        }
 
-	return null;
+        return null;
     }
 
     @Override
     protected void onPostExecute(Void x) {
-	super.onPostExecute(x);
-	accessTokenRetrievedListener.onRetrievedAccessToken();
+        super.onPostExecute(x);
+        accessTokenRetrievedListener.onRetrievedAccessToken();
     }
 }

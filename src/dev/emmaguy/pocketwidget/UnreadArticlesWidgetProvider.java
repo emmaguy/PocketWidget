@@ -16,55 +16,55 @@ public class UnreadArticlesWidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-	createOrUpdateService(
-		context,
-		context.getSharedPreferences(UnreadArticlesPreferenceActivity.SHARED_PREFERENCES, 0).getString(
-			"refresh_interval", "3"));
+        createOrUpdateService(
+                context,
+                context.getSharedPreferences(UnreadArticlesPreferenceActivity.SHARED_PREFERENCES, 0).getString(
+                        "refresh_interval", "3"));
     }
 
     public static void createOrUpdateService(Context context, String refreshInterval) {
-	final AlarmManager m = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        final AlarmManager m = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
-	final Intent serviceIntent = new Intent(context, RetrieveUnreadArticlesCountService.class);
-	if (service == null) {
-	    service = PendingIntent.getService(context, 0, serviceIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-	}
+        final Intent serviceIntent = new Intent(context, RetrieveUnreadArticlesCountService.class);
+        if (service == null) {
+            service = PendingIntent.getService(context, 0, serviceIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        }
 
-	final int intervalInHours = Integer.valueOf(refreshInterval);
-	m.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), AlarmManager.INTERVAL_HOUR * intervalInHours,
-		service);
+        final int intervalInHours = Integer.valueOf(refreshInterval);
+        m.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), AlarmManager.INTERVAL_HOUR * intervalInHours,
+                service);
     }
 
     @Override
     public void onDisabled(Context context) {
-	killService(context);
+        killService(context);
     }
 
     public static void killService(Context context) {
-	final AlarmManager m = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-	m.cancel(service);
+        final AlarmManager m = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        m.cancel(service);
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
-	if (intent.getAction() == null) {
-	    // user has pressed on the widget
-	    Bundle extras = intent.getExtras();
-	    if (extras != null) {
-		PackageManager pm = context.getPackageManager();
-		try {
-		    String packageName = "com.ideashower.readitlater.pro";
-		    Intent launchIntent = pm.getLaunchIntentForPackage(packageName);
-		    context.startActivity(launchIntent);
-		} catch (Exception e) {
-		    Log.e("OnReceive", "Failed to open Pocket app: " + e.getMessage());
-		}
-	    }
-	} else if (intent.getAction().equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE)) {
-	    createOrUpdateService(
-		    context,
-		    context.getSharedPreferences(UnreadArticlesPreferenceActivity.SHARED_PREFERENCES, 0).getString(
-			    "refresh_interval", "3"));
-	}
+        if (intent.getAction() == null) {
+            // user has pressed on the widget
+            Bundle extras = intent.getExtras();
+            if (extras != null) {
+                PackageManager pm = context.getPackageManager();
+                try {
+                    String packageName = "com.ideashower.readitlater.pro";
+                    Intent launchIntent = pm.getLaunchIntentForPackage(packageName);
+                    context.startActivity(launchIntent);
+                } catch (Exception e) {
+                    Log.e("OnReceive", "Failed to open Pocket app: " + e.getMessage());
+                }
+            }
+        } else if (intent.getAction().equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE)) {
+            createOrUpdateService(
+                    context,
+                    context.getSharedPreferences(UnreadArticlesPreferenceActivity.SHARED_PREFERENCES, 0).getString(
+                            "refresh_interval", "3"));
+        }
     }
 }

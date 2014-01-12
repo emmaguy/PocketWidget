@@ -64,8 +64,8 @@ public class UnreadArticlesPreferenceActivity extends PreferenceActivity impleme
     @Override
     public void onCreate(Bundle aSavedState) {
         try {
-            loadHeaders = ((Object)this).getClass().getMethod("loadHeadersFromResource", int.class, List.class);
-            hasHeaders = ((Object)this).getClass().getMethod("hasHeaders");
+            loadHeaders = ((Object) this).getClass().getMethod("loadHeadersFromResource", int.class, List.class);
+            hasHeaders = ((Object) this).getClass().getMethod("hasHeaders");
         } catch (NoSuchMethodException e) {
         }
 
