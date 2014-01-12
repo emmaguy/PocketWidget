@@ -328,7 +328,7 @@ public class UnreadArticlesPreferenceActivity extends PreferenceActivity impleme
     private static String getLoginPreferenceScreenTitle(Activity a, SharedPreferences p) {
         if (isSignedIn(p)) {
             final String username = p.getString(USERNAME, null);
-            return a.getString(R.string.sign_out) + username;
+            return a.getString(R.string.sign_out) + " " + username;
         }
 
         return a.getString(R.string.sign_in);

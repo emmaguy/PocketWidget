@@ -54,7 +54,7 @@
         <service android:name="dev.emmaguy.pocketwidget.RetrieveUnreadArticlesCountService" />
         <service
             android:name="dev.emmaguy.pocketwidget.UnreadArticlesDashClockExtension"
-            android:icon="@drawable/dashclock_icon"
+            android:icon="@drawable/ic_launcher"
             android:label="@string/app_name"
             android:permission="com.google.android.apps.dashclock.permission.READ_EXTENSION_DATA" >
             <intent-filter>
