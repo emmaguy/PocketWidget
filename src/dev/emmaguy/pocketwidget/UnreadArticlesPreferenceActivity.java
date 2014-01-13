@@ -349,7 +349,7 @@ public class UnreadArticlesPreferenceActivity extends PreferenceActivity impleme
 
     private static void showHomeScreenAndFinish(final Activity activity) {
         final SharedPreferences preferences = activity.getSharedPreferences(SHARED_PREFERENCES, 0);
-        Toast.makeText(activity, activity.getString(R.string.successfully_logged_in_as) + preferences.getString(USERNAME, null),
+        Toast.makeText(activity, activity.getString(R.string.successfully_logged_in_as) + " " + preferences.getString(USERNAME, null),
                 Toast.LENGTH_LONG).show();
 
         int appWidgetId = preferences
