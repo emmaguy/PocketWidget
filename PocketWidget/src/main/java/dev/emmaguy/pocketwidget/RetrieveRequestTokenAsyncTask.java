@@ -42,7 +42,7 @@ public class RetrieveRequestTokenAsyncTask extends ProgressAsyncTask<Void, Void,
     protected String doInBackground(Void... params) {
         String token = getRequestToken();
         if (token != null && token.length() > 0) {
-            sharedPreferences.edit().putString(SettingsActivity.CODE, token).commit();
+            sharedPreferences.edit().putString(SettingsActivity.CODE, token).apply();
             return String.format("https://getpocket.com/auth/authorize?request_token=%s&redirect_uri=%s", token, CALLBACK_URL);
         }
         return null;
