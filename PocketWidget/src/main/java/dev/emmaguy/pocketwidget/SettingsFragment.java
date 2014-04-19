@@ -98,8 +98,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         if (uri != null && uri.toString().startsWith("pocketwidget") && !isSignedIn()) {
             String code = getPreferenceManager().getSharedPreferences().getString(SettingsActivity.CODE, null);
 
-            new RetrieveAccessTokenAsyncTask(getString(R.string.pocket_consumer_key_mobile),
-                    this, getActivity(), getString(R.string.retrieving_access_token), code).execute();
+            new RetrieveAccessTokenAsyncTask(getString(R.string.pocket_consumer_key_mobile), this, getActivity(), getString(R.string.retrieving_access_token), code).execute();
         }
     }
 
