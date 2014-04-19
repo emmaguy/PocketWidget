@@ -258,6 +258,16 @@ public class UnreadArticlesPreferenceActivity extends PreferenceActivity impleme
     }
 
     @Override
+    public void onError(final String message) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
 

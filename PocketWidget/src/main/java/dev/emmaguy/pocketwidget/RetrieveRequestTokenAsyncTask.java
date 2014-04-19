@@ -3,7 +3,6 @@ package dev.emmaguy.pocketwidget;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -24,13 +23,11 @@ public class RetrieveRequestTokenAsyncTask extends ProgressAsyncTask<Void, Void,
     private final String consumerKey;
     private final SharedPreferences sharedPreferences;
     private final OnUrlRetrievedListener retreivedUrlListener;
-    private final Context context;
 
     public RetrieveRequestTokenAsyncTask(String consumerKey, OnUrlRetrievedListener onUrlRetrievedListener,
                                          SharedPreferences sharedPreferences, Context c, String dialogMessage) {
         super(c, dialogMessage);
 
-        this.context = c;
         this.consumerKey = consumerKey;
         this.retreivedUrlListener = onUrlRetrievedListener;
         this.sharedPreferences = sharedPreferences;
@@ -38,6 +35,7 @@ public class RetrieveRequestTokenAsyncTask extends ProgressAsyncTask<Void, Void,
 
     public interface OnUrlRetrievedListener {
         void onRetrievedUrl(String str);
+        void onError(String message);
     }
 
     @Override
@@ -70,7 +68,7 @@ public class RetrieveRequestTokenAsyncTask extends ProgressAsyncTask<Void, Void,
             return jsonObj.get("code").getAsString();
 
         } catch (Exception e) {
-            Toast.makeText(context, "Failed to retrieve request token: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            retreivedUrlListener.onError("Failed to retrieve request token: " + e.getMessage());
             Log.e("RetrieveRequestToken", "Failed to retrieve request token", e);
         }
         return null;
