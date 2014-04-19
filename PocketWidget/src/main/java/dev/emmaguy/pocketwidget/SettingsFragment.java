@@ -29,7 +29,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
 
         addPreferencesFromResource(R.xml.preferences);
 
-        retrieveAccessToken();
         parseWidgetExtras();
     }
 
@@ -40,6 +39,8 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
 
         initSummary();
+
+        retrieveAccessToken();
 
         PreferenceScreen screen = (PreferenceScreen) findPreference(SettingsActivity.POCKET_ACCOUNT);
         if (screen != null) {
