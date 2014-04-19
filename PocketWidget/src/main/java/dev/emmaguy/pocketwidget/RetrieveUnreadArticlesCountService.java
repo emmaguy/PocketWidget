@@ -19,18 +19,17 @@ public class RetrieveUnreadArticlesCountService extends Service implements Unrea
 
     @Override
     public void onStart(Intent intent, int startId) {
-        final SharedPreferences sharedPreferences = getSharedPreferences(
-                UnreadArticlesPreferenceActivity.SHARED_PREFERENCES, 0);
-        final String accessToken = sharedPreferences.getString(UnreadArticlesPreferenceActivity.ACCESS_TOKEN, null);
+        final SharedPreferences sharedPreferences = getSharedPreferences(SettingsActivity.SHARED_PREFERENCES, 0);
+        final String accessToken = sharedPreferences.getString(SettingsActivity.ACCESS_TOKEN, null);
 
         if (accessToken == null || accessToken.length() <= 0) {
             return;
         }
 
         // update the ui with what's stored in sharedprefs until the refresh value is available
-        updateWidget(sharedPreferences.getInt(UnreadArticlesPreferenceActivity.UNREAD_COUNT, 0));
+        updateWidget(sharedPreferences.getInt(SettingsActivity.UNREAD_COUNT, 0));
 
-        boolean syncOnWifiOnly = sharedPreferences.getBoolean(UnreadArticlesPreferenceActivity.WIFI_ONLY, false);
+        boolean syncOnWifiOnly = sharedPreferences.getBoolean(SettingsActivity.WIFI_ONLY, false);
         ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
@@ -43,11 +42,10 @@ public class RetrieveUnreadArticlesCountService extends Service implements Unrea
     @Override
     public void onUnreadCountRetrieved(Integer unreadCount) {
 
-        final SharedPreferences sharedPreferences = getSharedPreferences(
-                UnreadArticlesPreferenceActivity.SHARED_PREFERENCES, 0);
+        final SharedPreferences sharedPreferences = getSharedPreferences(SettingsActivity.SHARED_PREFERENCES, 0);
 
         if (unreadCount >= 0) {
-            sharedPreferences.edit().putInt(UnreadArticlesPreferenceActivity.UNREAD_COUNT, unreadCount).commit();
+            sharedPreferences.edit().putInt(SettingsActivity.UNREAD_COUNT, unreadCount).commit();
 
             updateWidget(unreadCount);
         }

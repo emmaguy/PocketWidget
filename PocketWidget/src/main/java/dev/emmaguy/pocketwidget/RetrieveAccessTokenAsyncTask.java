@@ -1,7 +1,6 @@
 package dev.emmaguy.pocketwidget;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.google.gson.JsonObject;
@@ -19,29 +18,28 @@ import org.json.JSONObject;
 public class RetrieveAccessTokenAsyncTask extends ProgressAsyncTask<Void, Void, Void> {
 
     private final String consumerKey;
-    private final SharedPreferences sharedPreferences;
     private final OnAccessTokenRetrievedListener accessTokenRetrievedListener;
+    private final String code;
 
-    public RetrieveAccessTokenAsyncTask(String consumerKey, OnAccessTokenRetrievedListener listener,
-                                        SharedPreferences sharedPreferences, Context c, String dialogMessage) {
+    private String accessToken;
+    private String username;
+
+    public RetrieveAccessTokenAsyncTask(String consumerKey, OnAccessTokenRetrievedListener listener, Context c, String dialogMessage, String code) {
         super(c, dialogMessage);
 
         this.consumerKey = consumerKey;
-        this.sharedPreferences = sharedPreferences;
         this.accessTokenRetrievedListener = listener;
+        this.code = code;
     }
 
     public interface OnAccessTokenRetrievedListener {
-        void onRetrievedAccessToken();
+        void onRetrievedAccessToken(String accessToken, String username);
     }
 
     @Override
     protected Void doInBackground(Void... params) {
 
         try {
-
-            String code = sharedPreferences.getString(UnreadArticlesPreferenceActivity.CODE, null);
-
             if (code == null || code.length() <= 0) {
                 throw new Exception("Code (request token) is empty - reauthorisation is required.");
             }
@@ -60,13 +58,9 @@ public class RetrieveAccessTokenAsyncTask extends ProgressAsyncTask<Void, Void, 
             String responseBody = EntityUtils.toString(response.getEntity());
 
             JsonObject jsonObj = new JsonParser().parse(responseBody).getAsJsonObject();
-            String accessToken = jsonObj.get("access_token").getAsString();
-            String username = jsonObj.get("username").getAsString();
-            sharedPreferences
-                    .edit()
-                    .putString(UnreadArticlesPreferenceActivity.ACCESS_TOKEN, accessToken)
-                    .putString(UnreadArticlesPreferenceActivity.USERNAME, username)
-                    .commit();
+
+            accessToken = jsonObj.get("access_token").getAsString();
+            username = jsonObj.get("username").getAsString();
         } catch (Exception e) {
             Log.e("RetrieveRequestToken", "Failed to retrieve request token", e);
         }
@@ -77,6 +71,6 @@ public class RetrieveAccessTokenAsyncTask extends ProgressAsyncTask<Void, Void, 
     @Override
     protected void onPostExecute(Void x) {
         super.onPostExecute(x);
-        accessTokenRetrievedListener.onRetrievedAccessToken();
+        accessTokenRetrievedListener.onRetrievedAccessToken(accessToken, username);
     }
 }

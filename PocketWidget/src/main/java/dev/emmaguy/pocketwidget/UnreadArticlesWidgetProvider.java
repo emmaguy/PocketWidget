@@ -13,13 +13,14 @@ import android.util.Log;
 public class UnreadArticlesWidgetProvider extends AppWidgetProvider {
 
     private static PendingIntent service = null;
+    private static final String DEFAULT_REFRESH_HOURS = "3";
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         createOrUpdateService(
                 context,
-                context.getSharedPreferences(UnreadArticlesPreferenceActivity.SHARED_PREFERENCES, 0).getString(
-                        "refresh_interval", "3"));
+                context.getSharedPreferences(SettingsActivity.SHARED_PREFERENCES, 0).getString(SettingsActivity.REFRESH_INTERVAL, DEFAULT_REFRESH_HOURS)
+        );
     }
 
     public static void createOrUpdateService(Context context, String refreshInterval) {
@@ -31,8 +32,7 @@ public class UnreadArticlesWidgetProvider extends AppWidgetProvider {
         }
 
         final int intervalInHours = Integer.valueOf(refreshInterval);
-        m.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), AlarmManager.INTERVAL_HOUR * intervalInHours,
-                service);
+        m.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), AlarmManager.INTERVAL_HOUR * intervalInHours, service);
     }
 
     @Override
@@ -63,8 +63,7 @@ public class UnreadArticlesWidgetProvider extends AppWidgetProvider {
         } else if (intent.getAction().equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE)) {
             createOrUpdateService(
                     context,
-                    context.getSharedPreferences(UnreadArticlesPreferenceActivity.SHARED_PREFERENCES, 0).getString(
-                            "refresh_interval", "3"));
+                    context.getSharedPreferences(SettingsActivity.SHARED_PREFERENCES, 0).getString(SettingsActivity.REFRESH_INTERVAL, DEFAULT_REFRESH_HOURS));
         }
     }
 }

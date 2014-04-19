@@ -7,4 +7,4 @@
     android:minHeight="40dp"
     android:resizeMode="none"
     android:widgetCategory="home_screen|keyguard"
-    android:configure="dev.emmaguy.pocketwidget.UnreadArticlesPreferenceActivity" />
+    android:configure="dev.emmaguy.pocketwidget.SettingsActivity" />

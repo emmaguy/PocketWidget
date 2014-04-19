@@ -22,10 +22,16 @@
     <string name="account_cleared">Account cleared</string>
     <string name="refresh_options">Refresh Options</string>
 
-    <string name="refresh_now_widget_only">Refresh now! (Widget only)</string>
-    <string name="refresh_interval_widget_only">Refresh Interval (Widget only)</string>
-    <string name="sync_wifi_only">Sync on WiFi Only</string>
+    <string name="update_now">Update now!</string>
+    <string name="refresh_interval">Refresh Interval</string>
+    <string name="sync_wifi_only">Wi-Fi only sync</string>
 
     <string name="like_this">Like this?</string>
     <string name="rate_us_google_play">Rate us on Google Play!</string>
+    <string name="unread_items">Unread Items: </string>
+    <string name="widget_only_refresh">Refresh Options (Widget only)</string>
+
+    <string name="auto_sync_summary_wifi_and_mobile">Automatically retrieve unread count when connected to Wi-Fi or mobile data</string>
+    <string name="auto_sync_summary_wifi_only">Automatically retrieve unread count only when connected to Wi-Fi</string>
+
 </resources>

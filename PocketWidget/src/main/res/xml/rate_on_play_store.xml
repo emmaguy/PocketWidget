@@ -1,5 +1,0 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
-
-    <PreferenceScreen android:key="rate_this" android:title="@string/rate_us_google_play" android:icon="@drawable/ic_action_important" />
-
-</PreferenceScreen>

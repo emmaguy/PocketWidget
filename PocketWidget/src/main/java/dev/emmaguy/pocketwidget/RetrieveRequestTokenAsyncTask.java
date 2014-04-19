@@ -22,14 +22,14 @@ public class RetrieveRequestTokenAsyncTask extends ProgressAsyncTask<Void, Void,
 
     private final String consumerKey;
     private final SharedPreferences sharedPreferences;
-    private final OnUrlRetrievedListener retreivedUrlListener;
+    private final OnUrlRetrievedListener retrievedUrlListener;
 
     public RetrieveRequestTokenAsyncTask(String consumerKey, OnUrlRetrievedListener onUrlRetrievedListener,
                                          SharedPreferences sharedPreferences, Context c, String dialogMessage) {
         super(c, dialogMessage);
 
         this.consumerKey = consumerKey;
-        this.retreivedUrlListener = onUrlRetrievedListener;
+        this.retrievedUrlListener = onUrlRetrievedListener;
         this.sharedPreferences = sharedPreferences;
     }
 
@@ -42,9 +42,8 @@ public class RetrieveRequestTokenAsyncTask extends ProgressAsyncTask<Void, Void,
     protected String doInBackground(Void... params) {
         String token = getRequestToken();
         if (token != null && token.length() > 0) {
-            sharedPreferences.edit().putString(UnreadArticlesPreferenceActivity.CODE, token).commit();
-            return String.format("https://getpocket.com/auth/authorize?request_token=%s&redirect_uri=%s", token,
-                    CALLBACK_URL);
+            sharedPreferences.edit().putString(SettingsActivity.CODE, token).commit();
+            return String.format("https://getpocket.com/auth/authorize?request_token=%s&redirect_uri=%s", token, CALLBACK_URL);
         }
         return null;
     }
@@ -68,7 +67,7 @@ public class RetrieveRequestTokenAsyncTask extends ProgressAsyncTask<Void, Void,
             return jsonObj.get("code").getAsString();
 
         } catch (Exception e) {
-            retreivedUrlListener.onError("Failed to retrieve request token: " + e.getMessage());
+            retrievedUrlListener.onError("Failed to retrieve request token: " + e.getMessage());
             Log.e("RetrieveRequestToken", "Failed to retrieve request token", e);
         }
         return null;
@@ -78,7 +77,7 @@ public class RetrieveRequestTokenAsyncTask extends ProgressAsyncTask<Void, Void,
     protected void onPostExecute(String str) {
         super.onPostExecute(str);
         if (str != null && str.length() > 0) {
-            retreivedUrlListener.onRetrievedUrl(str);
+            retrievedUrlListener.onRetrievedUrl(str);
         }
     }
 }

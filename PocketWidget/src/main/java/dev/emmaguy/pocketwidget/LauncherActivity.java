@@ -8,7 +8,9 @@ public class LauncherActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        startActivity(new Intent(this, UnreadArticlesPreferenceActivity.class));
+        Intent intent = new Intent(this, SettingsActivity.class);
+        intent.putExtra(SettingsActivity.FROM_LAUNCHER, true);
+        startActivity(intent);
         finish();
     }
 }
