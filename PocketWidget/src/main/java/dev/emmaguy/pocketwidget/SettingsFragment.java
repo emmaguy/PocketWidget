@@ -12,7 +12,6 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.widget.Toast;
 
@@ -20,16 +19,13 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     private int appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
 
     // empty constructor
-    public SettingsFragment() {
-        super();
-    }
+    public SettingsFragment() { }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        PreferenceManager prefMgr = getPreferenceManager();
-        prefMgr.setSharedPreferencesName(SettingsActivity.SHARED_PREFERENCES);
+        getPreferenceManager().setSharedPreferencesName(SettingsActivity.SHARED_PREFERENCES);
 
         addPreferencesFromResource(R.xml.preferences);
 

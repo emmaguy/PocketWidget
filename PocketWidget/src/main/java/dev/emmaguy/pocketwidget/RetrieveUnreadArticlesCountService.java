@@ -34,8 +34,7 @@ public class RetrieveUnreadArticlesCountService extends Service implements Unrea
         NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
         if (mWifi.isConnected() || !syncOnWifiOnly) {
-            new RetrieveCountOfUnreadArticlesAsyncTask(getResources().getString(R.string.pocket_consumer_key_mobile),
-                    accessToken, this).execute();
+            new RetrieveCountOfUnreadArticlesAsyncTask(getResources().getString(R.string.pocket_consumer_key_mobile), accessToken, this).execute();
         }
     }
 
