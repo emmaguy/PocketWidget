@@ -1,0 +1,105 @@
+ECLIPSE ANDROID PROJECT IMPORT SUMMARY
+======================================
+
+Ignored Files:
+--------------
+The following files were *not* copied into the new Gradle project; you
+should evaluate whether these are still needed in your project and if
+so manually move them:
+
+* .gitignore
+* .idea/
+* .idea/.name
+* .idea/compiler.xml
+* .idea/copyright/
+* .idea/copyright/profiles_settings.xml
+* .idea/encodings.xml
+* .idea/gradle.xml
+* .idea/misc.xml
+* .idea/modules.xml
+* .idea/scopes/
+* .idea/scopes/scope_settings.xml
+* .idea/vcs.xml
+* .idea/workspace.xml
+* README.md
+* gradle/
+* gradle/.gradle/
+* gradle/.gradle/1.9/
+* gradle/.gradle/1.9/taskArtifacts/
+* gradle/.gradle/1.9/taskArtifacts/cache.properties
+* gradle/.gradle/1.9/taskArtifacts/cache.properties.lock
+* gradle/.gradle/1.9/taskArtifacts/fileHashes.bin
+* gradle/.gradle/1.9/taskArtifacts/fileSnapshots.bin
+* gradle/.gradle/1.9/taskArtifacts/outputFileStates.bin
+* gradle/.gradle/1.9/taskArtifacts/taskArtifacts.bin
+* gradle/gradle.iml
+* gradle/local.properties
+* gradle/wrapper/
+* gradle/wrapper/gradle-wrapper.jar
+* gradle/wrapper/gradle-wrapper.properties
+* gradlew
+* gradlew.bat
+* out/
+* out/res-cache/
+* out/res-cache/PocketWidget/
+* out/res-cache/PocketWidget/drawable-hdpi/
+* out/res-cache/PocketWidget/drawable-hdpi/dashclock_icon.png
+* out/res-cache/PocketWidget/drawable-hdpi/edit.png
+* out/res-cache/PocketWidget/drawable-hdpi/favourite.png
+* out/res-cache/PocketWidget/drawable-hdpi/ic_launcher.png
+* out/res-cache/PocketWidget/drawable-hdpi/refresh.png
+* out/res-cache/PocketWidget/drawable-hdpi/settings.png
+* out/res-cache/PocketWidget/drawable-mdpi/
+* out/res-cache/PocketWidget/drawable-mdpi/dashclock_icon.png
+* out/res-cache/PocketWidget/drawable-mdpi/ic_launcher.png
+* out/res-cache/PocketWidget/drawable-mdpi/settings.png
+* out/res-cache/PocketWidget/drawable-xhdpi/
+* out/res-cache/PocketWidget/drawable-xhdpi/dashclock_icon.png
+* out/res-cache/PocketWidget/drawable-xhdpi/ic_launcher.png
+* out/res-cache/PocketWidget/drawable-xhdpi/settings.png
+* out/res-cache/PocketWidget/drawable-xxhdpi/
+* out/res-cache/PocketWidget/drawable-xxhdpi/dashclock_icon.png
+* out/res-cache/PocketWidget/drawable-xxhdpi/ic_launcher.png
+* out/res-cache/PocketWidget/drawable-xxhdpi/settings.png
+* out/res-cache/PocketWidget/drawable/
+* out/res-cache/PocketWidget/drawable/logo.9.png
+* proguard-project.txt
+* web_hi_res_512.png
+
+Replaced Jars with Dependencies:
+--------------------------------
+The importer recognized the following .jar files as third party
+libraries and replaced them with Gradle dependencies instead. This has
+the advantage that more explicit version information is known, and the
+libraries can be updated automatically. However, it is possible that
+the .jar file in your project was of an older version than the
+dependency we picked, which could render the project not compileable.
+You can disable the jar replacement in the import wizard and try again:
+
+android-support-v4.jar => com.android.support:support-v4:+
+gson-2.2.4.jar => com.google.code.gson:gson:2.2.4
+
+Moved Files:
+------------
+Android Gradle projects use a different directory structure than ADT
+Eclipse projects. Here's how the projects were restructured:
+
+* AndroidManifest.xml => app/src/main/AndroidManifest.xml
+* libs/dashclock-api-r2.0.jar => app/libs/dashclock-api-r2.0.jar
+* res/ => app/src/main/res/
+* src/ => app/src/main/java/
+
+Next Steps:
+-----------
+You can now build the project. The Gradle project needs network
+connectivity to download dependencies.
+
+Bugs:
+-----
+If for some reason your project does not build, and you determine that
+it is due to a bug or limitation of the Eclipse to Gradle importer,
+please file a bug at http://b.android.com with category
+Component-Tools.
+
+(This import summary is for your information only, and can be deleted
+after import once you are satisfied with the results.)
