@@ -65,4 +65,11 @@ public class SettingsActivity extends PreferenceActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    protected boolean isValidFragment(String fragmentName) {
+        if(SettingsFragment.class.getName().equals(fragmentName))
+            return true;
+        return false;
+    }
 }
