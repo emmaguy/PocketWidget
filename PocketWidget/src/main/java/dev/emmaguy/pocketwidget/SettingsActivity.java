@@ -1,5 +1,6 @@
 package dev.emmaguy.pocketwidget;
 
+import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
@@ -33,6 +34,12 @@ public class SettingsActivity extends PreferenceActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             boolean fromLauncher = extras.getBoolean(FROM_LAUNCHER);
+            int appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+
+            if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
+                showHomeAsUp = false;
+            }
+            
             if (fromLauncher) {
                 showHomeAsUp = false;
             }
@@ -68,7 +75,7 @@ public class SettingsActivity extends PreferenceActivity {
 
     @Override
     protected boolean isValidFragment(String fragmentName) {
-        if(SettingsFragment.class.getName().equals(fragmentName))
+        if (SettingsFragment.class.getName().equals(fragmentName))
             return true;
         return false;
     }
