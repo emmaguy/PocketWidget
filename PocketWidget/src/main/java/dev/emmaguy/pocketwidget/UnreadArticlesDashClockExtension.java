@@ -34,15 +34,18 @@ public class UnreadArticlesDashClockExtension extends DashClockExtension impleme
 
     @Override
     public void onUnreadCountRetrieved(Integer unreadCount) {
-        if (unreadCount >= 0) {
+        if (unreadCount > 0) {
             final PackageManager pm = getPackageManager();
             final Intent pocketAppIntent = pm.getLaunchIntentForPackage("com.ideashower.readitlater.pro");
             final ExtensionData extensionData = new ExtensionData()
-
-                    .visible(true).icon(R.drawable.ic_launcher).status(unreadCount.toString())
-                    .expandedTitle(getString(R.string.unread_items) + " " + unreadCount).clickIntent(pocketAppIntent);
-
+                    .visible(true)
+                    .icon(R.drawable.ic_launcher)
+                    .status(unreadCount.toString())
+                    .expandedTitle(getString(R.string.unread_items) + " " + unreadCount)
+                    .clickIntent(pocketAppIntent);
             publishUpdate(extensionData);
+        } else {
+            publishUpdate(null);
         }
     }
 }
