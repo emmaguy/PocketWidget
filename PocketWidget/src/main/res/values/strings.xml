@@ -29,9 +29,14 @@
     <string name="like_this">Like this?</string>
     <string name="rate_us_google_play">Rate us on Google Play!</string>
     <string name="unread_items">Unread Items: </string>
-    <string name="widget_only_refresh">Refresh Options (Widget only)</string>
+    <string name="widget_only_refresh">Widget Options</string>
 
     <string name="auto_sync_summary_wifi_and_mobile">Automatically retrieve unread count when connected to Wi-Fi or mobile data</string>
     <string name="auto_sync_summary_wifi_only">Automatically retrieve unread count only when connected to Wi-Fi</string>
+    <string name="always_show">Always show</string>
+    <string name="dashclock_settings">DashClock Settings</string>
+    <string name="always_show_on_dashclock">Always display in DashClock (even if 0 unread items)</string>
+    <string name="dont_always_show_on_dashclock">Doesn\'t display in DashClock when 0 unread items</string>
+    <string name="no_unread_items">No Unread Items</string>
 
 </resources>

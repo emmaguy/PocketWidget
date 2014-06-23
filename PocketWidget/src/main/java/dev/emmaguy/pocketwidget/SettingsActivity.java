@@ -23,6 +23,7 @@ public class SettingsActivity extends PreferenceActivity {
     public static final String FORCE_REFRESH = "force_refresh";
     public static final String RATE_THIS = "rate_this";
     public static final String WIFI_ONLY_KEY = "wifi_only";
+    public static final String ALWAYS_SHOW_KEY = "always_show";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

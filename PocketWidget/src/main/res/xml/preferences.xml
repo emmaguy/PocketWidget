@@ -17,6 +17,15 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory android:title="@string/dashclock_settings">
+        <CheckBoxPreference
+            android:key="always_show"
+            android:defaultValue="false"
+            android:title="@string/always_show"
+            android:summary="@string/dont_always_show_on_dashclock"/>
+
+    </PreferenceCategory>
+
     <PreferenceCategory android:title="@string/widget_only_refresh">
         <ListPreference
             android:key="refresh_interval"

@@ -158,6 +158,12 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 } else {
                     checkBoxPreference.setSummary(R.string.auto_sync_summary_wifi_and_mobile);
                 }
+            } else if(checkBoxPreference.hasKey() && checkBoxPreference.getKey().equals(SettingsActivity.ALWAYS_SHOW_KEY)) {
+                if (checkBoxPreference.isChecked()) {
+                    checkBoxPreference.setSummary(R.string.always_show_on_dashclock);
+                } else {
+                    checkBoxPreference.setSummary(R.string.dont_always_show_on_dashclock);
+                }
             }
         } else if (pref instanceof PreferenceScreen) {
             PreferenceScreen screen = (PreferenceScreen) pref;

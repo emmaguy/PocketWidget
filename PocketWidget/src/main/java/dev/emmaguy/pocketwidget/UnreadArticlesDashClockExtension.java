@@ -24,9 +24,9 @@ public class UnreadArticlesDashClockExtension extends DashClockExtension impleme
 
         boolean syncOnWifiOnly = sharedPreferences.getBoolean(SettingsActivity.WIFI_ONLY, false);
         ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        NetworkInfo wifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
-        if (mWifi.isConnected() || !syncOnWifiOnly) {
+        if (wifi.isConnected() || !syncOnWifiOnly) {
             new RetrieveCountOfUnreadArticlesAsyncTask(getResources().getString(R.string.pocket_consumer_key_mobile),
                     accessToken, this).execute();
         }
@@ -34,18 +34,30 @@ public class UnreadArticlesDashClockExtension extends DashClockExtension impleme
 
     @Override
     public void onUnreadCountRetrieved(Integer unreadCount) {
+        final SharedPreferences sharedPreferences = getSharedPreferences(SettingsActivity.SHARED_PREFERENCES, 0);
+
         if (unreadCount > 0) {
-            final PackageManager pm = getPackageManager();
-            final Intent pocketAppIntent = pm.getLaunchIntentForPackage("com.ideashower.readitlater.pro");
-            final ExtensionData extensionData = new ExtensionData()
-                    .visible(true)
-                    .icon(R.drawable.ic_launcher)
-                    .status(unreadCount.toString())
-                    .expandedTitle(getString(R.string.unread_items) + " " + unreadCount)
-                    .clickIntent(pocketAppIntent);
-            publishUpdate(extensionData);
-        } else {
-            publishUpdate(null);
+            updateDashClock(getString(R.string.unread_items) + " " + unreadCount, unreadCount);
+        } else if (unreadCount == 0) {
+            boolean alwaysShow = sharedPreferences.getBoolean(SettingsActivity.ALWAYS_SHOW_KEY, false);
+            if(alwaysShow) {
+                updateDashClock(getString(R.string.no_unread_items), unreadCount);
+            } else {
+                publishUpdate(null);
+            }
         }
+    }
+
+    private void updateDashClock(String message, Integer unreadCount) {
+        final PackageManager pm = getPackageManager();
+        final Intent pocketAppIntent = pm.getLaunchIntentForPackage("com.ideashower.readitlater.pro");
+
+        final ExtensionData extensionData = new ExtensionData()
+                .visible(true)
+                .icon(R.drawable.ic_launcher)
+                .status(unreadCount.toString())
+                .expandedTitle(message)
+                .clickIntent(pocketAppIntent);
+        publishUpdate(extensionData);
     }
 }
