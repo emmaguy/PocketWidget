@@ -48,6 +48,8 @@ public class RetrieveUnreadArticlesCountService extends Service implements Unrea
 
             updateWidget(unreadCount);
         }
+        
+        stopSelf();
     }
 
     private void updateWidget(final int unreadCount) {
