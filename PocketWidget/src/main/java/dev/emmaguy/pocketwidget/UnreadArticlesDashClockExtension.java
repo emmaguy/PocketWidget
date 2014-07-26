@@ -22,13 +22,12 @@ public class UnreadArticlesDashClockExtension extends DashClockExtension impleme
             return;
         }
 
-        boolean syncOnWifiOnly = sharedPreferences.getBoolean(SettingsActivity.WIFI_ONLY, false);
+        boolean syncOnWifiOnly = sharedPreferences.getBoolean(SettingsActivity.WIFI_ONLY_KEY, false);
         ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo wifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
         if (wifi.isConnected() || !syncOnWifiOnly) {
-            new RetrieveCountOfUnreadArticlesAsyncTask(getResources().getString(R.string.pocket_consumer_key_mobile),
-                    accessToken, this).execute();
+            new RetrieveCountOfUnreadArticlesAsyncTask(getResources().getString(R.string.pocket_consumer_key_mobile), accessToken, this).execute();
         }
     }
 

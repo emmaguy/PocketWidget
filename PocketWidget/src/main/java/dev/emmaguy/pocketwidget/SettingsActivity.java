@@ -15,7 +15,6 @@ public class SettingsActivity extends PreferenceActivity {
     public static final String POCKET_ACCOUNT = "authentication_preferencescreen";
     public static final String ACCESS_TOKEN = "accesstoken";
     public static final String USERNAME = "username";
-    public static final String WIFI_ONLY = "wifionly";
     public static final String CODE = "code";
     public static final String UNREAD_COUNT = "unread_count";
     public static final String REFRESH_INTERVAL = "refresh_interval";

@@ -36,7 +36,7 @@
 
         <PreferenceScreen
             android:key="force_refresh"
-            android:title="@string/update_now" />
+            android:title="@string/refresh_now" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/like_this">

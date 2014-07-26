@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
 
@@ -29,26 +30,29 @@ public class RetrieveUnreadArticlesCountService extends Service implements Unrea
         // update the ui with what's stored in sharedprefs until the refresh value is available
         updateWidget(sharedPreferences.getInt(SettingsActivity.UNREAD_COUNT, 0));
 
-        boolean syncOnWifiOnly = sharedPreferences.getBoolean(SettingsActivity.WIFI_ONLY, false);
         ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
-        if (mWifi.isConnected() || !syncOnWifiOnly) {
+        boolean syncOnWifiOnly = sharedPreferences.getBoolean(SettingsActivity.WIFI_ONLY_KEY, false);
+        boolean canSyncOnData = !syncOnWifiOnly;
+        boolean connectedToWifi = mWifi.isConnected();
+
+        if (connectedToWifi || canSyncOnData) {
             new RetrieveCountOfUnreadArticlesAsyncTask(getResources().getString(R.string.pocket_consumer_key_mobile), accessToken, this).execute();
+        } else {
+            stopSelf();
         }
     }
 
     @Override
     public void onUnreadCountRetrieved(Integer unreadCount) {
-
-        final SharedPreferences sharedPreferences = getSharedPreferences(SettingsActivity.SHARED_PREFERENCES, 0);
-
         if (unreadCount >= 0) {
-            sharedPreferences.edit().putInt(SettingsActivity.UNREAD_COUNT, unreadCount).commit();
+            final SharedPreferences sharedPreferences = getSharedPreferences(SettingsActivity.SHARED_PREFERENCES, 0);
+            sharedPreferences.edit().putInt(SettingsActivity.UNREAD_COUNT, unreadCount).apply();
 
             updateWidget(unreadCount);
         }
-        
+
         stopSelf();
     }
 

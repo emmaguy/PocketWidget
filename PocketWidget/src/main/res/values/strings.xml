@@ -22,7 +22,7 @@
     <string name="account_cleared">Account cleared</string>
     <string name="refresh_options">Refresh Options</string>
 
-    <string name="update_now">Update now!</string>
+    <string name="refresh_now">Refresh now!</string>
     <string name="refresh_interval">Refresh Interval</string>
     <string name="sync_wifi_only">Wi-Fi only sync</string>
 
