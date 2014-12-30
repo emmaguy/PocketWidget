@@ -1,4 +1,4 @@
-package dev.emmaguy.pocketwidget;
+package dev.emmaguy.pocketwidget.ui;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -9,7 +9,7 @@ public class LauncherActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         Intent intent = new Intent(this, SettingsActivity.class);
-        intent.putExtra(SettingsActivity.FROM_LAUNCHER, true);
+        intent.putExtra(SettingsActivity.EXTRA_KEY_FROM_LAUNCHER, true);
         startActivity(intent);
         finish();
     }

@@ -1,7 +1,6 @@
-package dev.emmaguy.pocketwidget;
+package dev.emmaguy.pocketwidget.auth;
 
-import android.content.Context;
-import android.util.Log;
+import android.os.AsyncTask;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -15,7 +14,9 @@ import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
-public class RetrieveAccessTokenAsyncTask extends ProgressAsyncTask<Void, Void, Void> {
+import dev.emmaguy.pocketwidget.Logger;
+
+public class RetrieveAccessTokenAsyncTask extends AsyncTask<Void, Void, Void> {
 
     private final String consumerKey;
     private final OnAccessTokenRetrievedListener accessTokenRetrievedListener;
@@ -24,9 +25,7 @@ public class RetrieveAccessTokenAsyncTask extends ProgressAsyncTask<Void, Void, 
     private String accessToken;
     private String username;
 
-    public RetrieveAccessTokenAsyncTask(String consumerKey, OnAccessTokenRetrievedListener listener, Context c, String dialogMessage, String code) {
-        super(c, dialogMessage);
-
+    public RetrieveAccessTokenAsyncTask(String consumerKey, OnAccessTokenRetrievedListener listener, String code) {
         this.consumerKey = consumerKey;
         this.accessTokenRetrievedListener = listener;
         this.code = code;
@@ -58,7 +57,7 @@ public class RetrieveAccessTokenAsyncTask extends ProgressAsyncTask<Void, Void, 
             accessToken = jsonObj.get("access_token").getAsString();
             username = jsonObj.get("username").getAsString();
         } catch (Exception e) {
-            Log.e("RetrieveRequestToken", "Failed to retrieve request token", e);
+            Logger.Log("Failed to retrieve request token", e);
         }
 
         return null;
@@ -66,7 +65,6 @@ public class RetrieveAccessTokenAsyncTask extends ProgressAsyncTask<Void, Void, 
 
     @Override
     protected void onPostExecute(Void x) {
-        super.onPostExecute(x);
         accessTokenRetrievedListener.onRetrievedAccessToken(accessToken, username);
     }
 

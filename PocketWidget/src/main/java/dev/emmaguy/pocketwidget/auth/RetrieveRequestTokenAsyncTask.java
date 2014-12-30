@@ -1,8 +1,7 @@
-package dev.emmaguy.pocketwidget;
+package dev.emmaguy.pocketwidget.auth;
 
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
+import android.os.AsyncTask;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -16,18 +15,17 @@ import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
-public class RetrieveRequestTokenAsyncTask extends ProgressAsyncTask<Void, Void, String> {
+import dev.emmaguy.pocketwidget.Logger;
+import dev.emmaguy.pocketwidget.ui.SettingsActivity;
 
+public class RetrieveRequestTokenAsyncTask extends AsyncTask<Void, Void, String> {
     private static final String CALLBACK_URL = "pocketwidget://callback";
 
     private final String consumerKey;
     private final SharedPreferences sharedPreferences;
     private final OnUrlRetrievedListener retrievedUrlListener;
 
-    public RetrieveRequestTokenAsyncTask(String consumerKey, OnUrlRetrievedListener onUrlRetrievedListener,
-                                         SharedPreferences sharedPreferences, Context c, String dialogMessage) {
-        super(c, dialogMessage);
-
+    public RetrieveRequestTokenAsyncTask(String consumerKey, OnUrlRetrievedListener onUrlRetrievedListener, SharedPreferences sharedPreferences) {
         this.consumerKey = consumerKey;
         this.retrievedUrlListener = onUrlRetrievedListener;
         this.sharedPreferences = sharedPreferences;
@@ -37,7 +35,7 @@ public class RetrieveRequestTokenAsyncTask extends ProgressAsyncTask<Void, Void,
     protected String doInBackground(Void... params) {
         String token = getRequestToken();
         if (token != null && token.length() > 0) {
-            sharedPreferences.edit().putString(SettingsActivity.CODE, token).apply();
+            sharedPreferences.edit().putString(SettingsActivity.POCKET_AUTH_CODE, token).apply();
             return String.format("https://getpocket.com/auth/authorize?request_token=%s&redirect_uri=%s", token, CALLBACK_URL);
         }
         return null;
@@ -63,7 +61,7 @@ public class RetrieveRequestTokenAsyncTask extends ProgressAsyncTask<Void, Void,
 
         } catch (Exception e) {
             retrievedUrlListener.onError("Failed to retrieve request token: " + e.getMessage());
-            Log.e("RetrieveRequestToken", "Failed to retrieve request token", e);
+            Logger.Log("Failed to retrieve request token", e);
         }
         return null;
     }

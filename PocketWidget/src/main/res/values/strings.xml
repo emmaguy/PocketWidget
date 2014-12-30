@@ -1,42 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">Unread Articles Count</string>
     <string name="pocket_account">Pocket Account</string>
-
     <string name="widget_description">Displays the count of your unread articles in Pocket</string>
     <string name="settings_label">Unread Articles Settings</string>
     <string name="failed_to_launch_market">Failed to launch Market</string>
     <string name="refreshing">Refreshing...</string>
-
+    <string name="retrieving_latest_unread_count">Retrieving latest number of unread articles...</string>
     <string name="retrieving_request_token">Retrieving request token from Pocket</string>
     <string name="retrieving_access_token">Retrieving access token from Pocket</string>
     <string name="redirecting_to_browser">Redirecting to browser to authenticate with Pocket</string>
-
-    <string name="successfully_logged_in_as">Successfully logged in as: </string>
-
+    <string name="successfully_logged_in_as">Successfully signed in as: </string>
     <string name="tap_to_sign_in">Tap to sign in to your Pocket account</string>
     <string name="tap_to_sign_out">Tap to sign out of your Pocket account</string>
-
-    <string name="sign_out">Sign out </string>
+    <string name="sign_out">Sign out</string>
     <string name="sign_in">Sign in with Pocket</string>
-
     <string name="account_cleared">Account cleared</string>
     <string name="refresh_options">Refresh Options</string>
-
-    <string name="refresh_now">Refresh now!</string>
+    <string name="refresh_now">Sync now!</string>
     <string name="refresh_interval">Refresh Interval</string>
     <string name="sync_wifi_only">Wi-Fi only sync</string>
-
     <string name="like_this">Like this?</string>
     <string name="rate_us_google_play">Rate us on Google Play!</string>
-    <string name="unread_items">Unread Items: </string>
-    <string name="widget_only_refresh">Widget Options</string>
-
-    <string name="auto_sync_summary_wifi_and_mobile">Automatically retrieve unread count when connected to Wi-Fi or mobile data</string>
-    <string name="auto_sync_summary_wifi_only">Automatically retrieve unread count only when connected to Wi-Fi</string>
-    <string name="always_show">Always show</string>
-    <string name="dashclock_settings">DashClock Settings</string>
-    <string name="always_show_on_dashclock">Always display in DashClock (even if 0 unread items)</string>
-    <string name="dont_always_show_on_dashclock">Doesn\'t display in DashClock when 0 unread items</string>
-    <string name="no_unread_items">No Unread Items</string>
+    <string name="unread_articles_x">Unread Articles: %1$s</string>
+    <string name="unread_article">Number of unread articles</string>
+    <string name="not_enough_data_points">Not enough daily unread article counts to graph</string>
+    <string name="please_come_back_in_days">Please try again in a few days</string>
+    <string name="summary_sync_wifi_only">Sync only when connected to Wi-Fi</string>
+    <string name="please_login_first">You must sign in before retrieving the count of unread articles</string>
+    <string name="title_activity_graph">Unread Articles over Time</string>
+    <string name="view_graph">View graph</string>
 
 </resources>

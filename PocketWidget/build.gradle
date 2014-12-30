@@ -34,4 +34,6 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.google.code.gson:gson:2.2.+'
     compile 'com.android.support:support-v4:21.+'
+
+    compile 'me.tatarka.support:jobscheduler:0.1.1'
 }
