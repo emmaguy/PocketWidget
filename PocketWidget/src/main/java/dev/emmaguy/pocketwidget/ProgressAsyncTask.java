@@ -21,12 +21,11 @@ public abstract class ProgressAsyncTask<A, B, C> extends AsyncTask<A, B, C> {
 
     @Override
     protected void onPostExecute(final C success) {
-        try
-        {
+        try {
             if (dialog != null && dialog.isShowing()) {
                 dialog.dismiss();
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
 
         }
     }

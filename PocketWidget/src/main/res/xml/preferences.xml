@@ -4,35 +4,35 @@
     <PreferenceCategory android:title="@string/pocket_account">
         <PreferenceScreen
             android:key="authentication_preferencescreen"
-            android:title="@string/pocket_account"
-            android:summary="@string/tap_to_sign_in"/>
+            android:summary="@string/tap_to_sign_in"
+            android:title="@string/pocket_account" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/refresh_options">
         <CheckBoxPreference
-            android:key="wifi_only"
             android:defaultValue="false"
-            android:title="@string/sync_wifi_only"
-            android:summary="@string/auto_sync_summary_wifi_and_mobile"/>
+            android:key="wifi_only"
+            android:summary="@string/auto_sync_summary_wifi_and_mobile"
+            android:title="@string/sync_wifi_only" />
 
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/dashclock_settings">
         <CheckBoxPreference
-            android:key="always_show"
             android:defaultValue="false"
-            android:title="@string/always_show"
-            android:summary="@string/dont_always_show_on_dashclock"/>
+            android:key="always_show"
+            android:summary="@string/dont_always_show_on_dashclock"
+            android:title="@string/always_show" />
 
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/widget_only_refresh">
         <ListPreference
-            android:key="refresh_interval"
-            android:title="@string/refresh_interval"
+            android:defaultValue="3"
             android:entries="@array/interval_options_names"
             android:entryValues="@array/interval_options"
-            android:defaultValue="3"/>
+            android:key="refresh_interval"
+            android:title="@string/refresh_interval" />
 
         <PreferenceScreen
             android:key="force_refresh"
@@ -42,9 +42,9 @@
     <PreferenceCategory android:title="@string/like_this">
 
         <PreferenceScreen
+            android:icon="@drawable/ic_action_important"
             android:key="rate_this"
-            android:title="@string/rate_us_google_play"
-            android:icon="@drawable/ic_action_important" />
+            android:title="@string/rate_us_google_play" />
 
     </PreferenceCategory>
 

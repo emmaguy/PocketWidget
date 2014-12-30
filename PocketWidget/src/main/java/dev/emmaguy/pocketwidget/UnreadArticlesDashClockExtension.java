@@ -39,7 +39,7 @@ public class UnreadArticlesDashClockExtension extends DashClockExtension impleme
             updateDashClock(getString(R.string.unread_items) + " " + unreadCount, unreadCount);
         } else if (unreadCount == 0) {
             boolean alwaysShow = sharedPreferences.getBoolean(SettingsActivity.ALWAYS_SHOW_KEY, false);
-            if(alwaysShow) {
+            if (alwaysShow) {
                 updateDashClock(getString(R.string.no_unread_items), unreadCount);
             } else {
                 publishUpdate(null);

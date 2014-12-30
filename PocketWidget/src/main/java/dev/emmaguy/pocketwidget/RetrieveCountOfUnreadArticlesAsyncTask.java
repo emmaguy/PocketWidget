@@ -54,12 +54,12 @@ public class RetrieveCountOfUnreadArticlesAsyncTask extends AsyncTask<Void, Void
         return -1;
     }
 
-    public interface UnreadCountRetrievedListener {
-        void onUnreadCountRetrieved(Integer unreadCount);
-    }
-
     @Override
     protected void onPostExecute(Integer unreadCount) {
         listener.onUnreadCountRetrieved(unreadCount);
+    }
+
+    public interface UnreadCountRetrievedListener {
+        void onUnreadCountRetrieved(Integer unreadCount);
     }
 }

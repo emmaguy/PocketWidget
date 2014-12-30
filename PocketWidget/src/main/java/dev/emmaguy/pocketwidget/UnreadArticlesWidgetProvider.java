@@ -12,16 +12,8 @@ import android.util.Log;
 
 public class UnreadArticlesWidgetProvider extends AppWidgetProvider {
 
-    private static PendingIntent service = null;
     private static final String DEFAULT_REFRESH_HOURS = "3";
-
-    @Override
-    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        createOrUpdateService(
-                context,
-                context.getSharedPreferences(SettingsActivity.SHARED_PREFERENCES, 0).getString(SettingsActivity.REFRESH_INTERVAL, DEFAULT_REFRESH_HOURS)
-        );
-    }
+    private static PendingIntent service = null;
 
     public static void createOrUpdateService(Context context, String refreshInterval) {
         final AlarmManager m = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -35,14 +27,22 @@ public class UnreadArticlesWidgetProvider extends AppWidgetProvider {
         m.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), AlarmManager.INTERVAL_HOUR * intervalInHours, service);
     }
 
-    @Override
-    public void onDisabled(Context context) {
-        killService(context);
-    }
-
     public static void killService(Context context) {
         final AlarmManager m = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         m.cancel(service);
+    }
+
+    @Override
+    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        createOrUpdateService(
+                context,
+                context.getSharedPreferences(SettingsActivity.SHARED_PREFERENCES, 0).getString(SettingsActivity.REFRESH_INTERVAL, DEFAULT_REFRESH_HOURS)
+        );
+    }
+
+    @Override
+    public void onDisabled(Context context) {
+        killService(context);
     }
 
     @Override

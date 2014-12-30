@@ -19,7 +19,8 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     private int appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
 
     // empty constructor
-    public SettingsFragment() { }
+    public SettingsFragment() {
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -158,7 +159,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 } else {
                     checkBoxPreference.setSummary(R.string.auto_sync_summary_wifi_and_mobile);
                 }
-            } else if(checkBoxPreference.hasKey() && checkBoxPreference.getKey().equals(SettingsActivity.ALWAYS_SHOW_KEY)) {
+            } else if (checkBoxPreference.hasKey() && checkBoxPreference.getKey().equals(SettingsActivity.ALWAYS_SHOW_KEY)) {
                 if (checkBoxPreference.isChecked()) {
                     checkBoxPreference.setSummary(R.string.always_show_on_dashclock);
                 } else {

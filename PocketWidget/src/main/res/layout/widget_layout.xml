@@ -1,33 +1,33 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
     <ImageView
         android:id="@+id/widget_imageview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="@string/widget_description"
-        android:layout_centerHorizontal="true"
         android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="5dp"
+        android:contentDescription="@string/widget_description"
         android:scaleType="fitXY"
-        android:src="@drawable/ic_launcher"/>
+        android:src="@drawable/ic_launcher" />
 
     <TextView
         android:id="@+id/unread_count_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/unread_count_background"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:textColor="@color/pocket_red"
-        android:textAppearance="@android:style/TextAppearance.Small"
+        android:background="@drawable/unread_count_background"
+        android:gravity="center"
         android:minWidth="25dp"
+        android:paddingBottom="1dp"
         android:paddingLeft="2dp"
         android:paddingRight="2dp"
         android:paddingTop="1dp"
-        android:paddingBottom="1dp"
-        android:gravity="center"
+        android:textAppearance="@android:style/TextAppearance.Small"
+        android:textColor="@color/pocket_red"
         android:visibility="gone" />
 
 </RelativeLayout>

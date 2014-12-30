@@ -33,11 +33,6 @@ public class RetrieveRequestTokenAsyncTask extends ProgressAsyncTask<Void, Void,
         this.sharedPreferences = sharedPreferences;
     }
 
-    public interface OnUrlRetrievedListener {
-        void onRetrievedUrl(String str);
-        void onError(String message);
-    }
-
     @Override
     protected String doInBackground(Void... params) {
         String token = getRequestToken();
@@ -79,5 +74,11 @@ public class RetrieveRequestTokenAsyncTask extends ProgressAsyncTask<Void, Void,
         if (str != null && str.length() > 0) {
             retrievedUrlListener.onRetrievedUrl(str);
         }
+    }
+
+    public interface OnUrlRetrievedListener {
+        void onRetrievedUrl(String str);
+
+        void onError(String message);
     }
 }

@@ -32,10 +32,6 @@ public class RetrieveAccessTokenAsyncTask extends ProgressAsyncTask<Void, Void, 
         this.code = code;
     }
 
-    public interface OnAccessTokenRetrievedListener {
-        void onRetrievedAccessToken(String accessToken, String username);
-    }
-
     @Override
     protected Void doInBackground(Void... params) {
 
@@ -72,5 +68,9 @@ public class RetrieveAccessTokenAsyncTask extends ProgressAsyncTask<Void, Void, 
     protected void onPostExecute(Void x) {
         super.onPostExecute(x);
         accessTokenRetrievedListener.onRetrievedAccessToken(accessToken, username);
+    }
+
+    public interface OnAccessTokenRetrievedListener {
+        void onRetrievedAccessToken(String accessToken, String username);
     }
 }

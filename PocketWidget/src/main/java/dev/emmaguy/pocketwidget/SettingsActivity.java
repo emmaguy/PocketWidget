@@ -24,6 +24,9 @@ public class SettingsActivity extends PreferenceActivity {
     public static final String WIFI_ONLY_KEY = "wifi_only";
     public static final String ALWAYS_SHOW_KEY = "always_show";
 
+    public static final String DASHCLOCK_PACKAGE_NAME = "net.nurik.roman.dashclock";
+    public static final String DASHCLOCK_CLASS_NAME_CONFIGURATION_ACTIVITY = "com.google.android.apps.dashclock.configuration.ConfigurationActivity";
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +42,7 @@ public class SettingsActivity extends PreferenceActivity {
             if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
                 showHomeAsUp = false;
             }
-            
+
             if (fromLauncher) {
                 showHomeAsUp = false;
             }
@@ -61,7 +64,7 @@ public class SettingsActivity extends PreferenceActivity {
 
                 try {
                     Intent intent = new Intent();
-                    intent.setComponent(new ComponentName("net.nurik.roman.dashclock", "com.google.android.apps.dashclock.configuration.ConfigurationActivity"));
+                    intent.setComponent(new ComponentName(DASHCLOCK_PACKAGE_NAME, DASHCLOCK_CLASS_NAME_CONFIGURATION_ACTIVITY));
                     NavUtils.navigateUpTo(this, intent);
                 } catch (Exception ignored) {
                     // can't explicitly find/launch DashClock to go back to, so just close self
