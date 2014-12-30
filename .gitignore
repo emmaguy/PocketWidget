@@ -1,35 +1,10 @@
-# built application files
-*.apk
-*.ap_
+.gradle
+/local.properties
+/.idea/workspace.xml
+.DS_Store
+**.iml
+**hidden_strings.xml
+.idea/
 
-# files for the dex VM
-*.dex
-
-# Java class files
-*.class
-
-*hidden_strings.xml
-keystore
-build.gradle
-
-# generated files
-bin/
-gen/
-
-# Local configuration file (sdk path, etc)
-local.properties
-
-# Eclipse project files
-.classpath
-.project
-
-# Android studio
-.idea/*
-*.iml
-InfectionPolicyProject/.idea/
-**/*.iml
-.gradle/
-**/build/
-
-# OSX
-**/.DS_Store
+/PocketWidget/build/*
+build/*
