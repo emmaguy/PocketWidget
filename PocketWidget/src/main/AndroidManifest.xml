@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="dev.emmaguy.pocketwidget"
-          xmlns:android="http://schemas.android.com/apk/res/android"
-          android:installLocation="internalOnly">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="dev.emmaguy.pocketwidget"
+    android:installLocation="internalOnly" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission
+        android:name="android.permission.WAKE_LOCK"
+        android:maxSdkVersion="20" />
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/settings"
         android:label="@string/settings_label"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme" >
         <receiver
-            android:name="dev.emmaguy.pocketwidget.UnreadArticlesWidgetProvider"
-            android:label="@string/app_name">
+            android:name=".widget.WidgetProvider"
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -24,9 +28,9 @@
         </receiver>
 
         <activity
-            android:name="dev.emmaguy.pocketwidget.LauncherActivity"
+            android:name=".ui.LauncherActivity"
             android:icon="@drawable/settings"
-            android:label="@string/settings_label">
+            android:label="@string/settings_label" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -34,8 +38,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="dev.emmaguy.pocketwidget.SettingsActivity"
-            android:icon="@drawable/settings">
+            android:name=".ui.SettingsActivity"
+            android:icon="@drawable/settings" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -48,12 +52,21 @@
             </intent-filter>
         </activity>
 
-        <service android:name="dev.emmaguy.pocketwidget.RetrieveUnreadArticlesCountService" />
+        <provider
+            android:name=".DataProvider"
+            android:authorities="dev.emmaguy.pocketwidget.DataProvider"
+            android:exported="false" />
+
         <service
-            android:name="dev.emmaguy.pocketwidget.UnreadArticlesDashClockExtension"
+            android:name=".RetrieveJobService"
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <service
+            android:name=".dashclock.DashClockProvider"
             android:icon="@drawable/ic_launcher"
             android:label="@string/app_name"
-            android:permission="com.google.android.apps.dashclock.permission.READ_EXTENSION_DATA">
+            android:permission="com.google.android.apps.dashclock.permission.READ_EXTENSION_DATA" >
             <intent-filter>
                 <action android:name="com.google.android.apps.dashclock.Extension" />
             </intent-filter>
@@ -72,6 +85,14 @@
                 android:value="dev.emmaguy.pocketwidget.SettingsActivity" />
         </service>
 
+        <activity
+            android:name=".ui.GraphActivity"
+            android:label="@string/title_activity_graph"
+            android:parentActivityName=".ui.SettingsActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="dev.emmaguy.pocketwidget.ui.SettingsActivity" />
+        </activity>
     </application>
 
 </manifest>

@@ -1,0 +1,38 @@
+<resources>
+
+    <string-array name="interval_options_names">
+        <item>15 minutes</item>
+        <item>30 minutes</item>
+        <item>1 hour</item>
+        <item>3 hours</item>
+        <item>6 hours</item>
+        <item>12 hours</item>
+        <item>24 hours</item>
+    </string-array>
+
+    <string-array name="interval_options_values" translatable="false">
+        <item>15</item>
+        <item>30</item>
+        <item>60</item>
+        <item>180</item>
+        <item>360</item>
+        <item>720</item>
+        <item>1440</item>
+    </string-array>
+
+    <string-array name="graph_over_time_titles">
+        <item>Daily</item>
+        <item>Weekly</item>
+        <item>Monthly</item>
+        <item>All Data</item>
+    </string-array>
+
+    <!-- See https://www.sqlite.org/lang_datefunc.html -->
+    <string-array name="graph_over_time_values" translatable="false">
+        <item>%Y%m%d</item>
+        <item>%Y%W</item>
+        <item>%Y%m</item>
+        <item></item>
+    </string-array>
+
+</resources>

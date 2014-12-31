@@ -3,49 +3,44 @@
 
     <PreferenceCategory android:title="@string/pocket_account">
         <PreferenceScreen
-            android:key="authentication_preferencescreen"
+            android:key="@string/pref_key_pocket_account"
             android:summary="@string/tap_to_sign_in"
-            android:title="@string/pocket_account" />
+            android:title="@string/pocket_account"
+            android:icon="@drawable/ic_pocket_grey600_36dp" />
+
+        <PreferenceScreen
+            android:key="@string/pref_key_view_graph"
+            android:title="@string/view_graph"
+            android:icon="@drawable/ic_insert_chart_grey600_36dp" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/refresh_options">
         <CheckBoxPreference
             android:defaultValue="false"
-            android:key="wifi_only"
-            android:summary="@string/auto_sync_summary_wifi_and_mobile"
-            android:title="@string/sync_wifi_only" />
+            android:key="@string/pref_key_wifi_only"
+            android:summary="@string/summary_sync_wifi_only"
+            android:title="@string/sync_wifi_only"
+            android:icon="@drawable/ic_signal_wifi_4_bar_grey600_36dp" />
 
-    </PreferenceCategory>
-
-    <PreferenceCategory android:title="@string/dashclock_settings">
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="always_show"
-            android:summary="@string/dont_always_show_on_dashclock"
-            android:title="@string/always_show" />
-
-    </PreferenceCategory>
-
-    <PreferenceCategory android:title="@string/widget_only_refresh">
         <ListPreference
-            android:defaultValue="3"
+            android:defaultValue="@string/pref_default_refresh_interval_minutes"
             android:entries="@array/interval_options_names"
-            android:entryValues="@array/interval_options"
-            android:key="refresh_interval"
+            android:entryValues="@array/interval_options_values"
+            android:icon="@drawable/ic_timer_grey600_36dp"
+            android:key="@string/pref_key_refresh_interval_minutes"
             android:title="@string/refresh_interval" />
 
         <PreferenceScreen
-            android:key="force_refresh"
-            android:title="@string/refresh_now" />
+            android:key="@string/pref_key_force_refresh"
+            android:title="@string/refresh_now"
+            android:icon="@drawable/ic_sync_grey600_36dp" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/like_this">
-
         <PreferenceScreen
-            android:icon="@drawable/ic_action_important"
-            android:key="rate_this"
-            android:title="@string/rate_us_google_play" />
-
+            android:key="@string/pref_key_rate_this"
+            android:title="@string/rate_us_google_play"
+            android:icon="@drawable/ic_star_grey600_36dp" />
     </PreferenceCategory>
 
 </PreferenceScreen>

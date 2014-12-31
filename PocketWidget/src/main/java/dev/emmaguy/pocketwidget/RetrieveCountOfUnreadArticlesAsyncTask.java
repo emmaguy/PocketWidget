@@ -1,7 +1,6 @@
 package dev.emmaguy.pocketwidget;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -48,7 +47,7 @@ public class RetrieveCountOfUnreadArticlesAsyncTask extends AsyncTask<Void, Void
             int unreadCount = parse.getAsJsonObject().get("count_unread").getAsInt();
             return unreadCount;
         } catch (Exception e) {
-            Log.e("UnreadArticlesWidget", "Failed to get unread items", e);
+            Logger.Log("Failed to get unread items", e);
         }
 
         return -1;
