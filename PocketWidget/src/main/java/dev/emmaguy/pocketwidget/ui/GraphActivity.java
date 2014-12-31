@@ -7,23 +7,25 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.interfaces.OnChartValueSelectedListener;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Locale;
 
 import dev.emmaguy.pocketwidget.DataProvider;
 import dev.emmaguy.pocketwidget.Logger;
 import dev.emmaguy.pocketwidget.R;
 
-public class GraphActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class GraphActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor>, OnChartValueSelectedListener {
     private LineChart mChart;
 
     @Override
@@ -53,7 +55,7 @@ public class GraphActivity extends Activity implements LoaderManager.LoaderCallb
     }
 
     private void populateGraph(Cursor data) {
-        final DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault());
+        final DateFormat dateFormat = new SimpleDateFormat();//DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault());
 
         ArrayList<Entry> unreadCounts = new ArrayList<Entry>();
         ArrayList<String> dates = new ArrayList<String>();
@@ -99,13 +101,24 @@ public class GraphActivity extends Activity implements LoaderManager.LoaderCallb
         mChart.setNoDataText(getString(R.string.not_enough_data_points));
         mChart.setNoDataTextDescription(getString(R.string.please_come_back_in_days));
         mChart.setDrawGridBackground(false);
-        mChart.setDrawYValues(false);
+        mChart.setDrawYValues(true);
         mChart.setDescription("");
-        mChart.setStartAtZero(true);
+        mChart.setStartAtZero(false);
+        mChart.setOnChartValueSelectedListener(this);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+
+    }
+
+    @Override
+    public void onValueSelected(Entry entry, int i) {
+        Toast.makeText(this, getString(R.string.unread_articles_x, ((int)entry.getVal())), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onNothingSelected() {
 
     }
 }

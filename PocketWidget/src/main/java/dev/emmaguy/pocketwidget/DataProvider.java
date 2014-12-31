@@ -94,7 +94,7 @@ public class DataProvider extends ContentProvider {
                 SQLiteDatabase db1 = mUnreadArticlesDatabase.getReadableDatabase();
                 return db1.rawQuery("SELECT " + DATE + ", " + UNREAD_COUNT +
                         " FROM " + UNREAD_ARTICLES_TABLE_NAME +
-                        " GROUP BY strftime('%Y%m%d', " + DATE + ") " +
+//                        " GROUP BY strftime('%Y%m%d%H', " + DATE + ") " +
                         " ORDER BY " + DATE_TICKS, null);
             default:
                 return runQuery(uri, columns, selection, selectionArgs, null, sortOrder);

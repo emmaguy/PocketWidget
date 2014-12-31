@@ -219,7 +219,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         } else if (preference.getKey().equals(getString(R.string.pref_key_force_refresh))) {
             if (isSignedIn()) {
                 mProgressDialog = showProgressDialog(getString(R.string.retrieving_latest_unread_count));
-
+// TODO just cancel?
                 final String accessToken = getSharedPreferences().getString(SettingsActivity.POCKET_AUTH_ACCESS_TOKEN, null);
                 new RetrieveCountOfUnreadArticlesAsyncTask(getResources().getString(R.string.pocket_consumer_key_mobile), accessToken, this).execute();
             } else {

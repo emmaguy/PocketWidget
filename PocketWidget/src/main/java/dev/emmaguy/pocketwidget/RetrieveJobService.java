@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 import dev.emmaguy.pocketwidget.ui.SettingsActivity;
 import dev.emmaguy.pocketwidget.widget.WidgetProvider;
@@ -71,7 +72,7 @@ public class RetrieveJobService extends JobService implements RetrieveCountOfUnr
             return;
         }
 
-        Date now = Calendar.getInstance().getTime();
+        Date now = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime();
         String formattedDate = DataProvider.sDateFormat.format(now.getTime());
 
         ContentValues v = new ContentValues();

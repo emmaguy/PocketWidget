@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">Unread Articles Count</string>
-    <string name="pocket_account">Pocket Account</string>
+    <string name="pocket_account">Pocket account</string>
     <string name="widget_description">Displays the count of your unread articles in Pocket</string>
     <string name="settings_label">Unread Articles Settings</string>
     <string name="failed_to_launch_market">Failed to launch Market</string>
@@ -19,7 +19,7 @@
     <string name="account_cleared">Account cleared</string>
     <string name="refresh_options">Refresh Options</string>
     <string name="refresh_now">Sync now!</string>
-    <string name="refresh_interval">Refresh Interval</string>
+    <string name="refresh_interval">Refresh interval</string>
     <string name="sync_wifi_only">Wi-Fi only sync</string>
     <string name="like_this">Like this?</string>
     <string name="rate_us_google_play">Rate us on Google Play!</string>
