@@ -20,4 +20,19 @@
         <item>1440</item>
     </string-array>
 
+    <string-array name="graph_over_time_titles">
+        <item>Daily</item>
+        <item>Weekly</item>
+        <item>Monthly</item>
+        <item>All Data</item>
+    </string-array>
+
+    <!-- See https://www.sqlite.org/lang_datefunc.html -->
+    <string-array name="graph_over_time_values" translatable="false">
+        <item>%Y%m%d</item>
+        <item>%Y%W</item>
+        <item>%Y%m</item>
+        <item></item>
+    </string-array>
+
 </resources>

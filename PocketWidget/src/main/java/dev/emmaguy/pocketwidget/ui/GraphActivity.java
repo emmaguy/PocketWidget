@@ -4,9 +4,13 @@ import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Loader;
+import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.Chart;
@@ -25,8 +29,10 @@ import dev.emmaguy.pocketwidget.DataProvider;
 import dev.emmaguy.pocketwidget.Logger;
 import dev.emmaguy.pocketwidget.R;
 
-public class GraphActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor>, OnChartValueSelectedListener {
+public class GraphActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor>, OnChartValueSelectedListener, AdapterView.OnItemSelectedListener {
     private LineChart mChart;
+    private Spinner mSpinner;
+    private TypedArray mSelectedValues;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +40,25 @@ public class GraphActivity extends Activity implements LoaderManager.LoaderCallb
 
         setContentView(R.layout.activity_graph);
 
+        mSelectedValues = getResources().obtainTypedArray(R.array.graph_over_time_values);
+
+        Paint infoPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        infoPaint.setTextAlign(Paint.Align.CENTER);
+        infoPaint.setTextSize(com.github.mikephil.charting.utils.Utils.convertDpToPixel(14f));
+        infoPaint.setColor(getResources().getColor(R.color.black));
+
         mChart = (LineChart) findViewById(R.id.chart);
+        mChart.setPaint(infoPaint, Chart.PAINT_INFO);
+        mChart.setNoDataText(getString(R.string.not_enough_data_points));
+        mChart.setNoDataTextDescription(getString(R.string.not_enough_data_action));
+        mChart.setDrawGridBackground(false);
+        mChart.setDrawYValues(true);
+        mChart.setDescription("");
+        mChart.setStartAtZero(false);
+        mChart.setOnChartValueSelectedListener(this);
+
+        mSpinner = (Spinner) findViewById(R.id.spinner);
+        mSpinner.setOnItemSelectedListener(this);
 
         getLoaderManager().initLoader(0, null, this);
     }
@@ -46,7 +70,7 @@ public class GraphActivity extends Activity implements LoaderManager.LoaderCallb
                 null,
                 null,
                 null,
-                null);
+                mSelectedValues.getString(mSpinner.getSelectedItemPosition()));
     }
 
     @Override
@@ -55,6 +79,7 @@ public class GraphActivity extends Activity implements LoaderManager.LoaderCallb
     }
 
     private void populateGraph(Cursor data) {
+        Logger.Log("populateGraph " + data.getCount());
         final DateFormat dateFormat = new SimpleDateFormat();//DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault());
 
         ArrayList<Entry> unreadCounts = new ArrayList<Entry>();
@@ -91,20 +116,8 @@ public class GraphActivity extends Activity implements LoaderManager.LoaderCallb
         lineData.setCircleColor(getResources().getColor(R.color.pocket_red));
         lineData.setColor(getResources().getColor(R.color.pocket_red));
 
-        Paint infoPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        infoPaint.setTextAlign(Paint.Align.CENTER);
-        infoPaint.setTextSize(com.github.mikephil.charting.utils.Utils.convertDpToPixel(14f));
-        infoPaint.setColor(getResources().getColor(R.color.black));
-
         mChart.setData(new LineData(dates, lineData));
-        mChart.setPaint(infoPaint, Chart.PAINT_INFO);
-        mChart.setNoDataText(getString(R.string.not_enough_data_points));
-        mChart.setNoDataTextDescription(getString(R.string.please_come_back_in_days));
-        mChart.setDrawGridBackground(false);
-        mChart.setDrawYValues(true);
-        mChart.setDescription("");
-        mChart.setStartAtZero(false);
-        mChart.setOnChartValueSelectedListener(this);
+        mChart.fitScreen();
     }
 
     @Override
@@ -114,11 +127,22 @@ public class GraphActivity extends Activity implements LoaderManager.LoaderCallb
 
     @Override
     public void onValueSelected(Entry entry, int i) {
-        Toast.makeText(this, getString(R.string.unread_articles_x, ((int)entry.getVal())), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.unread_articles_x, ((int) entry.getVal())), Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onNothingSelected() {
+
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        mChart.clear();
+        getLoaderManager().restartLoader(0, null, this);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
 
     }
 }

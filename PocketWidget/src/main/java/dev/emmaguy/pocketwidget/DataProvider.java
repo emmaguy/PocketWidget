@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
+import android.text.TextUtils;
 
 import java.text.SimpleDateFormat;
 
@@ -16,7 +17,7 @@ public class DataProvider extends ContentProvider {
     private static final String SCHEME = "content";
     private static final Uri CONTENT_URI = Uri.parse(SCHEME + "://" + AUTHORITY);
 
-    public static final SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd-hh-mm");
+    public static final SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
 
     public static final String ID = "_id";
     public static final String DATE = "date";
@@ -91,11 +92,21 @@ public class DataProvider extends ContentProvider {
                         " FROM " + UNREAD_ARTICLES_TABLE_NAME +
                         " ORDER BY " + DATE_TICKS + " LIMIT 1", null);
             case UNREAD_ARTICLES_DATE:
+                Logger.Log("UNREAD_ARTICLES_DATE " + sortOrder);
                 SQLiteDatabase db1 = mUnreadArticlesDatabase.getReadableDatabase();
-                return db1.rawQuery("SELECT " + DATE + ", " + UNREAD_COUNT +
+
+                String unreadCountColumn = UNREAD_COUNT;
+                String groupByClause = " ";
+                if (!TextUtils.isEmpty(sortOrder)) {
+                    groupByClause = " GROUP BY " + " strftime('" + sortOrder + "', " + DATE + ") ";
+                    unreadCountColumn = " MIN(" + UNREAD_COUNT + ") AS " + UNREAD_COUNT;
+                }
+
+                String sql = "SELECT " + DATE + ", " + unreadCountColumn +
                         " FROM " + UNREAD_ARTICLES_TABLE_NAME +
-//                        " GROUP BY strftime('%Y%m%d%H', " + DATE + ") " +
-                        " ORDER BY " + DATE_TICKS, null);
+                        groupByClause +
+                        " ORDER BY " + DATE_TICKS;
+                return db1.rawQuery(sql, null);
             default:
                 return runQuery(uri, columns, selection, selectionArgs, null, sortOrder);
         }
@@ -123,13 +134,14 @@ public class DataProvider extends ContentProvider {
         @Override
         public void onCreate(SQLiteDatabase db) {
             try {
-                db.execSQL("CREATE TABLE " + UNREAD_ARTICLES_TABLE_NAME +
+                String sql = "CREATE TABLE " + UNREAD_ARTICLES_TABLE_NAME +
                         " ( " +
                         ID + " INTEGER AUTO INCREMENT, " +
                         DATE + " L(16) PRIMARY KEY NOT NULL," +
                         DATE_TICKS + " INTEGER NOT NULL," +
                         UNREAD_COUNT + " INTEGER NOT NULL" +
-                        " );");
+                        " );";
+                db.execSQL(sql);
 
             } catch (Exception e) {
                 Logger.Log("Failed to create db", e);

@@ -25,11 +25,12 @@
     <string name="rate_us_google_play">Rate us on Google Play!</string>
     <string name="unread_articles_x">Unread Articles: %1$s</string>
     <string name="unread_article">Number of unread articles</string>
-    <string name="not_enough_data_points">Not enough daily unread article counts to graph</string>
-    <string name="please_come_back_in_days">Please try again in a few days</string>
+    <string name="not_enough_data_points">No unread article counts to graph</string>
+    <string name="not_enough_data_action">Please sign in and sync to see some data</string>
     <string name="summary_sync_wifi_only">Sync only when connected to Wi-Fi</string>
     <string name="please_login_first">You must sign in before retrieving the count of unread articles</string>
     <string name="title_activity_graph">Unread Articles over Time</string>
     <string name="view_graph">View graph</string>
+    <string name="choose_time_granularity">Choose time granularity</string>
 
 </resources>
