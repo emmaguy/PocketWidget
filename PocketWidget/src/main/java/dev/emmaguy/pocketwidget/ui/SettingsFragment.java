@@ -141,6 +141,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     public void onPause() {
         super.onPause();
 
+        cancelProgressDialog();
         getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
     }
 
@@ -218,10 +219,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             return true;
         } else if (preference.getKey().equals(getString(R.string.pref_key_force_refresh))) {
             if (isSignedIn()) {
-                mProgressDialog = showProgressDialog(getString(R.string.retrieving_latest_unread_count));
-// TODO just cancel?
-                final String accessToken = getSharedPreferences().getString(SettingsActivity.POCKET_AUTH_ACCESS_TOKEN, null);
-                new RetrieveCountOfUnreadArticlesAsyncTask(getResources().getString(R.string.pocket_consumer_key_mobile), accessToken, this).execute();
+                retrieveLatestUnreadArticlesCount();
             } else {
                 Toast.makeText(getActivity(), R.string.please_login_first, Toast.LENGTH_SHORT).show();
             }
@@ -238,6 +236,13 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         }
 
         return false;
+    }
+
+    private void retrieveLatestUnreadArticlesCount() {
+        mProgressDialog = showProgressDialog(getString(R.string.retrieving_latest_unread_count));
+
+        final String accessToken = getSharedPreferences().getString(SettingsActivity.POCKET_AUTH_ACCESS_TOKEN, null);
+        new RetrieveCountOfUnreadArticlesAsyncTask(getResources().getString(R.string.pocket_consumer_key_mobile), accessToken, this).execute();
     }
 
     private void beginSignInProcessOrSignOut() {
@@ -264,8 +269,10 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     }
 
     private void cancelProgressDialog() {
-        mProgressDialog.cancel();
-        mProgressDialog = null;
+        if (mProgressDialog != null) {
+            mProgressDialog.cancel();
+            mProgressDialog = null;
+        }
     }
 
     @Override
@@ -313,6 +320,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 Toast.makeText(getActivity(),
                         getString(R.string.successfully_logged_in_as) + " " + getPreferenceManager().getSharedPreferences().getString(SettingsActivity.POCKET_USERNAME, null),
                         Toast.LENGTH_LONG).show();
+                retrieveLatestUnreadArticlesCount();
             }
         });
     }
