@@ -31,7 +31,7 @@ public class RetrieveJobService extends JobService implements RetrieveCountOfUnr
         final String accessToken = sharedPreferences.getString(SettingsActivity.POCKET_AUTH_ACCESS_TOKEN, null);
 
         if (!TextUtils.isEmpty(accessToken)) {
-            mRetrieveCountOfUnreadArticlesAsyncTask = new RetrieveCountOfUnreadArticlesAsyncTask(getResources().getString(R.string.pocket_consumer_key_mobile), accessToken, this);
+            mRetrieveCountOfUnreadArticlesAsyncTask = new RetrieveCountOfUnreadArticlesAsyncTask(getResources().getString(R.string.pocket_consumer_key_mobile), accessToken, this, getApplicationContext());
             mRetrieveCountOfUnreadArticlesAsyncTask.execute();
 
             return true;
@@ -91,7 +91,7 @@ public class RetrieveJobService extends JobService implements RetrieveCountOfUnr
                 c.getContentResolver().insert(DataProvider.UNREAD_ARTICLES_COUNT_URI, v);
             }
         } catch (Exception e) {
-            Logger.Log("Failed to add entry", e);
+            Logger.sendThrowable(c, "Failed to add entry", e);
         }
     }
 

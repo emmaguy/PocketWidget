@@ -1,5 +1,6 @@
 package dev.emmaguy.pocketwidget;
 
+import android.content.Context;
 import android.os.AsyncTask;
 
 import com.google.gson.JsonElement;
@@ -16,14 +17,16 @@ import org.json.JSONObject;
 
 public class RetrieveCountOfUnreadArticlesAsyncTask extends AsyncTask<Void, Void, Integer> {
 
-    private final String consumerKey;
-    private final String accessToken;
-    private final UnreadCountRetrievedListener listener;
+    private final String mConsumerKey;
+    private final String mAccessToken;
+    private final UnreadCountRetrievedListener mListener;
+    private final Context mContext;
 
-    public RetrieveCountOfUnreadArticlesAsyncTask(String consumerKey, String accessToken, UnreadCountRetrievedListener listener) {
-        this.consumerKey = consumerKey;
-        this.accessToken = accessToken;
-        this.listener = listener;
+    public RetrieveCountOfUnreadArticlesAsyncTask(String consumerKey, String accessToken, UnreadCountRetrievedListener listener, Context context) {
+        mConsumerKey = consumerKey;
+        mAccessToken = accessToken;
+        mListener = listener;
+        mContext = context;
     }
 
     @Override
@@ -35,8 +38,8 @@ public class RetrieveCountOfUnreadArticlesAsyncTask extends AsyncTask<Void, Void
 
         try {
             JSONObject holder = new JSONObject();
-            holder.put("consumer_key", consumerKey);
-            holder.put("access_token", accessToken);
+            holder.put("consumer_key", mConsumerKey);
+            holder.put("access_token", mAccessToken);
             post.setEntity(new StringEntity(holder.toString()));
 
             HttpResponse response = client.execute(post);
@@ -47,7 +50,7 @@ public class RetrieveCountOfUnreadArticlesAsyncTask extends AsyncTask<Void, Void
             int unreadCount = parse.getAsJsonObject().get("count_unread").getAsInt();
             return unreadCount;
         } catch (Exception e) {
-            Logger.Log("Failed to get unread items", e);
+            Logger.sendThrowable(mContext, "Failed to get unread items", e);
         }
 
         return -1;
@@ -55,7 +58,7 @@ public class RetrieveCountOfUnreadArticlesAsyncTask extends AsyncTask<Void, Void
 
     @Override
     protected void onPostExecute(Integer unreadCount) {
-        listener.onUnreadCountRetrieved(unreadCount);
+        mListener.onUnreadCountRetrieved(unreadCount);
     }
 
     public interface UnreadCountRetrievedListener {

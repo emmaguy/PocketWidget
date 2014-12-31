@@ -36,4 +36,5 @@ dependencies {
     compile 'com.android.support:support-v4:21.+'
 
     compile 'me.tatarka.support:jobscheduler:0.1.1'
+    compile 'com.google.android.gms:play-services-base:6.5.+' // for google analytics
 }

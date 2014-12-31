@@ -1,6 +1,8 @@
 package dev.emmaguy.pocketwidget.auth;
 
+import android.content.Context;
 import android.os.AsyncTask;
+import android.text.TextUtils;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -18,25 +20,26 @@ import dev.emmaguy.pocketwidget.Logger;
 
 public class RetrieveAccessTokenAsyncTask extends AsyncTask<Void, Void, Void> {
 
-    private final String consumerKey;
-    private final OnAccessTokenRetrievedListener accessTokenRetrievedListener;
-    private final String code;
+    private final String mCode;
+    private final String mConsumerKey;
+    private final Context mContext;
+    private final OnAccessTokenRetrievedListener mAccessTokenRetrievedListener;
 
-    private String accessToken;
+    private String mAccessToken;
     private String username;
 
-    public RetrieveAccessTokenAsyncTask(String consumerKey, OnAccessTokenRetrievedListener listener, String code) {
-        this.consumerKey = consumerKey;
-        this.accessTokenRetrievedListener = listener;
-        this.code = code;
+    public RetrieveAccessTokenAsyncTask(String consumerKey, OnAccessTokenRetrievedListener listener, String code, Context context) {
+        mConsumerKey = consumerKey;
+        mAccessTokenRetrievedListener = listener;
+        mCode = code;
+        mContext = context;
     }
 
     @Override
     protected Void doInBackground(Void... params) {
-
         try {
-            if (code == null || code.length() <= 0) {
-                throw new Exception("Code (request token) is empty - reauthorisation is required.");
+            if (TextUtils.isEmpty(mCode)) {
+                throw new Exception("Code (request token) is empty - re-authorisation is required.");
             }
 
             HttpClient client = new DefaultHttpClient();
@@ -45,8 +48,8 @@ public class RetrieveAccessTokenAsyncTask extends AsyncTask<Void, Void, Void> {
             post.setHeader("X-Accept", "application/json");
 
             JSONObject holder = new JSONObject();
-            holder.put("consumer_key", consumerKey);
-            holder.put("code", code);
+            holder.put("consumer_key", mConsumerKey);
+            holder.put("code", mCode);
             post.setEntity(new StringEntity(holder.toString()));
 
             HttpResponse response = client.execute(post);
@@ -54,10 +57,10 @@ public class RetrieveAccessTokenAsyncTask extends AsyncTask<Void, Void, Void> {
 
             JsonObject jsonObj = new JsonParser().parse(responseBody).getAsJsonObject();
 
-            accessToken = jsonObj.get("access_token").getAsString();
+            mAccessToken = jsonObj.get("access_token").getAsString();
             username = jsonObj.get("username").getAsString();
         } catch (Exception e) {
-            Logger.Log("Failed to retrieve request token", e);
+            Logger.sendThrowable(mContext, "Failed to retrieve request token", e);
         }
 
         return null;
@@ -65,7 +68,7 @@ public class RetrieveAccessTokenAsyncTask extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected void onPostExecute(Void x) {
-        accessTokenRetrievedListener.onRetrievedAccessToken(accessToken, username);
+        mAccessTokenRetrievedListener.onRetrievedAccessToken(mAccessToken, username);
     }
 
     public interface OnAccessTokenRetrievedListener {

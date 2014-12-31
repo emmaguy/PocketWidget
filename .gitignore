@@ -4,6 +4,7 @@
 .DS_Store
 **.iml
 **hidden_strings.xml
+**google_analytics.xml
 .idea/
 
 /PocketWidget/build/*

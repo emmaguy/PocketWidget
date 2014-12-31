@@ -53,7 +53,6 @@ public class SettingsActivity extends PreferenceActivity {
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
-
                 try {
                     Intent intent = new Intent();
                     intent.setComponent(new ComponentName(DASHCLOCK_PACKAGE_NAME, DASHCLOCK_CLASS_NAME_CONFIGURATION_ACTIVITY));

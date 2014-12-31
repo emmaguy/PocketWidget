@@ -17,7 +17,7 @@
     <string name="sign_out">Sign out</string>
     <string name="sign_in">Sign in with Pocket</string>
     <string name="account_cleared">Account cleared</string>
-    <string name="refresh_options">Refresh Options</string>
+    <string name="refresh_options">Refresh options</string>
     <string name="refresh_now">Sync now!</string>
     <string name="refresh_interval">Refresh interval</string>
     <string name="sync_wifi_only">Wi-Fi only sync</string>

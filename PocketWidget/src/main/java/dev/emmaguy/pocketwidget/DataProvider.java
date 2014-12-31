@@ -77,7 +77,7 @@ public class DataProvider extends ContentProvider {
             SQLiteDatabase db = mUnreadArticlesDatabase.getWritableDatabase();
             insertedId = db.insert(UNREAD_ARTICLES_TABLE_NAME, null, values);
         } catch (Exception e) {
-            Logger.Log("Exception whilst inserting unread count", e);
+            Logger.sendThrowable(getContext(), "Exception whilst inserting unread count", e);
         }
 
         return Uri.withAppendedPath(uri, Long.toString(insertedId));
@@ -144,7 +144,7 @@ public class DataProvider extends ContentProvider {
                 db.execSQL(sql);
 
             } catch (Exception e) {
-                Logger.Log("Failed to create db", e);
+                Logger.sendThrowable(getContext(), "Failed to create db", e);
             }
         }
 

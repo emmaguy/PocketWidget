@@ -106,7 +106,7 @@ public class GraphActivity extends Activity implements LoaderManager.LoaderCallb
 
                 index++;
             } catch (Exception e) {
-                Logger.Log("Failed to populate graph", e);
+                Logger.sendThrowable(this, "Failed to populate graph", e);
             }
         }
 

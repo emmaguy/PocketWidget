@@ -6,17 +6,21 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
 
 import dev.emmaguy.pocketwidget.Logger;
 import dev.emmaguy.pocketwidget.R;
 import dev.emmaguy.pocketwidget.RetrieveJobService;
+import dev.emmaguy.pocketwidget.ui.SettingsActivity;
 
 public class WidgetProvider extends AppWidgetProvider {
     public static final String POCKET_PACKAGE_NAME = "com.ideashower.readitlater.pro";
+    private static final String WIDGET_EVENT = "WIDGET_EVENT";
 
     public static void updateAllWidgets(final Context context) {
         int unreadCount = RetrieveJobService.getLatestUnreadCount(context);
@@ -43,8 +47,13 @@ public class WidgetProvider extends AppWidgetProvider {
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, appWidgetId, clickIntent, 0);
         views.setOnClickPendingIntent(R.id.widget_imageview, pendingIntent);
-        views.setViewVisibility(R.id.unread_count_textview, View.VISIBLE);
-        views.setTextViewText(R.id.unread_count_textview, Integer.valueOf(unreadCount).toString());
+
+        if(unreadCount >= 0) {
+            views.setViewVisibility(R.id.unread_count_textview, View.VISIBLE);
+            views.setTextViewText(R.id.unread_count_textview, Integer.valueOf(unreadCount).toString());
+        } else {
+            views.setViewVisibility(R.id.unread_count_textview, View.GONE);
+        }
 
         AppWidgetManager.getInstance(context).updateAppWidget(appWidgetId, views);
     }
@@ -68,12 +77,23 @@ public class WidgetProvider extends AppWidgetProvider {
                 try {
                     Intent launchIntent = pm.getLaunchIntentForPackage(POCKET_PACKAGE_NAME);
                     context.startActivity(launchIntent);
+
+                    Logger.sendEvent(context.getApplicationContext(), Logger.LOG_OPEN_POCKET_APP);
                 } catch (Exception e) {
-                    Logger.Log("Failed to open Pocket app", e);
+                    Logger.sendThrowable(context, "Failed to open Pocket app", e);
                 }
             }
         } else if (intent.getAction().equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE)) {
             updateAllWidgets(context);
+        } else if (intent.getAction().equals(AppWidgetManager.ACTION_APPWIDGET_ENABLED)) {
+            if (!getSharedPreferences(context).getBoolean(WIDGET_EVENT, false)) {
+                Logger.sendEvent(context.getApplicationContext(), Logger.LOG_WIDGET_EVENT);
+                getSharedPreferences(context).edit().putBoolean(WIDGET_EVENT, true).apply();
+            }
         }
+    }
+
+    private SharedPreferences getSharedPreferences(Context context) {
+        return context.getSharedPreferences(SettingsActivity.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
     }
 }

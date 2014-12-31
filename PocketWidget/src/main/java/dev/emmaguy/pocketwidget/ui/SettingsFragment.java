@@ -13,6 +13,7 @@ import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
+import android.text.TextUtils;
 import android.widget.Toast;
 
 import java.util.concurrent.TimeUnit;
@@ -112,10 +113,12 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     private void retrieveAccessToken() {
         Uri uri = getActivity().getIntent().getData();
         if (uri != null && uri.toString().startsWith("pocketwidget") && !isSignedIn()) {
+            Logger.sendEvent(getActivity().getApplicationContext(), Logger.LOG_SIGN_IN_RETURN_FROM_BROWSER);
+
             String code = getPreferenceManager().getSharedPreferences().getString(SettingsActivity.POCKET_AUTH_CODE, null);
 
             mProgressDialog = showProgressDialog(getString(R.string.retrieving_access_token));
-            new RetrieveAccessTokenAsyncTask(getString(R.string.pocket_consumer_key_mobile), this, code).execute();
+            new RetrieveAccessTokenAsyncTask(getString(R.string.pocket_consumer_key_mobile), this, code, getActivity().getApplicationContext()).execute();
         }
     }
 
@@ -218,6 +221,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             updatePrefsSummary(getSharedPreferences(), findPreference(getString(R.string.pref_key_pocket_account)));
             return true;
         } else if (preference.getKey().equals(getString(R.string.pref_key_force_refresh))) {
+            Logger.sendEvent(getActivity().getApplicationContext(), Logger.LOG_EVENT_FORCE_REFRESH);
             if (isSignedIn()) {
                 retrieveLatestUnreadArticlesCount();
             } else {
@@ -232,6 +236,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 Toast.makeText(getActivity(), R.string.failed_to_launch_market, Toast.LENGTH_SHORT).show();
             }
         } else if (preference.getKey().equals(getString(R.string.pref_key_view_graph))) {
+            Logger.sendEvent(getActivity().getApplicationContext(), Logger.LOG_EVENT_VIEW_GRAPH);
             startActivity(new Intent(getActivity(), GraphActivity.class));
         }
 
@@ -242,7 +247,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         mProgressDialog = showProgressDialog(getString(R.string.retrieving_latest_unread_count));
 
         final String accessToken = getSharedPreferences().getString(SettingsActivity.POCKET_AUTH_ACCESS_TOKEN, null);
-        new RetrieveCountOfUnreadArticlesAsyncTask(getResources().getString(R.string.pocket_consumer_key_mobile), accessToken, this).execute();
+        new RetrieveCountOfUnreadArticlesAsyncTask(getResources().getString(R.string.pocket_consumer_key_mobile), accessToken, this, getActivity().getApplicationContext()).execute();
     }
 
     private void beginSignInProcessOrSignOut() {
@@ -258,9 +263,9 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             getActivity().getContentResolver().delete(DataProvider.UNREAD_ARTICLES_COUNT_URI, null, null);
             cancelRetrieveJob();
         } else {
+            Logger.sendEvent(getActivity().getApplicationContext(), Logger.LOG_SIGN_IN_START);
             mProgressDialog = showProgressDialog(getString(R.string.retrieving_request_token));
-            new RetrieveRequestTokenAsyncTask(getResources().getString(R.string.pocket_consumer_key_mobile),
-                    this, getSharedPreferences()).execute();
+            new RetrieveRequestTokenAsyncTask(getResources().getString(R.string.pocket_consumer_key_mobile), this, getSharedPreferences(), getActivity().getApplicationContext()).execute();
         }
     }
 
@@ -283,6 +288,8 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     }
 
     private void redirectToBrowser(String url) {
+        Logger.sendEvent(getActivity().getApplicationContext(), Logger.LOG_SIGN_IN_REDIRECT_TO_BROWSER);
+
         Toast.makeText(getActivity(), getString(R.string.redirecting_to_browser), Toast.LENGTH_LONG).show();
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -306,23 +313,29 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     public void onRetrievedAccessToken(String accessToken, String username) {
         cancelProgressDialog();
 
-        getSharedPreferences()
-                .edit()
-                .putString(SettingsActivity.POCKET_AUTH_ACCESS_TOKEN, accessToken)
-                .putString(SettingsActivity.POCKET_USERNAME, username)
-                .apply();
+        if (!TextUtils.isEmpty(accessToken) && !TextUtils.isEmpty(username)) {
+            getSharedPreferences()
+                    .edit()
+                    .putString(SettingsActivity.POCKET_AUTH_ACCESS_TOKEN, accessToken)
+                    .putString(SettingsActivity.POCKET_USERNAME, username)
+                    .apply();
 
-        updatePrefsSummary(getSharedPreferences(), findPreference(getString(R.string.pref_key_pocket_account)));
+            updatePrefsSummary(getSharedPreferences(), findPreference(getString(R.string.pref_key_pocket_account)));
 
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(getActivity(),
-                        getString(R.string.successfully_logged_in_as) + " " + getPreferenceManager().getSharedPreferences().getString(SettingsActivity.POCKET_USERNAME, null),
-                        Toast.LENGTH_LONG).show();
-                retrieveLatestUnreadArticlesCount();
-            }
-        });
+            Logger.sendEvent(getActivity().getApplicationContext(), Logger.LOG_SIGN_IN_SUCCESS);
+
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getActivity(),
+                            getString(R.string.successfully_logged_in_as) + " " + getPreferenceManager().getSharedPreferences().getString(SettingsActivity.POCKET_USERNAME, null),
+                            Toast.LENGTH_LONG).show();
+                    retrieveLatestUnreadArticlesCount();
+                }
+            });
+        } else {
+            Logger.sendEvent(getActivity().getApplicationContext(), Logger.LOG_SIGN_IN_NO_TOKEN);
+        }
     }
 
     private SharedPreferences getSharedPreferences() {
@@ -333,6 +346,9 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     public void onUnreadCountRetrieved(Integer unreadCount) {
         cancelProgressDialog();
 
+        Toast.makeText(getActivity(), getString(R.string.unread_articles_x, unreadCount), Toast.LENGTH_SHORT).show();
+
         RetrieveJobService.insertUnreadCount(getActivity(), unreadCount);
+        WidgetProvider.updateAllWidgets(getActivity());
     }
 }
