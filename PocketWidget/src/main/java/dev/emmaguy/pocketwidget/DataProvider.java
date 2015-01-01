@@ -90,7 +90,7 @@ public class DataProvider extends ContentProvider {
                 SQLiteDatabase db = mUnreadArticlesDatabase.getReadableDatabase();
                 return db.rawQuery("SELECT " + UNREAD_COUNT + ", " + ID +
                         " FROM " + UNREAD_ARTICLES_TABLE_NAME +
-                        " ORDER BY " + DATE_TICKS + " LIMIT 1", null);
+                        " ORDER BY " + DATE_TICKS + " DESC LIMIT 1", null);
             case UNREAD_ARTICLES_DATE:
                 Logger.Log("UNREAD_ARTICLES_DATE " + sortOrder);
                 SQLiteDatabase db1 = mUnreadArticlesDatabase.getReadableDatabase();
