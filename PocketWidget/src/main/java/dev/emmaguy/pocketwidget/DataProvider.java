@@ -92,19 +92,20 @@ public class DataProvider extends ContentProvider {
                         " FROM " + UNREAD_ARTICLES_TABLE_NAME +
                         " ORDER BY " + DATE_TICKS + " DESC LIMIT 1", null);
             case UNREAD_ARTICLES_DATE:
-                Logger.Log("UNREAD_ARTICLES_DATE " + sortOrder);
                 SQLiteDatabase db1 = mUnreadArticlesDatabase.getReadableDatabase();
 
-                String unreadCountColumn = UNREAD_COUNT;
-                String groupByClause = " ";
-                if (!TextUtils.isEmpty(sortOrder)) {
-                    groupByClause = " GROUP BY " + " strftime('" + sortOrder + "', " + DATE + ") ";
-                    unreadCountColumn = " MIN(" + UNREAD_COUNT + ") AS " + UNREAD_COUNT;
+                // Select all data points
+                if (TextUtils.isEmpty(sortOrder)) {
+                    return db1.rawQuery("SELECT " + DATE + ", " + UNREAD_COUNT +
+                            " FROM " + UNREAD_ARTICLES_TABLE_NAME +
+                            " ORDER BY " + DATE_TICKS, null);
                 }
 
-                String sql = "SELECT " + DATE + ", " + unreadCountColumn +
-                        " FROM " + UNREAD_ARTICLES_TABLE_NAME +
-                        groupByClause +
+                String sql = "SELECT " + DATE + ", " + UNREAD_COUNT +
+                        " FROM " + UNREAD_ARTICLES_TABLE_NAME + " t " +
+                        " JOIN (SELECT MAX(tt." + DATE_TICKS + ") 'maxtimestamp' " +
+                        " FROM " + UNREAD_ARTICLES_TABLE_NAME + " tt " +
+                        " GROUP BY strftime('" + sortOrder + "', " + DATE + ")) m ON m.maxtimestamp = t." + DATE_TICKS + " " +
                         " ORDER BY " + DATE_TICKS;
                 return db1.rawQuery(sql, null);
             default:
