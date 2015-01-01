@@ -37,7 +37,7 @@ public class Logger {
         if (sIsDebug) {
             Log.e(TAG_POCKET_WIDGET, message, t);
         } else {
-            String description = message + " " + new StandardExceptionParser(c, null).getDescription(Thread.currentThread().getName(), t);
+            String description = message + " " + t.getMessage() + " " + new StandardExceptionParser(c, null).getDescription(Thread.currentThread().getName(), t);
             getTracker(c)
                     .send(new HitBuilders.ExceptionBuilder()
                             .setDescription(description)
