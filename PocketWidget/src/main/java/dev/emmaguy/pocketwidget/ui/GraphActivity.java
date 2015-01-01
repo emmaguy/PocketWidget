@@ -30,9 +30,12 @@ import dev.emmaguy.pocketwidget.Logger;
 import dev.emmaguy.pocketwidget.R;
 
 public class GraphActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor>, OnChartValueSelectedListener, AdapterView.OnItemSelectedListener {
+    private Toast mToast;
     private LineChart mChart;
     private Spinner mSpinner;
     private TypedArray mSelectedValues;
+
+    private final ArrayList<String> mDates = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +86,7 @@ public class GraphActivity extends Activity implements LoaderManager.LoaderCallb
         final DateFormat dateFormat = new SimpleDateFormat();//DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault());
 
         ArrayList<Entry> unreadCounts = new ArrayList<Entry>();
-        ArrayList<String> dates = new ArrayList<String>();
+        mDates.clear();
 
         int index = 0;
         for (int i = 0; i < data.getCount(); i++) {
@@ -102,7 +105,7 @@ public class GraphActivity extends Activity implements LoaderManager.LoaderCallb
                 Date dateOfEntry = DataProvider.sDateFormat.parse(storedDateValue);
 
                 String date = dateFormat.format(dateOfEntry);
-                dates.add(date);
+                mDates.add(date);
 
                 index++;
             } catch (Exception e) {
@@ -116,7 +119,7 @@ public class GraphActivity extends Activity implements LoaderManager.LoaderCallb
         lineData.setCircleColor(getResources().getColor(R.color.pocket_red));
         lineData.setColor(getResources().getColor(R.color.pocket_red));
 
-        mChart.setData(new LineData(dates, lineData));
+        mChart.setData(new LineData(mDates, lineData));
         mChart.fitScreen();
     }
 
@@ -127,7 +130,13 @@ public class GraphActivity extends Activity implements LoaderManager.LoaderCallb
 
     @Override
     public void onValueSelected(Entry entry, int i) {
-        Toast.makeText(this, getString(R.string.unread_articles_x, ((int) entry.getVal())), Toast.LENGTH_SHORT).show();
+        if(mToast != null) {
+            mToast.cancel();
+        }
+
+        String message = getString(R.string.unread_articles_x, ((int) entry.getVal())) + " " + mDates.get(entry.getXIndex());
+        mToast = Toast.makeText(this, message, Toast.LENGTH_SHORT);
+        mToast.show();
     }
 
     @Override
