@@ -8,10 +8,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
+
+import java.util.List;
 
 import dev.emmaguy.pocketwidget.Logger;
 import dev.emmaguy.pocketwidget.R;
@@ -48,7 +51,7 @@ public class WidgetProvider extends AppWidgetProvider {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, appWidgetId, clickIntent, 0);
         views.setOnClickPendingIntent(R.id.widget_imageview, pendingIntent);
 
-        if(unreadCount >= 0) {
+        if (unreadCount >= 0) {
             views.setViewVisibility(R.id.unread_count_textview, View.VISIBLE);
             views.setTextViewText(R.id.unread_count_textview, Integer.valueOf(unreadCount).toString());
         } else {
@@ -68,15 +71,16 @@ public class WidgetProvider extends AppWidgetProvider {
     }
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(Context context, final Intent intent) {
         if (intent.getAction() == null) {
             // user has pressed on the widget
             Bundle extras = intent.getExtras();
             if (extras != null) {
                 PackageManager pm = context.getPackageManager();
                 try {
-                    Intent launchIntent = pm.getLaunchIntentForPackage(POCKET_PACKAGE_NAME);
-                    context.startActivity(launchIntent);
+                    final Intent i = pm.getLaunchIntentForPackage(POCKET_PACKAGE_NAME);
+                    i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                    context.startActivity(i);
 
                     Logger.sendEvent(context.getApplicationContext(), Logger.LOG_OPEN_POCKET_APP);
                 } catch (Exception e) {
