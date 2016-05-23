@@ -8,13 +8,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
-
-import java.util.List;
 
 import dev.emmaguy.pocketwidget.Logger;
 import dev.emmaguy.pocketwidget.R;
@@ -22,6 +18,7 @@ import dev.emmaguy.pocketwidget.RetrieveJobService;
 import dev.emmaguy.pocketwidget.ui.SettingsActivity;
 
 public class WidgetProvider extends AppWidgetProvider {
+
     public static final String POCKET_PACKAGE_NAME = "com.ideashower.readitlater.pro";
     private static final String WIDGET_EVENT = "WIDGET_EVENT";
 
@@ -61,17 +58,14 @@ public class WidgetProvider extends AppWidgetProvider {
         AppWidgetManager.getInstance(context).updateAppWidget(appWidgetId, views);
     }
 
-    @Override
-    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+    @Override public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         updateAllWidgets(context);
     }
 
-    @Override
-    public void onDisabled(Context context) {
+    @Override public void onDisabled(Context context) {
     }
 
-    @Override
-    public void onReceive(Context context, final Intent intent) {
+    @Override public void onReceive(Context context, final Intent intent) {
         if (intent.getAction() == null) {
             // user has pressed on the widget
             Bundle extras = intent.getExtras();

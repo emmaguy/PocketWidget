@@ -9,6 +9,7 @@ import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 
 public class SettingsActivity extends PreferenceActivity {
+
     public static final String SHARED_PREFERENCES_NAME = "pocketWidget";
     public static final String EXTRA_KEY_FROM_LAUNCHER = "from_launcher";
 
@@ -17,10 +18,10 @@ public class SettingsActivity extends PreferenceActivity {
     public static final String POCKET_AUTH_CODE = "code";
 
     public static final String DASHCLOCK_PACKAGE_NAME = "net.nurik.roman.dashclock";
-    public static final String DASHCLOCK_CLASS_NAME_CONFIGURATION_ACTIVITY = "com.google.android.apps.dashclock.configuration.ConfigurationActivity";
+    public static final String DASHCLOCK_CLASS_NAME_CONFIGURATION_ACTIVITY
+            = "com.google.android.apps.dashclock.configuration.ConfigurationActivity";
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
+    @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         boolean showHomeAsUp = true;
@@ -48,14 +49,14 @@ public class SettingsActivity extends PreferenceActivity {
         getFragmentManager().beginTransaction().replace(android.R.id.content, new SettingsFragment()).commit();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    @Override public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
                 try {
                     Intent intent = new Intent();
-                    intent.setComponent(new ComponentName(DASHCLOCK_PACKAGE_NAME, DASHCLOCK_CLASS_NAME_CONFIGURATION_ACTIVITY));
+                    intent.setComponent(new ComponentName(DASHCLOCK_PACKAGE_NAME,
+                            DASHCLOCK_CLASS_NAME_CONFIGURATION_ACTIVITY));
                     NavUtils.navigateUpTo(this, intent);
                 } catch (Exception ignored) {
                     // can't explicitly find/launch DashClock to go back to, so just close self
@@ -67,10 +68,10 @@ public class SettingsActivity extends PreferenceActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected boolean isValidFragment(String fragmentName) {
-        if (SettingsFragment.class.getName().equals(fragmentName))
+    @Override protected boolean isValidFragment(String fragmentName) {
+        if (SettingsFragment.class.getName().equals(fragmentName)) {
             return true;
+        }
         return false;
     }
 }

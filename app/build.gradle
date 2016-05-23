@@ -1,0 +1,71 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion '23.0.3'
+
+    defaultConfig {
+        applicationId "dev.emmaguy.pocketwidget"
+        minSdkVersion 15
+        targetSdkVersion 23
+        versionCode 22
+        versionName "5.0.2"
+    }
+    
+    signingConfigs {
+        release
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+        }
+    }
+}
+
+def Properties props = new Properties()
+if (project.hasProperty("signing.properties") && file(project.property("signing.properties")).canRead()) {
+    props.load(new FileInputStream(file(project.property("signing.properties"))))
+
+    if (props != null && props.containsKey('STORE_FILE') && props.containsKey('STORE_PASSWORD') &&
+            props.containsKey('KEY_ALIAS') && props.containsKey('KEY_PASSWORD')) {
+        android.signingConfigs.release.storeFile = file(props['STORE_FILE'])
+        android.signingConfigs.release.storePassword = props['STORE_PASSWORD']
+        android.signingConfigs.release.keyAlias = props['KEY_ALIAS']
+        android.signingConfigs.release.keyPassword = props['KEY_PASSWORD']
+    } else {
+        println 'signing.properties found but some entries are missing'
+        android.buildTypes.release.signingConfig = null
+    }
+} else {
+    println 'signing.properties not found'
+    android.buildTypes.release.signingConfig = null
+}
+
+dependencies {
+    // DashClock Extension
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    // Ui
+    compile 'com.android.support:appcompat-v7:23.4.0'
+    compile 'com.github.PhilJay:MPAndroidChart:v2.2.4'
+
+    // Cloud Storage, crash reporting and analytics
+    compile 'com.google.firebase:firebase-core:9.0.0'
+    compile 'com.google.firebase:firebase-storage:9.0.0'
+    compile 'com.google.firebase:firebase-auth:9.0.0'
+    compile 'com.google.firebase:firebase-crash:9.0.0'
+
+    // RxJava
+    compile 'io.reactivex:rxjava:1.1.5'
+    compile 'io.reactivex:rxandroid:1.2.0'
+    compile 'com.jakewharton.rxrelay:rxrelay:1.1.0'
+    compile 'com.squareup.retrofit2:adapter-rxjava:2.0.2'
+
+    // Network
+    compile 'com.squareup.retrofit2:retrofit:2.0.2'
+    compile 'com.squareup.retrofit2:converter-moshi:2.0.2'
+}
+
+apply plugin: 'com.google.gms.google-services'

@@ -16,8 +16,6 @@ import android.preference.PreferenceScreen;
 import android.text.TextUtils;
 import android.widget.Toast;
 
-import java.util.concurrent.TimeUnit;
-
 import dev.emmaguy.pocketwidget.DataProvider;
 import dev.emmaguy.pocketwidget.Logger;
 import dev.emmaguy.pocketwidget.R;
@@ -26,11 +24,13 @@ import dev.emmaguy.pocketwidget.RetrieveJobService;
 import dev.emmaguy.pocketwidget.auth.RetrieveAccessTokenAsyncTask;
 import dev.emmaguy.pocketwidget.auth.RetrieveRequestTokenAsyncTask;
 import dev.emmaguy.pocketwidget.widget.WidgetProvider;
-import me.tatarka.support.job.JobInfo;
-import me.tatarka.support.job.JobScheduler;
 
-public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener, Preference.OnPreferenceClickListener,
-        RetrieveRequestTokenAsyncTask.OnUrlRetrievedListener, RetrieveAccessTokenAsyncTask.OnAccessTokenRetrievedListener, RetrieveCountOfUnreadArticlesAsyncTask.UnreadCountRetrievedListener {
+public class SettingsFragment extends PreferenceFragment
+        implements SharedPreferences.OnSharedPreferenceChangeListener, Preference.OnPreferenceClickListener,
+        RetrieveRequestTokenAsyncTask.OnUrlRetrievedListener,
+        RetrieveAccessTokenAsyncTask.OnAccessTokenRetrievedListener,
+        RetrieveCountOfUnreadArticlesAsyncTask.UnreadCountRetrievedListener {
+
     private static final int RETRIEVE_UNREAD_ARTICLES_JOB_ID = 1;
 
     private static final String APP_WIDGET_ID = "appWidgetId";
@@ -44,8 +44,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     public SettingsFragment() {
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
+    @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         getPreferenceManager().setSharedPreferencesName(SettingsActivity.SHARED_PREFERENCES_NAME);
@@ -57,8 +56,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         scheduleJob(getSharedPreferences());
     }
 
-    @Override
-    public void onResume() {
+    @Override public void onResume() {
         super.onResume();
 
         getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
@@ -89,11 +87,15 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             if (mAppWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
                 getPreferenceManager().getSharedPreferences().edit().putInt(APP_WIDGET_ID, mAppWidgetId).apply();
             } else {
-                mAppWidgetId = getPreferenceManager().getSharedPreferences().getInt(APP_WIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+                mAppWidgetId = getPreferenceManager().getSharedPreferences()
+                        .getInt(APP_WIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
             }
 
             if (!getPreferenceManager().getSharedPreferences().getBoolean(IS_INITIALISED + mAppWidgetId, false)) {
-                getPreferenceManager().getSharedPreferences().edit().putBoolean(IS_INITIALISED + mAppWidgetId, true).apply();
+                getPreferenceManager().getSharedPreferences()
+                        .edit()
+                        .putBoolean(IS_INITIALISED + mAppWidgetId, true)
+                        .apply();
 
                 final Intent intent2 = getActivity().getIntent();
                 intent2.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
@@ -103,7 +105,8 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             }
         }
 
-        String accessToken = getPreferenceManager().getSharedPreferences().getString(SettingsActivity.POCKET_AUTH_ACCESS_TOKEN, null);
+        String accessToken = getPreferenceManager().getSharedPreferences()
+                .getString(SettingsActivity.POCKET_AUTH_ACCESS_TOKEN, null);
         if (accessToken != null && accessToken.length() > 0 && mAppWidgetId >= 0) {
             WidgetProvider.updateWidgetId(getActivity(), mAppWidgetId);
             return;
@@ -115,10 +118,12 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         if (uri != null && uri.toString().startsWith("pocketwidget") && !isSignedIn()) {
             Logger.sendEvent(getActivity().getApplicationContext(), Logger.LOG_SIGN_IN_RETURN_FROM_BROWSER);
 
-            String code = getPreferenceManager().getSharedPreferences().getString(SettingsActivity.POCKET_AUTH_CODE, null);
+            String code = getPreferenceManager().getSharedPreferences()
+                    .getString(SettingsActivity.POCKET_AUTH_CODE, null);
 
             mProgressDialog = showProgressDialog(getString(R.string.retrieving_access_token));
-            new RetrieveAccessTokenAsyncTask(getString(R.string.pocket_consumer_key_mobile), this, code, getActivity().getApplicationContext()).execute();
+            //new RetrieveAccessTokenAsyncTask(getString(R.string.pocket_consumer_key_mobile), this, code,
+            // getActivity().getApplicationContext()).execute();
         }
     }
 
@@ -140,16 +145,14 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         }
     }
 
-    @Override
-    public void onPause() {
+    @Override public void onPause() {
         super.onPause();
 
         cancelProgressDialog();
         getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
     }
 
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+    @Override public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         updatePrefsSummary(sharedPreferences, findPreference(key));
 
         if (key.equals(getString(R.string.pref_key_refresh_interval_minutes))) {
@@ -167,31 +170,34 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         cancelRetrieveJob();
 
         boolean canSyncOnWifiOnly = prefs.getBoolean(getString(R.string.pref_key_wifi_only), false);
-        String refreshInterval = prefs.getString(getString(R.string.pref_key_refresh_interval_minutes), getString(R.string.pref_default_refresh_interval_minutes));
+        String refreshInterval = prefs.getString(getString(R.string.pref_key_refresh_interval_minutes),
+                getString(R.string.pref_default_refresh_interval_minutes));
 
         int refreshIntervalMins = Integer.valueOf(refreshInterval);
 
         Logger.Log("scheduleJob interval: " + refreshIntervalMins);
 
-        JobScheduler jobScheduler = JobScheduler.getInstance(getActivity());
-
-        JobInfo job = new JobInfo.Builder(RETRIEVE_UNREAD_ARTICLES_JOB_ID, new ComponentName(getActivity(), RetrieveJobService.class))
-                .setPeriodic(TimeUnit.MINUTES.toMillis(refreshIntervalMins))
-                .setRequiredNetworkType(canSyncOnWifiOnly ? JobInfo.NETWORK_TYPE_UNMETERED : JobInfo.NETWORK_TYPE_ANY)
-                .setPersisted(true)
-                .build();
-
-        jobScheduler.schedule(job);
+        //JobScheduler jobScheduler = JobScheduler.getInstance(getActivity());
+        //
+        //JobInfo job = new JobInfo.Builder(RETRIEVE_UNREAD_ARTICLES_JOB_ID, new ComponentName(getActivity(),
+        // RetrieveJobService.class))
+        //        .setPeriodic(TimeUnit.MINUTES.toMillis(refreshIntervalMins))
+        //        .setRequiredNetworkType(canSyncOnWifiOnly ? JobInfo.NETWORK_TYPE_UNMETERED : JobInfo.NETWORK_TYPE_ANY)
+        //        .setPersisted(true)
+        //        .build();
+        //
+        //jobScheduler.schedule(job);
     }
 
     private void cancelRetrieveJob() {
-        JobScheduler jobScheduler = JobScheduler.getInstance(getActivity());
-        jobScheduler.cancelAll();
+        //JobScheduler jobScheduler = JobScheduler.getInstance(getActivity());
+        //jobScheduler.cancelAll();
     }
 
     protected void updatePrefsSummary(SharedPreferences sharedPreferences, Preference pref) {
-        if (pref == null)
+        if (pref == null) {
             return;
+        }
 
         if (pref instanceof ListPreference) {
             ListPreference listPref = (ListPreference) pref;
@@ -201,7 +207,8 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
 
             if (screen.hasKey() && screen.getKey().equals(getString(R.string.pref_key_pocket_account))) {
                 if (isSignedIn()) {
-                    screen.setSummary(getString(R.string.sign_out) + " " + sharedPreferences.getString(SettingsActivity.POCKET_USERNAME, null));
+                    screen.setSummary(getString(R.string.sign_out) + " " +
+                            sharedPreferences.getString(SettingsActivity.POCKET_USERNAME, null));
                 } else {
                     screen.setSummary(R.string.tap_to_sign_in);
                 }
@@ -214,8 +221,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         return accessToken != null && accessToken.length() > 0;
     }
 
-    @Override
-    public boolean onPreferenceClick(Preference preference) {
+    @Override public boolean onPreferenceClick(Preference preference) {
         if (preference.getKey().equals(getString(R.string.pref_key_pocket_account))) {
             beginSignInProcessOrSignOut();
             updatePrefsSummary(getSharedPreferences(), findPreference(getString(R.string.pref_key_pocket_account)));
@@ -247,13 +253,13 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         mProgressDialog = showProgressDialog(getString(R.string.retrieving_latest_unread_count));
 
         final String accessToken = getSharedPreferences().getString(SettingsActivity.POCKET_AUTH_ACCESS_TOKEN, null);
-        new RetrieveCountOfUnreadArticlesAsyncTask(getResources().getString(R.string.pocket_consumer_key_mobile), accessToken, this, getActivity().getApplicationContext()).execute();
+        //new RetrieveCountOfUnreadArticlesAsyncTask(getResources().getString(R.string.pocket_consumer_key_mobile),
+        // accessToken, this, getActivity().getApplicationContext()).execute();
     }
 
     private void beginSignInProcessOrSignOut() {
         if (isSignedIn()) {
-            getSharedPreferences()
-                    .edit()
+            getSharedPreferences().edit()
                     .remove(SettingsActivity.POCKET_AUTH_CODE)
                     .remove(SettingsActivity.POCKET_AUTH_ACCESS_TOKEN)
                     .remove(SettingsActivity.POCKET_USERNAME)
@@ -265,7 +271,8 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         } else {
             Logger.sendEvent(getActivity().getApplicationContext(), Logger.LOG_SIGN_IN_START);
             mProgressDialog = showProgressDialog(getString(R.string.retrieving_request_token));
-            new RetrieveRequestTokenAsyncTask(getResources().getString(R.string.pocket_consumer_key_mobile), this, getSharedPreferences(), getActivity().getApplicationContext()).execute();
+            //new RetrieveRequestTokenAsyncTask(getResources().getString(R.string.pocket_consumer_key_mobile), this,
+            // getSharedPreferences(), getActivity().getApplicationContext()).execute();
         }
     }
 
@@ -280,8 +287,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         }
     }
 
-    @Override
-    public void onRetrievedUrl(final String url) {
+    @Override public void onRetrievedUrl(final String url) {
         cancelProgressDialog();
 
         redirectToBrowser(url);
@@ -297,25 +303,21 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         startActivity(intent);
     }
 
-    @Override
-    public void onError(final String message) {
+    @Override public void onError(final String message) {
         cancelProgressDialog();
 
         getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
+            @Override public void run() {
                 Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    @Override
-    public void onRetrievedAccessToken(String accessToken, String username) {
+    @Override public void onRetrievedAccessToken(String accessToken, String username) {
         cancelProgressDialog();
 
         if (!TextUtils.isEmpty(accessToken) && !TextUtils.isEmpty(username)) {
-            getSharedPreferences()
-                    .edit()
+            getSharedPreferences().edit()
                     .putString(SettingsActivity.POCKET_AUTH_ACCESS_TOKEN, accessToken)
                     .putString(SettingsActivity.POCKET_USERNAME, username)
                     .apply();
@@ -325,11 +327,10 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             Logger.sendEvent(getActivity().getApplicationContext(), Logger.LOG_SIGN_IN_SUCCESS);
 
             getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(getActivity(),
-                            getString(R.string.successfully_logged_in_as) + " " + getPreferenceManager().getSharedPreferences().getString(SettingsActivity.POCKET_USERNAME, null),
-                            Toast.LENGTH_LONG).show();
+                @Override public void run() {
+                    Toast.makeText(getActivity(), getString(R.string.successfully_logged_in_as) + " " +
+                            getPreferenceManager().getSharedPreferences()
+                                    .getString(SettingsActivity.POCKET_USERNAME, null), Toast.LENGTH_LONG).show();
                     retrieveLatestUnreadArticlesCount();
                 }
             });
@@ -342,8 +343,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         return getPreferenceScreen().getSharedPreferences();
     }
 
-    @Override
-    public void onUnreadCountRetrieved(Integer unreadCount) {
+    @Override public void onUnreadCountRetrieved(Integer unreadCount) {
         cancelProgressDialog();
 
         Toast.makeText(getActivity(), getString(R.string.unread_articles_x, unreadCount), Toast.LENGTH_SHORT).show();

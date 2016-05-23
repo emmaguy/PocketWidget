@@ -7,5 +7,7 @@
 **google_analytics.xml
 .idea/
 
-/PocketWidget/build/*
+**/build/*
 build/*
+
+**/google-services.json

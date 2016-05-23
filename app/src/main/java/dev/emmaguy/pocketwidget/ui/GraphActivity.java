@@ -1,5 +1,13 @@
 package dev.emmaguy.pocketwidget.ui;
 
+import com.github.mikephil.charting.charts.Chart;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+
 import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
@@ -13,13 +21,6 @@ import android.widget.AdapterView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.github.mikephil.charting.charts.Chart;
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.interfaces.OnChartValueSelectedListener;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -29,7 +30,10 @@ import dev.emmaguy.pocketwidget.DataProvider;
 import dev.emmaguy.pocketwidget.Logger;
 import dev.emmaguy.pocketwidget.R;
 
-public class GraphActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor>, OnChartValueSelectedListener, AdapterView.OnItemSelectedListener {
+public class GraphActivity extends Activity
+        implements LoaderManager.LoaderCallbacks<Cursor>, OnChartValueSelectedListener,
+        AdapterView.OnItemSelectedListener {
+
     private Toast mToast;
     private LineChart mChart;
     private Spinner mSpinner;
@@ -37,8 +41,7 @@ public class GraphActivity extends Activity implements LoaderManager.LoaderCallb
 
     private final ArrayList<String> mDates = new ArrayList<String>();
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_graph);
@@ -55,9 +58,7 @@ public class GraphActivity extends Activity implements LoaderManager.LoaderCallb
         mChart.setNoDataText(getString(R.string.not_enough_data_points));
         mChart.setNoDataTextDescription(getString(R.string.not_enough_data_action));
         mChart.setDrawGridBackground(false);
-        mChart.setDrawYValues(true);
         mChart.setDescription("");
-        mChart.setStartAtZero(false);
         mChart.setOnChartValueSelectedListener(this);
 
         mSpinner = (Spinner) findViewById(R.id.spinner);
@@ -66,8 +67,7 @@ public class GraphActivity extends Activity implements LoaderManager.LoaderCallb
         getLoaderManager().initLoader(0, null, this);
     }
 
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+    @Override public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return new CursorLoader(this,
                 DataProvider.UNREAD_ARTICLES_BY_DATE_URI,
                 null,
@@ -76,14 +76,14 @@ public class GraphActivity extends Activity implements LoaderManager.LoaderCallb
                 mSelectedValues.getString(mSpinner.getSelectedItemPosition()));
     }
 
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+    @Override public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         populateGraph(data);
     }
 
     private void populateGraph(Cursor data) {
         Logger.Log("populateGraph " + data.getCount());
-        final DateFormat dateFormat = new SimpleDateFormat();//DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault());
+        final DateFormat dateFormat
+                = new SimpleDateFormat();//DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault());
 
         ArrayList<Entry> unreadCounts = new ArrayList<Entry>();
         mDates.clear();
@@ -123,35 +123,31 @@ public class GraphActivity extends Activity implements LoaderManager.LoaderCallb
         mChart.fitScreen();
     }
 
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
+    @Override public void onLoaderReset(Loader<Cursor> loader) {
 
     }
 
-    @Override
-    public void onValueSelected(Entry entry, int i) {
-        if(mToast != null) {
+    @Override public void onValueSelected(Entry e, int dataSetIndex, Highlight h) {
+        if (mToast != null) {
             mToast.cancel();
         }
 
-        String message = getString(R.string.unread_articles_x, ((int) entry.getVal())) + " " + mDates.get(entry.getXIndex());
+        String message = getString(R.string.unread_articles_x, ((int) e.getVal())) + " " +
+                mDates.get(e.getXIndex());
         mToast = Toast.makeText(this, message, Toast.LENGTH_SHORT);
         mToast.show();
     }
 
-    @Override
-    public void onNothingSelected() {
+    @Override public void onNothingSelected() {
 
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+    @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         mChart.clear();
         getLoaderManager().restartLoader(0, null, this);
     }
 
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
+    @Override public void onNothingSelected(AdapterView<?> parent) {
 
     }
 }

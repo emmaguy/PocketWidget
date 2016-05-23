@@ -13,6 +13,7 @@ import android.text.TextUtils;
 import java.text.SimpleDateFormat;
 
 public class DataProvider extends ContentProvider {
+
     private static final String AUTHORITY = BuildConfig.APPLICATION_ID + ".DataProvider";
     private static final String SCHEME = "content";
     private static final Uri CONTENT_URI = Uri.parse(SCHEME + "://" + AUTHORITY);
@@ -51,27 +52,23 @@ public class DataProvider extends ContentProvider {
     public DataProvider() {
     }
 
-    @Override
-    public boolean onCreate() {
+    @Override public boolean onCreate() {
         mUnreadArticlesDatabase = new UnreadArticlesDatabase(getContext());
 
         return true;
     }
 
-    @Override
-    public int delete(Uri uri, String selection, String[] selectionArgs) {
+    @Override public int delete(Uri uri, String selection, String[] selectionArgs) {
         SQLiteDatabase db = mUnreadArticlesDatabase.getWritableDatabase();
 
         return db.delete(getType(uri), selection, selectionArgs);
     }
 
-    @Override
-    public String getType(Uri uri) {
+    @Override public String getType(Uri uri) {
         return UNREAD_ARTICLES_TABLE_NAME;
     }
 
-    @Override
-    public Uri insert(Uri uri, ContentValues values) {
+    @Override public Uri insert(Uri uri, ContentValues values) {
         long insertedId = -1;
         try {
             SQLiteDatabase db = mUnreadArticlesDatabase.getWritableDatabase();
@@ -83,8 +80,11 @@ public class DataProvider extends ContentProvider {
         return Uri.withAppendedPath(uri, Long.toString(insertedId));
     }
 
-    @Override
-    public Cursor query(Uri uri, String[] columns, String selection, String[] selectionArgs, String sortOrder) {
+    @Override public Cursor query(Uri uri,
+            String[] columns,
+            String selection,
+            String[] selectionArgs,
+            String sortOrder) {
         switch (sUriMatcher.match(uri)) {
             case LATEST_UNREAD:
                 SQLiteDatabase db = mUnreadArticlesDatabase.getReadableDatabase();
@@ -105,7 +105,8 @@ public class DataProvider extends ContentProvider {
                         " FROM " + UNREAD_ARTICLES_TABLE_NAME + " t " +
                         " JOIN (SELECT MAX(tt." + DATE_TICKS + ") 'maxtimestamp' " +
                         " FROM " + UNREAD_ARTICLES_TABLE_NAME + " tt " +
-                        " GROUP BY strftime('" + sortOrder + "', " + DATE + ")) m ON m.maxtimestamp = t." + DATE_TICKS + " " +
+                        " GROUP BY strftime('" + sortOrder + "', " + DATE + ")) m ON m.maxtimestamp = t." + DATE_TICKS +
+                        " " +
                         " ORDER BY " + DATE_TICKS;
                 return db1.rawQuery(sql, null);
             default:
@@ -113,18 +114,23 @@ public class DataProvider extends ContentProvider {
         }
     }
 
-    private Cursor runQuery(Uri uri, String[] columns, String selection, String[] selectionArgs, String groupBy, String sortOrder) {
+    private Cursor runQuery(Uri uri,
+            String[] columns,
+            String selection,
+            String[] selectionArgs,
+            String groupBy,
+            String sortOrder) {
         SQLiteDatabase db = mUnreadArticlesDatabase.getReadableDatabase();
         return db.query(getType(uri), columns, selection, selectionArgs, groupBy, null, sortOrder);
     }
 
-    @Override
-    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+    @Override public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         SQLiteDatabase db = mUnreadArticlesDatabase.getWritableDatabase();
         return db.update(getType(uri), values, selection, selectionArgs);
     }
 
     class UnreadArticlesDatabase extends SQLiteOpenHelper {
+
         private static final String DATABASE_NAME = "PocketWidgetDb";
         private static final int DATABASE_VERSION = 1;
 
@@ -132,8 +138,7 @@ public class DataProvider extends ContentProvider {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
         }
 
-        @Override
-        public void onCreate(SQLiteDatabase db) {
+        @Override public void onCreate(SQLiteDatabase db) {
             try {
                 String sql = "CREATE TABLE " + UNREAD_ARTICLES_TABLE_NAME +
                         " ( " +
@@ -143,14 +148,12 @@ public class DataProvider extends ContentProvider {
                         UNREAD_COUNT + " INTEGER NOT NULL" +
                         " );";
                 db.execSQL(sql);
-
             } catch (Exception e) {
                 Logger.sendThrowable(getContext(), "Failed to create db", e);
             }
         }
 
-        @Override
-        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        @Override public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
         }
     }
