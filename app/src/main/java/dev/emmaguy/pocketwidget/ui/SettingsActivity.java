@@ -10,15 +10,15 @@ import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import timber.log.Timber;
 
-public class SettingsActivity extends PreferenceActivity {
+public class SettingsActivity extends AppCompatActivity {
 
     public static final String SHARED_PREFERENCES_NAME = "pocketWidget";
     public static final String EXTRA_KEY_FROM_LAUNCHER = "from_launcher";
@@ -87,7 +87,7 @@ public class SettingsActivity extends PreferenceActivity {
             getActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        getFragmentManager().beginTransaction().replace(android.R.id.content, new SettingsFragment()).commit();
+        getSupportFragmentManager().beginTransaction().replace(android.R.id.content, new SettingsFragment()).commit();
     }
 
     @Override public void onStart() {
@@ -121,12 +121,5 @@ public class SettingsActivity extends PreferenceActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override protected boolean isValidFragment(String fragmentName) {
-        if (SettingsFragment.class.getName().equals(fragmentName)) {
-            return true;
-        }
-        return false;
     }
 }

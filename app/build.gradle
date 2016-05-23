@@ -24,31 +24,13 @@ android {
     }
 }
 
-def Properties props = new Properties()
-if (project.hasProperty("signing.properties") && file(project.property("signing.properties")).canRead()) {
-    props.load(new FileInputStream(file(project.property("signing.properties"))))
-
-    if (props != null && props.containsKey('STORE_FILE') && props.containsKey('STORE_PASSWORD') &&
-            props.containsKey('KEY_ALIAS') && props.containsKey('KEY_PASSWORD')) {
-        android.signingConfigs.release.storeFile = file(props['STORE_FILE'])
-        android.signingConfigs.release.storePassword = props['STORE_PASSWORD']
-        android.signingConfigs.release.keyAlias = props['KEY_ALIAS']
-        android.signingConfigs.release.keyPassword = props['KEY_PASSWORD']
-    } else {
-        println 'signing.properties found but some entries are missing'
-        android.buildTypes.release.signingConfig = null
-    }
-} else {
-    println 'signing.properties not found'
-    android.buildTypes.release.signingConfig = null
-}
-
 dependencies {
     // DashClock Extension
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
     // Ui
     compile 'com.android.support:appcompat-v7:23.4.0'
+    compile 'com.android.support:preference-v7:23.4.0'
     compile 'com.github.PhilJay:MPAndroidChart:v2.2.4'
 
     // Cloud Storage, crash reporting and analytics
@@ -68,6 +50,25 @@ dependencies {
     compile 'com.squareup.retrofit2:converter-moshi:2.0.2'
 
     compile 'com.jakewharton.timber:timber:4.1.2'
+}
+
+def Properties props = new Properties()
+if (project.hasProperty("signing.properties") && file(project.property("signing.properties")).canRead()) {
+    props.load(new FileInputStream(file(project.property("signing.properties"))))
+
+    if (props != null && props.containsKey('STORE_FILE') && props.containsKey('STORE_PASSWORD') &&
+            props.containsKey('KEY_ALIAS') && props.containsKey('KEY_PASSWORD')) {
+        android.signingConfigs.release.storeFile = file(props['STORE_FILE'])
+        android.signingConfigs.release.storePassword = props['STORE_PASSWORD']
+        android.signingConfigs.release.keyAlias = props['KEY_ALIAS']
+        android.signingConfigs.release.keyPassword = props['KEY_PASSWORD']
+    } else {
+        println 'signing.properties found but some entries are missing'
+        android.buildTypes.release.signingConfig = null
+    }
+} else {
+    println 'signing.properties not found'
+    android.buildTypes.release.signingConfig = null
 }
 
 apply plugin: 'com.google.gms.google-services'
