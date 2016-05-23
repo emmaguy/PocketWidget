@@ -4,44 +4,39 @@ import com.google.android.apps.dashclock.api.DashClockExtension;
 import com.google.android.apps.dashclock.api.ExtensionData;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 
 import dev.emmaguy.pocketwidget.AnalyticsTracker;
 import dev.emmaguy.pocketwidget.R;
 import dev.emmaguy.pocketwidget.RetrieveJobService;
-import dev.emmaguy.pocketwidget.ui.SettingsActivity;
 import dev.emmaguy.pocketwidget.widget.WidgetProvider;
 
 public class DashClockProvider extends DashClockExtension {
-
-    public static final String DASHCLOCK_EVENT = "DASHCLOCK_EVENT";
+    private AnalyticsTracker analyticsTracker;
 
     @Override public void onCreate() {
         super.onCreate();
 
-        if (!getSharedPreferences().getBoolean(DASHCLOCK_EVENT, false)) {
-            //AnalyticsTracker.sendEvent(AnalyticsTracker.LOG_DASHCLOCK_EVENT);
-            getSharedPreferences().edit().putBoolean(DASHCLOCK_EVENT, true).apply();
-        }
+        analyticsTracker = new AnalyticsTracker(this);
+        analyticsTracker.sendEvent(AnalyticsTracker.EVENT_CATEGORY_GENERAL, AnalyticsTracker.EVENT_DASHCLOCK_EVENT);
     }
 
-    private SharedPreferences getSharedPreferences() {
-        return getSharedPreferences(SettingsActivity.SHARED_PREFERENCES_NAME, MODE_PRIVATE);
-    }
+    @Override protected void onUpdateData(final int reason) {
+        final int unreadCount = RetrieveJobService.getLatestUnreadCount(this);
+        final String unreadCountValue = "" + unreadCount;
 
-    @Override protected void onUpdateData(int reason) {
-        int unreadCount = RetrieveJobService.getLatestUnreadCount(this);
+        analyticsTracker.sendEvent(AnalyticsTracker.EVENT_CATEGORY_GENERAL, unreadCountValue);
 
         if (unreadCount > 0) {
-            final Intent pocketAppIntent
-                    = getPackageManager().getLaunchIntentForPackage(WidgetProvider.POCKET_PACKAGE_NAME);
+            final PackageManager packageManager = getPackageManager();
+            final Intent pocketAppIntent = packageManager.getLaunchIntentForPackage(WidgetProvider.POCKET_PACKAGE_NAME);
 
             publishUpdate(new ExtensionData().visible(true)
                     .icon(R.drawable.ic_launcher)
-                    .status("" + unreadCount)
+                    .status(unreadCountValue)
                     .expandedTitle(getString(R.string.unread_articles_x, unreadCount))
                     .clickIntent(pocketAppIntent));
-        } else if (unreadCount == 0) {
+        } else {
             publishUpdate(null);
         }
     }

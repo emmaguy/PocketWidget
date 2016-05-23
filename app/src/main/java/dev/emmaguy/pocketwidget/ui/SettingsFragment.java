@@ -122,7 +122,7 @@ public class SettingsFragment extends PreferenceFragment
     private void retrieveAccessToken() {
         Uri uri = getActivity().getIntent().getData();
         if (uri != null && uri.toString().startsWith("pocketwidget") && !isSignedIn()) {
-            analytics.sendEvent(FirebaseAnalytics.Event.LOGIN, AnalyticsTracker.LOG_SIGN_IN_RETURN_FROM_BROWSER);
+            analytics.sendEvent(FirebaseAnalytics.Event.LOGIN, AnalyticsTracker.EVENT_SIGN_IN_RETURN_FROM_BROWSER);
 
             String code = getPreferenceManager().getSharedPreferences()
                     .getString(SettingsActivity.POCKET_AUTH_CODE, null);
@@ -133,13 +133,13 @@ public class SettingsFragment extends PreferenceFragment
         }
     }
 
-    protected void initSummary() {
+    private void initSummary() {
         for (int i = 0; i < getPreferenceScreen().getPreferenceCount(); i++) {
             initPrefsSummary(getPreferenceManager().getSharedPreferences(), getPreferenceScreen().getPreference(i));
         }
     }
 
-    protected void initPrefsSummary(SharedPreferences sharedPreferences, Preference p) {
+    private void initPrefsSummary(SharedPreferences sharedPreferences, Preference p) {
         if (p instanceof PreferenceCategory) {
             PreferenceCategory pCat = (PreferenceCategory) p;
             int pcCatCount = pCat.getPreferenceCount();
@@ -233,7 +233,7 @@ public class SettingsFragment extends PreferenceFragment
             updatePrefsSummary(getSharedPreferences(), findPreference(getString(R.string.pref_key_pocket_account)));
             return true;
         } else if (preference.getKey().equals(getString(R.string.pref_key_force_refresh))) {
-            analytics.sendEvent("General", AnalyticsTracker.LOG_EVENT_FORCE_REFRESH);
+            analytics.sendEvent(AnalyticsTracker.EVENT_CATEGORY_GENERAL, AnalyticsTracker.EVENT_FORCE_REFRESH);
             if (isSignedIn()) {
                 retrieveLatestUnreadArticlesCount();
             } else {
@@ -248,7 +248,7 @@ public class SettingsFragment extends PreferenceFragment
                 Toast.makeText(getActivity(), R.string.failed_to_launch_market, Toast.LENGTH_SHORT).show();
             }
         } else if (preference.getKey().equals(getString(R.string.pref_key_view_graph))) {
-            analytics.sendEvent("General", AnalyticsTracker.LOG_EVENT_VIEW_GRAPH);
+            analytics.sendEvent(AnalyticsTracker.EVENT_CATEGORY_GENERAL, AnalyticsTracker.EVENT_VIEW_GRAPH);
             startActivity(new Intent(getActivity(), GraphActivity.class));
         }
 
@@ -275,7 +275,7 @@ public class SettingsFragment extends PreferenceFragment
             getActivity().getContentResolver().delete(DataProvider.UNREAD_ARTICLES_COUNT_URI, null, null);
             cancelRetrieveJob();
         } else {
-            analytics.sendEvent(FirebaseAnalytics.Event.LOGIN, AnalyticsTracker.LOG_SIGN_IN_START);
+            analytics.sendEvent(FirebaseAnalytics.Event.LOGIN, AnalyticsTracker.EVENT_SIGN_IN_START);
             mProgressDialog = showProgressDialog(getString(R.string.retrieving_request_token));
             //new RetrieveRequestTokenAsyncTask(getResources().getString(R.string.pocket_consumer_key_mobile), this,
             // getSharedPreferences(), getActivity().getApplicationContext()).execute();
@@ -300,7 +300,7 @@ public class SettingsFragment extends PreferenceFragment
     }
 
     private void redirectToBrowser(String url) {
-        analytics.sendEvent(FirebaseAnalytics.Event.LOGIN, AnalyticsTracker.LOG_SIGN_IN_REDIRECT_TO_BROWSER);
+        analytics.sendEvent(FirebaseAnalytics.Event.LOGIN, AnalyticsTracker.EVENT_SIGN_IN_REDIRECT_TO_BROWSER);
 
         Toast.makeText(getActivity(), getString(R.string.redirecting_to_browser), Toast.LENGTH_LONG).show();
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
@@ -330,7 +330,7 @@ public class SettingsFragment extends PreferenceFragment
 
             updatePrefsSummary(getSharedPreferences(), findPreference(getString(R.string.pref_key_pocket_account)));
 
-            analytics.sendEvent(FirebaseAnalytics.Event.LOGIN, AnalyticsTracker.LOG_SIGN_IN_SUCCESS);
+            analytics.sendEvent(FirebaseAnalytics.Event.LOGIN, AnalyticsTracker.EVENT_SIGN_IN_SUCCESS);
 
             getActivity().runOnUiThread(new Runnable() {
                 @Override public void run() {
@@ -341,7 +341,7 @@ public class SettingsFragment extends PreferenceFragment
                 }
             });
         } else {
-            analytics.sendEvent(FirebaseAnalytics.Event.LOGIN, AnalyticsTracker.LOG_SIGN_IN_NO_TOKEN);
+            analytics.sendEvent(FirebaseAnalytics.Event.LOGIN, AnalyticsTracker.EVENT_SIGN_IN_NO_TOKEN);
         }
     }
 

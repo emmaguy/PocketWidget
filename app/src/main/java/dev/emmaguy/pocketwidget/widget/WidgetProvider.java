@@ -1,44 +1,46 @@
 package dev.emmaguy.pocketwidget.widget;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.crash.FirebaseCrash;
+
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.RemoteViews;
 
+import dev.emmaguy.pocketwidget.AnalyticsTracker;
 import dev.emmaguy.pocketwidget.R;
 import dev.emmaguy.pocketwidget.RetrieveJobService;
-import dev.emmaguy.pocketwidget.ui.SettingsActivity;
 
 public class WidgetProvider extends AppWidgetProvider {
 
     public static final String POCKET_PACKAGE_NAME = "com.ideashower.readitlater.pro";
-    private static final String WIDGET_EVENT = "WIDGET_EVENT";
 
-    public static void updateAllWidgets(final Context context) {
-        int unreadCount = RetrieveJobService.getLatestUnreadCount(context);
+    public static void updateAllWidgets(@NonNull final Context context) {
+        final int unreadCount = RetrieveJobService.getLatestUnreadCount(context);
 
-        ComponentName thisWidget = new ComponentName(context, WidgetProvider.class);
-        int[] allWidgetIds = AppWidgetManager.getInstance(context).getAppWidgetIds(thisWidget);
+        final ComponentName thisWidget = new ComponentName(context, WidgetProvider.class);
+        final int[] allWidgetIds = AppWidgetManager.getInstance(context).getAppWidgetIds(thisWidget);
 
-        for (int appWidgetId : allWidgetIds) {
+        for (final int appWidgetId : allWidgetIds) {
             updateWidgetId(context, unreadCount, appWidgetId);
         }
     }
 
-    public static void updateWidgetId(Context context, int appWidgetId) {
-        int unreadCount = RetrieveJobService.getLatestUnreadCount(context);
+    public static void updateWidgetId(@NonNull final Context context, final int appWidgetId) {
+        final int unreadCount = RetrieveJobService.getLatestUnreadCount(context);
 
         updateWidgetId(context, unreadCount, appWidgetId);
     }
 
-    private static void updateWidgetId(Context context, int unreadCount, int appWidgetId) {
+    private static void updateWidgetId(@NonNull final Context context, final int unreadCount, final int appWidgetId) {
         Intent clickIntent = new Intent(context, WidgetProvider.class);
         clickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
 
@@ -57,40 +59,38 @@ public class WidgetProvider extends AppWidgetProvider {
         AppWidgetManager.getInstance(context).updateAppWidget(appWidgetId, views);
     }
 
-    @Override public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+    @Override public void onUpdate(@NonNull final Context context,
+            @NonNull final AppWidgetManager appWidgetManager,
+            @NonNull final int[] appWidgetIds) {
         updateAllWidgets(context);
     }
 
-    @Override public void onDisabled(Context context) {
+    @Override public void onDisabled(@NonNull final Context context) {
     }
 
-    @Override public void onReceive(Context context, final Intent intent) {
+    @Override public void onReceive(@NonNull final Context context, @NonNull final Intent intent) {
+        final AnalyticsTracker analyticsTracker = new AnalyticsTracker(context);
+
         if (intent.getAction() == null) {
             // user has pressed on the widget
-            Bundle extras = intent.getExtras();
+            final Bundle extras = intent.getExtras();
             if (extras != null) {
-                PackageManager pm = context.getPackageManager();
+                final PackageManager pm = context.getPackageManager();
                 try {
                     final Intent i = pm.getLaunchIntentForPackage(POCKET_PACKAGE_NAME);
                     i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     context.startActivity(i);
 
-                    //AnalyticsTracker.sendEvent(AnalyticsTracker.LOG_OPEN_POCKET_APP);
+                    analyticsTracker.sendEvent(FirebaseAnalytics.Event.APP_OPEN,
+                            AnalyticsTracker.EVENT_OPEN_POCKET_APP);
                 } catch (Exception e) {
-                    //AnalyticsTracker.sendThrowable("Failed to open Pocket app", e);
+                    FirebaseCrash.report(e);
                 }
             }
         } else if (intent.getAction().equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE)) {
             updateAllWidgets(context);
         } else if (intent.getAction().equals(AppWidgetManager.ACTION_APPWIDGET_ENABLED)) {
-            if (!getSharedPreferences(context).getBoolean(WIDGET_EVENT, false)) {
-                //AnalyticsTracker.sendEvent(AnalyticsTracker.LOG_WIDGET_EVENT);
-                getSharedPreferences(context).edit().putBoolean(WIDGET_EVENT, true).apply();
-            }
+            analyticsTracker.sendEvent(AnalyticsTracker.EVENT_CATEGORY_GENERAL, AnalyticsTracker.EVENT_WIDGET_EVENT);
         }
-    }
-
-    private SharedPreferences getSharedPreferences(Context context) {
-        return context.getSharedPreferences(SettingsActivity.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
     }
 }
