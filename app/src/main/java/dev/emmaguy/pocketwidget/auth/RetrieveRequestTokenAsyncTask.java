@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 
-import dev.emmaguy.pocketwidget.Logger;
 import dev.emmaguy.pocketwidget.ui.SettingsActivity;
 
 //import com.google.gson.JsonObject;
@@ -79,7 +78,7 @@ public class RetrieveRequestTokenAsyncTask extends AsyncTask<Void, Void, String>
             return "abla";
         } catch (Exception e) {
             mRetrievedUrlListener.onError("Failed to retrieve request token: " + e.getMessage());
-            Logger.sendThrowable(mContext, "Failed to retrieve request token", e);
+            //AnalyticsTracker.sendThrowable("Failed to retrieve request token", e);
         }
         return null;
     }

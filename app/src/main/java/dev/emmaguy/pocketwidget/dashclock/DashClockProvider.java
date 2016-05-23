@@ -6,7 +6,7 @@ import com.google.android.apps.dashclock.api.ExtensionData;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
-import dev.emmaguy.pocketwidget.Logger;
+import dev.emmaguy.pocketwidget.AnalyticsTracker;
 import dev.emmaguy.pocketwidget.R;
 import dev.emmaguy.pocketwidget.RetrieveJobService;
 import dev.emmaguy.pocketwidget.ui.SettingsActivity;
@@ -20,7 +20,7 @@ public class DashClockProvider extends DashClockExtension {
         super.onCreate();
 
         if (!getSharedPreferences().getBoolean(DASHCLOCK_EVENT, false)) {
-            Logger.sendEvent(getApplicationContext(), Logger.LOG_DASHCLOCK_EVENT);
+            //AnalyticsTracker.sendEvent(AnalyticsTracker.LOG_DASHCLOCK_EVENT);
             getSharedPreferences().edit().putBoolean(DASHCLOCK_EVENT, true).apply();
         }
     }

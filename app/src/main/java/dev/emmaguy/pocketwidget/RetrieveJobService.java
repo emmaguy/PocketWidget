@@ -75,20 +75,20 @@ public class RetrieveJobService implements RetrieveCountOfUnreadArticlesAsyncTas
 
         try {
             int entryId = getIdOfUnreadCountAtDate(c, formattedDate);
-            Logger.Log("entryId " + entryId + " date " + formattedDate);
+            //AnalyticsTracker.Log("entryId " + entryId + " date " + formattedDate);
             if (entryId != -1) {
-                Logger.Log("Updating to " + unreadCount);
+                //AnalyticsTracker.Log("Updating to " + unreadCount);
                 c.getContentResolver()
                         .update(DataProvider.UNREAD_ARTICLES_COUNT_URI,
                                 v,
                                 DataProvider.ID + " = ? ",
                                 new String[] { "" + entryId });
             } else {
-                Logger.Log("Inserting " + unreadCount);
+                //AnalyticsTracker.Log("Inserting " + unreadCount);
                 c.getContentResolver().insert(DataProvider.UNREAD_ARTICLES_COUNT_URI, v);
             }
         } catch (Exception e) {
-            Logger.sendThrowable(c, "Failed to add entry", e);
+            //AnalyticsTracker.sendThrowable("Failed to add entry", e);
         }
     }
 

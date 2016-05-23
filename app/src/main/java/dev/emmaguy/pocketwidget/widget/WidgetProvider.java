@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.RemoteViews;
 
-import dev.emmaguy.pocketwidget.Logger;
 import dev.emmaguy.pocketwidget.R;
 import dev.emmaguy.pocketwidget.RetrieveJobService;
 import dev.emmaguy.pocketwidget.ui.SettingsActivity;
@@ -76,16 +75,16 @@ public class WidgetProvider extends AppWidgetProvider {
                     i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     context.startActivity(i);
 
-                    Logger.sendEvent(context.getApplicationContext(), Logger.LOG_OPEN_POCKET_APP);
+                    //AnalyticsTracker.sendEvent(AnalyticsTracker.LOG_OPEN_POCKET_APP);
                 } catch (Exception e) {
-                    Logger.sendThrowable(context, "Failed to open Pocket app", e);
+                    //AnalyticsTracker.sendThrowable("Failed to open Pocket app", e);
                 }
             }
         } else if (intent.getAction().equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE)) {
             updateAllWidgets(context);
         } else if (intent.getAction().equals(AppWidgetManager.ACTION_APPWIDGET_ENABLED)) {
             if (!getSharedPreferences(context).getBoolean(WIDGET_EVENT, false)) {
-                Logger.sendEvent(context.getApplicationContext(), Logger.LOG_WIDGET_EVENT);
+                //AnalyticsTracker.sendEvent(AnalyticsTracker.LOG_WIDGET_EVENT);
                 getSharedPreferences(context).edit().putBoolean(WIDGET_EVENT, true).apply();
             }
         }

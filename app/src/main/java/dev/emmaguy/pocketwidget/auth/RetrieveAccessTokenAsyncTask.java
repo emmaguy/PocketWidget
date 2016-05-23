@@ -4,8 +4,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 
-import dev.emmaguy.pocketwidget.Logger;
-
 //import org.apache.http.HttpResponse;
 //import org.apache.http.client.HttpClient;
 //import org.apache.http.client.methods.HttpPost;
@@ -66,7 +64,7 @@ public class RetrieveAccessTokenAsyncTask extends AsyncTask<Void, Void, Void> {
             //mAccessToken = jsonObj.get("access_token").getAsString();
             //username = jsonObj.get("username").getAsString();
         } catch (Exception e) {
-            Logger.sendThrowable(mContext, "Failed to retrieve request token", e);
+            //AnalyticsTracker.sendThrowable("Failed to retrieve request token", e);
         }
 
         return null;

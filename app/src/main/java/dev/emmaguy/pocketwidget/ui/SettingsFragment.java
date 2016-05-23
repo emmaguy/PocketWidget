@@ -1,5 +1,7 @@
 package dev.emmaguy.pocketwidget.ui;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.appwidget.AppWidgetManager;
@@ -16,8 +18,8 @@ import android.preference.PreferenceScreen;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import dev.emmaguy.pocketwidget.AnalyticsTracker;
 import dev.emmaguy.pocketwidget.DataProvider;
-import dev.emmaguy.pocketwidget.Logger;
 import dev.emmaguy.pocketwidget.R;
 import dev.emmaguy.pocketwidget.RetrieveCountOfUnreadArticlesAsyncTask;
 import dev.emmaguy.pocketwidget.RetrieveJobService;
@@ -40,6 +42,8 @@ public class SettingsFragment extends PreferenceFragment
 
     private ProgressDialog mProgressDialog;
 
+    private AnalyticsTracker analytics;
+
     // empty constructor
     public SettingsFragment() {
     }
@@ -54,6 +58,8 @@ public class SettingsFragment extends PreferenceFragment
         parseWidgetExtras();
 
         scheduleJob(getSharedPreferences());
+
+        analytics = new AnalyticsTracker(getActivity());
     }
 
     @Override public void onResume() {
@@ -116,7 +122,7 @@ public class SettingsFragment extends PreferenceFragment
     private void retrieveAccessToken() {
         Uri uri = getActivity().getIntent().getData();
         if (uri != null && uri.toString().startsWith("pocketwidget") && !isSignedIn()) {
-            Logger.sendEvent(getActivity().getApplicationContext(), Logger.LOG_SIGN_IN_RETURN_FROM_BROWSER);
+            analytics.sendEvent(FirebaseAnalytics.Event.LOGIN, AnalyticsTracker.LOG_SIGN_IN_RETURN_FROM_BROWSER);
 
             String code = getPreferenceManager().getSharedPreferences()
                     .getString(SettingsActivity.POCKET_AUTH_CODE, null);
@@ -175,7 +181,7 @@ public class SettingsFragment extends PreferenceFragment
 
         int refreshIntervalMins = Integer.valueOf(refreshInterval);
 
-        Logger.Log("scheduleJob interval: " + refreshIntervalMins);
+        //AnalyticsTracker.Log("scheduleJob interval: " + refreshIntervalMins);
 
         //JobScheduler jobScheduler = JobScheduler.getInstance(getActivity());
         //
@@ -227,7 +233,7 @@ public class SettingsFragment extends PreferenceFragment
             updatePrefsSummary(getSharedPreferences(), findPreference(getString(R.string.pref_key_pocket_account)));
             return true;
         } else if (preference.getKey().equals(getString(R.string.pref_key_force_refresh))) {
-            Logger.sendEvent(getActivity().getApplicationContext(), Logger.LOG_EVENT_FORCE_REFRESH);
+            analytics.sendEvent("General", AnalyticsTracker.LOG_EVENT_FORCE_REFRESH);
             if (isSignedIn()) {
                 retrieveLatestUnreadArticlesCount();
             } else {
@@ -242,7 +248,7 @@ public class SettingsFragment extends PreferenceFragment
                 Toast.makeText(getActivity(), R.string.failed_to_launch_market, Toast.LENGTH_SHORT).show();
             }
         } else if (preference.getKey().equals(getString(R.string.pref_key_view_graph))) {
-            Logger.sendEvent(getActivity().getApplicationContext(), Logger.LOG_EVENT_VIEW_GRAPH);
+            analytics.sendEvent("General", AnalyticsTracker.LOG_EVENT_VIEW_GRAPH);
             startActivity(new Intent(getActivity(), GraphActivity.class));
         }
 
@@ -269,7 +275,7 @@ public class SettingsFragment extends PreferenceFragment
             getActivity().getContentResolver().delete(DataProvider.UNREAD_ARTICLES_COUNT_URI, null, null);
             cancelRetrieveJob();
         } else {
-            Logger.sendEvent(getActivity().getApplicationContext(), Logger.LOG_SIGN_IN_START);
+            analytics.sendEvent(FirebaseAnalytics.Event.LOGIN, AnalyticsTracker.LOG_SIGN_IN_START);
             mProgressDialog = showProgressDialog(getString(R.string.retrieving_request_token));
             //new RetrieveRequestTokenAsyncTask(getResources().getString(R.string.pocket_consumer_key_mobile), this,
             // getSharedPreferences(), getActivity().getApplicationContext()).execute();
@@ -294,7 +300,7 @@ public class SettingsFragment extends PreferenceFragment
     }
 
     private void redirectToBrowser(String url) {
-        Logger.sendEvent(getActivity().getApplicationContext(), Logger.LOG_SIGN_IN_REDIRECT_TO_BROWSER);
+        analytics.sendEvent(FirebaseAnalytics.Event.LOGIN, AnalyticsTracker.LOG_SIGN_IN_REDIRECT_TO_BROWSER);
 
         Toast.makeText(getActivity(), getString(R.string.redirecting_to_browser), Toast.LENGTH_LONG).show();
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
@@ -324,7 +330,7 @@ public class SettingsFragment extends PreferenceFragment
 
             updatePrefsSummary(getSharedPreferences(), findPreference(getString(R.string.pref_key_pocket_account)));
 
-            Logger.sendEvent(getActivity().getApplicationContext(), Logger.LOG_SIGN_IN_SUCCESS);
+            analytics.sendEvent(FirebaseAnalytics.Event.LOGIN, AnalyticsTracker.LOG_SIGN_IN_SUCCESS);
 
             getActivity().runOnUiThread(new Runnable() {
                 @Override public void run() {
@@ -335,7 +341,7 @@ public class SettingsFragment extends PreferenceFragment
                 }
             });
         } else {
-            Logger.sendEvent(getActivity().getApplicationContext(), Logger.LOG_SIGN_IN_NO_TOKEN);
+            analytics.sendEvent(FirebaseAnalytics.Event.LOGIN, AnalyticsTracker.LOG_SIGN_IN_NO_TOKEN);
         }
     }
 
@@ -346,7 +352,7 @@ public class SettingsFragment extends PreferenceFragment
     @Override public void onUnreadCountRetrieved(Integer unreadCount) {
         cancelProgressDialog();
 
-        Toast.makeText(getActivity(), getString(R.string.unread_articles_x, unreadCount), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getActivity(), getString(R.string.unread_articles_x, unreadCount), Toast.LENGTH_SHORT).show();
 
         RetrieveJobService.insertUnreadCount(getActivity(), unreadCount);
         WidgetProvider.updateAllWidgets(getActivity());

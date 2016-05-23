@@ -1,5 +1,7 @@
 package dev.emmaguy.pocketwidget.ui;
 
+import com.google.firebase.crash.FirebaseCrash;
+
 import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
@@ -27,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import dev.emmaguy.pocketwidget.DataProvider;
-import dev.emmaguy.pocketwidget.Logger;
 import dev.emmaguy.pocketwidget.R;
 
 public class GraphActivity extends Activity
@@ -81,7 +82,7 @@ public class GraphActivity extends Activity
     }
 
     private void populateGraph(Cursor data) {
-        Logger.Log("populateGraph " + data.getCount());
+        //AnalyticsTracker.Log("populateGraph " + data.getCount());
         final DateFormat dateFormat
                 = new SimpleDateFormat();//DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault());
 
@@ -109,7 +110,7 @@ public class GraphActivity extends Activity
 
                 index++;
             } catch (Exception e) {
-                Logger.sendThrowable(this, "Failed to populate graph", e);
+                FirebaseCrash.report(e);
             }
         }
 

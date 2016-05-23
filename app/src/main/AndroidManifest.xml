@@ -12,6 +12,7 @@
         android:allowBackup="true"
         android:icon="@drawable/settings"
         android:label="@string/settings_label"
+        android:name=".App"
         android:theme="@style/AppTheme">
         <receiver
             android:name=".widget.WidgetProvider"
